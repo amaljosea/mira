@@ -4,6 +4,7 @@ import {ChangeEvent, memo, useEffect, useMemo, useRef, useState} from "react";
 import styles from "./CoinsListModal.module.css";
 import {BN, CoinQuantity} from "fuels";
 import { useAssetList } from "@/src/hooks/useAssetList";
+import { SearchBar } from "../../../SearchBar/SearchBar";
 
 type Props = {
   selectCoin: (assetId: string | null) => void;
@@ -88,16 +89,12 @@ const CoinsListModal = ({ selectCoin, balances }: Props) => {
 
   return (
     <>
-      <div className={styles.tokenSearch}>
-        <SearchIcon/>
-        <input
-          className={styles.tokenSearchInput}
-          type="text"
-          placeholder="Search by token or paste address"
-          onChange={handleChange}
-          ref={inputRef}
-        />
-      </div>
+      <SearchBar
+        placeholder="Search by token or paste address"
+        onChange={handleChange}
+        inputRef={inputRef}
+        className={styles.tokenSearchBar}
+      />
       <div className={styles.tokenList}>
         {sortedCoinsList.map(({ assetId }) => (
           <div
