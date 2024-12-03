@@ -8,6 +8,7 @@ import ActionButton from "@/src/components/common/ActionButton/ActionButton";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import {useCallback} from "react";
+import { SearchBar } from "@/src/components/common/SearchBar/SearchBar";
 
 const Pools = () => {
   const router = useRouter();
@@ -25,6 +26,10 @@ const Pools = () => {
         {/*<ActionButton className={clsx("mobileOnly", styles.createButton)} onClick={handleCreatePoolClick}>*/}
         {/* Create Pool*/}
         {/*</ActionButton>*/}
+        <SearchBar
+          placeholder="Symbol or address..."
+          className={styles.poolsSearchBar}
+        />
       </div>
       <MobilePools poolsData={data} />
       <DesktopPools poolsData={data} />
