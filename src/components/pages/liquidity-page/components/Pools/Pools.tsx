@@ -9,6 +9,7 @@ import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import {useCallback} from "react";
 import { SearchBar } from "@/src/components/common/SearchBar/SearchBar";
+import Pagination from "@/src/components/common/Pagination/Pagination";
 
 const Pools = () => {
   const router = useRouter();
@@ -26,9 +27,11 @@ const Pools = () => {
     setOrderBy,
     page,
     orderBy,
-    search,
+    // search,
     setSearch,
   } = moreInfo;
+  const pageInfo = pageInfoData?.poolsConnection?.pageInfo;
+  const totalCount = pageInfoData?.poolsConnection?.totalCount;
 
   console.log(moreInfo);
 
@@ -43,6 +46,14 @@ const Pools = () => {
         prevKey === key && prevDirection === "ASC" ? "DESC" : "ASC";
       return `${key}_${newDirection}`;
     });
+  };
+
+  const handlePageChange = (direction: "next" | "prev") => {
+    if (direction === "next" && pageInfo?.hasNextPage) {
+      setPage(page + 1);
+    } else if (direction === "prev" && pageInfo?.hasPreviousPage) {
+      setPage(page - 1);
+    }
   };
 
   return (
@@ -68,6 +79,19 @@ const Pools = () => {
         <div className={styles.loadingFallback}>
           <LoaderV2 />
           <p>Loading pools...</p>
+        </div>
+      )}
+      {data && (
+        <div className={styles.pagination}>
+          <p>
+            Showing {data?.length} out of {totalCount} pools...
+          </p>
+          <Pagination
+            hasNextPage={pageInfo?.hasNextPage}
+            hasPreviousPage={pageInfo?.hasPreviousPage}
+            onNext={() => handlePageChange("next")}
+            onPrevious={() => handlePageChange("prev")}
+          />
         </div>
       )}
     </section>

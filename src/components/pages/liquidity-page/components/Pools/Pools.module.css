@@ -1,7 +1,7 @@
 .pools {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 14px;
 }
 
 .poolsTitle {
@@ -50,4 +50,14 @@
   .addButton {
     display: none;
   }
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pagination > p {
+  font-size: 14px;
 }
