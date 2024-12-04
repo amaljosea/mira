@@ -22,15 +22,20 @@
   cursor: pointer;
   height: 40px;
   transition: background-color 0.2s, color 0.2s;
+}
 
-  &:hover:not(.disabled) {
-    background-color: #3b3b4e;
-  }
+.paginationButton.active {
+  background-color: #3b3b4e;
+  font-weight: bold;
+}
 
-  &.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+.paginationButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.paginationButton:hover:not(:disabled) {
+  background-color: #3b3b4e;
 }
 
 .previousButton {

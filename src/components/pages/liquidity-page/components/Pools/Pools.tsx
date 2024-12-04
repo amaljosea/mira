@@ -22,7 +22,7 @@ const Pools = () => {
 
   const {
     data: pageInfoData,
-    // totalPages,
+    totalPages,
     setPage,
     setOrderBy,
     page,
@@ -48,12 +48,8 @@ const Pools = () => {
     });
   };
 
-  const handlePageChange = (direction: "next" | "prev") => {
-    if (direction === "next" && pageInfo?.hasNextPage) {
-      setPage(page + 1);
-    } else if (direction === "prev" && pageInfo?.hasPreviousPage) {
-      setPage(page - 1);
-    }
+  const handlePageChange = (page: number) => {
+    setPage(page);
   };
 
   return (
@@ -74,11 +70,7 @@ const Pools = () => {
           onChange={handleSearchChange}
         />
       </div>
-      <MobilePools 
-        poolsData={data}
-        orderBy={orderBy}
-        handleSort={handleSort}
-      />
+      <MobilePools poolsData={data} orderBy={orderBy} handleSort={handleSort} />
       <DesktopPools
         poolsData={data}
         orderBy={orderBy}
@@ -96,10 +88,9 @@ const Pools = () => {
             Showing {data?.length} out of {totalCount} pools...
           </p>
           <Pagination
-            hasNextPage={pageInfo?.hasNextPage}
-            hasPreviousPage={pageInfo?.hasPreviousPage}
-            onNext={() => handlePageChange("next")}
-            onPrevious={() => handlePageChange("prev")}
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
           />
         </div>
       )}
