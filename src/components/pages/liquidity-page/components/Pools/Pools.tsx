@@ -22,7 +22,7 @@ const Pools = () => {
 
   const {
     data: pageInfoData,
-    totalPages,
+    // totalPages,
     setPage,
     setOrderBy,
     page,
@@ -69,7 +69,11 @@ const Pools = () => {
           onChange={handleSearchChange}
         />
       </div>
-      <MobilePools poolsData={data} />
+      <MobilePools 
+        poolsData={data}
+        orderBy={orderBy}
+        handleSort={handleSort}
+      />
       <DesktopPools
         poolsData={data}
         orderBy={orderBy}
