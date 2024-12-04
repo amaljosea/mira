@@ -2,25 +2,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.divider {
-  width: 1px;
-  height: 40px;
-  background-color: #3b3b4e;
+  gap: 8px; /* Space between buttons */
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  padding: 8px;
 }
 
 .paginationButton {
-  display: flex;
-  align-items: center;
-  padding: 8px 16px;
+  padding: 8px 12px;
   background-color: #2a2a3c;
   border: none;
   color: #ffffff;
   font-size: 14px;
   font-weight: 500;
+  border-radius: 4px;
   cursor: pointer;
-  height: 40px;
   transition: background-color 0.2s, color 0.2s;
 }
 
@@ -38,10 +33,24 @@
   background-color: #3b3b4e;
 }
 
-.previousButton {
-  border-radius: 8px 0 0 8px; /* Rounded left corners */
-}
+/* Responsive styles for mobile */
+@media (max-width: 600px) {
+  .pagination {
+    gap: 4px;
+  }
 
-.nextButton {
-  border-radius: 0 8px 8px 0; /* Rounded right corners */
+  .paginationButton {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+
+  .paginationButton.previous,
+  .paginationButton.next {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px; /* Fixed size for the buttons */
+    height: 32px;
+    padding: 0;
+  }
 }
