@@ -29,7 +29,45 @@ export type PoolsData = {
 export const usePoolsData = (): { data: PoolData[] | undefined, isLoading: boolean } => {
   const timestamp24hAgo = Math.floor(Date.now() / 1000) - 24 * 60 * 60;
   const query = gql`
-    query PoolQuery {
+    query PoolsConnection {
+          poolsConnection(orderBy: id_DESC) {
+        edges {
+            node {
+        id
+        isStable
+        reserve0
+        reserve1
+        reserve0Decimal
+        reserve1Decimal
+        volumeAsset0
+        volumeAsset1
+        tvlUSD
+        lpToken {
+          symbol
+          name
+        }
+        asset1 {
+          id
+          symbol
+          decimals
+        }
+        asset0 {
+          id
+          symbol
+          decimals
+        }
+        snapshots(where: { timestamp_gt: ${timestamp24hAgo} }) {
+          timestamp
+          volumeAsset0
+          volumeAsset1
+          volumeAsset0Decimal
+          volumeAsset1Decimal
+          volumeUSD
+          feesUSD
+        }
+            }
+        }
+    }
       pools {
         id
         isStable
@@ -76,7 +114,8 @@ export const usePoolsData = (): { data: PoolData[] | undefined, isLoading: boole
     // enabled: shouldFetch,
   });
 
-  const dataTransformed = data?.pools.map((pool: any): PoolData => {
+  const dataTransformed = data?.poolsConnection?.edges.map((poolNode: any): PoolData => {
+    const pool = poolNode.node
     // const volume24h = pool.snapshots.reduce((acc: number, snapshot: any) => acc + parseFloat(snapshot.volumeUSD), 0);
     const fees24h = pool.snapshots.reduce((acc: number, snapshot: any) => acc + parseFloat(snapshot.feesUSD), 0);
     const apr = fees24h / parseFloat(pool.tvlUSD) * 365 * 100;
