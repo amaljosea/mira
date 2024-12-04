@@ -5,11 +5,12 @@
 }
 
 .desktopPools th {
-  font-size: 16px;
+  font-size: 14px;
   line-height: 19px;
   font-weight: 400;
   color: var(--content-tertiary);
   border-bottom: 1px solid var(--background-grey-darker);
+  cursor: default;
 }
 
 .desktopPools th, .desktopPools td {
@@ -31,4 +32,32 @@ button.createButton {
   font-size: 16px;
   line-height: 19px;
   box-shadow: unset;
+}
+
+.desktopPools th.sortable {
+  cursor: pointer;
+  gap: 10px;
+  user-select: none;
+  transition: color 0.2s ease;
+}
+
+.sortArea {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.desktopPools th.sortable:hover {
+  color: rgb(141, 141, 164);
+}
+
+.sortIcon {
+  width: 16px;
+  font-size: 14px;
+  color: #888888;
+  transition: color 0.2s ease;
+}
+
+.sortIcon.active {
+  color: #ffffff;
 }
