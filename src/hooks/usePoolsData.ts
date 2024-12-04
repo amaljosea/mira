@@ -4,6 +4,7 @@ import {ApiBaseUrl, IndexerUrl, SQDIndexerUrl} from "@/src/utils/constants";
 import {createPoolIdFromIdString, isPoolIdValid} from "@/src/utils/common";
 import request, { gql } from "graphql-request";
 import { time } from "console";
+import { useState } from "react";
 
 export type PoolData = {
   id: string;
@@ -25,83 +26,60 @@ export type PoolData = {
 export type PoolsData = {
   pools: PoolData[];
 };
+const ITEMS_IN_PAGE=10;
 
 export const usePoolsData = (): { data: PoolData[] | undefined, isLoading: boolean } => {
+  const [page, setPage]=useState(1);
   const timestamp24hAgo = Math.floor(Date.now() / 1000) - 24 * 60 * 60;
   const query = gql`
     query PoolsConnection {
-          poolsConnection(orderBy: id_DESC) {
+      poolsConnection(orderBy: id_DESC) {
+        totalCount
+        pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+        }
+        totalCount
         edges {
+
             node {
-        id
-        isStable
-        reserve0
-        reserve1
-        reserve0Decimal
-        reserve1Decimal
-        volumeAsset0
-        volumeAsset1
-        tvlUSD
-        lpToken {
-          symbol
-          name
-        }
-        asset1 {
-          id
-          symbol
-          decimals
-        }
-        asset0 {
-          id
-          symbol
-          decimals
-        }
-        snapshots(where: { timestamp_gt: ${timestamp24hAgo} }) {
-          timestamp
-          volumeAsset0
-          volumeAsset1
-          volumeAsset0Decimal
-          volumeAsset1Decimal
-          volumeUSD
-          feesUSD
-        }
+              id
+              isStable
+              reserve0
+              reserve1
+              reserve0Decimal
+              reserve1Decimal
+              volumeAsset0
+              volumeAsset1
+              tvlUSD
+              lpToken {
+                symbol
+                name
+              }
+              asset1 {
+                id
+                symbol
+                decimals
+              }
+              asset0 {
+                id
+                symbol
+                decimals
+              }
+              snapshots(where: { timestamp_gt: ${timestamp24hAgo} }) {
+                timestamp
+                volumeAsset0
+                volumeAsset1
+                volumeAsset0Decimal
+                volumeAsset1Decimal
+                volumeUSD
+                feesUSD
+              }
             }
         }
     }
-      pools {
-        id
-        isStable
-        reserve0
-        reserve1
-        reserve0Decimal
-        reserve1Decimal
-        volumeAsset0
-        volumeAsset1
-        tvlUSD
-        lpToken {
-          symbol
-          name
-        }
-        asset1 {
-          id
-          symbol
-          decimals
-        }
-        asset0 {
-          id
-          symbol
-          decimals
-        }
-        snapshots(where: { timestamp_gt: ${timestamp24hAgo} }) {
-          timestamp
-          volumeAsset0
-          volumeAsset1
-          volumeAsset0Decimal
-          volumeAsset1Decimal
-          volumeUSD
-          feesUSD
-        }
-      }
     }
   `;
 
@@ -113,6 +91,12 @@ export const usePoolsData = (): { data: PoolData[] | undefined, isLoading: boole
     }),
     // enabled: shouldFetch,
   });
+
+  const totalPages = Math.ceil(data?.poolsConnection?.totalCount/ITEMS_IN_PAGE)
+
+
+  console.log({ data, totalPages, setPage });
+
 
   const dataTransformed = data?.poolsConnection?.edges.map((poolNode: any): PoolData => {
     const pool = poolNode.node
