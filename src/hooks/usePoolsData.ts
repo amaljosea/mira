@@ -30,10 +30,11 @@ const ITEMS_IN_PAGE=5;
 
 export const usePoolsData = (): { data: PoolData[] | undefined, isLoading: boolean } => {
   const [page, setPage]=useState(0);
+  const [orderBy, setOrderBy] = useState('tvlUSD_ASC');
   const timestamp24hAgo = Math.floor(Date.now() / 1000) - 24 * 60 * 60;
   const query = gql`
-    query PoolsConnection($first: Int!, $after: String) {
-      poolsConnection(orderBy: id_DESC, first: $first, after: $after) {
+    query PoolsConnection($first: Int!, $after: String, $orderBy: [PoolOrderByInput!]!) {
+      poolsConnection(first: $first, after: $after, orderBy: $orderBy) {
         totalCount
         pageInfo {
             hasNextPage
@@ -84,7 +85,7 @@ export const usePoolsData = (): { data: PoolData[] | undefined, isLoading: boole
   `;
 
   const { data, isLoading } = useQuery<any>({
-    queryKey: ['pools', page],
+    queryKey: ['pools', page, orderBy],
     queryFn: () =>
       request({
         url: SQDIndexerUrl,
@@ -92,6 +93,7 @@ export const usePoolsData = (): { data: PoolData[] | undefined, isLoading: boole
         variables: {
           first: 5,
           after: page === 0 ? null : String(page * ITEMS_IN_PAGE),
+          orderBy,
         },
       }),
     // enabled: shouldFetch,
@@ -100,7 +102,7 @@ export const usePoolsData = (): { data: PoolData[] | undefined, isLoading: boole
   const totalPages = Math.ceil(data?.poolsConnection?.totalCount/ITEMS_IN_PAGE)
 
 
-  console.log({ data, totalPages, setPage });
+  console.log({ data, totalPages, setPage, setOrderBy, page, orderBy });
 
 
   const dataTransformed = data?.poolsConnection?.edges.map((poolNode: any): PoolData => {
