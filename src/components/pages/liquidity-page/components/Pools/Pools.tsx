@@ -24,6 +24,11 @@ const Pools = () => {
   const [paginationVariables, setPaginationVariables] = useState(
     DEFAULT_PAGINATION_VARIABLES
   );
+  const [sortConfig, setSortConfig] = useState({
+    key: "TVL",
+    direction: "DESC",
+  });
+
   const handleCreatePoolClick = useCallback(() => {
     router.push('/liquidity/create-pool')
   }, [router]);
@@ -47,6 +52,13 @@ const Pools = () => {
     }
   };
 
+  const handleSort = (key: string) => {
+    setSortConfig((prev) => ({
+      key,
+      direction: prev.key === key && prev.direction === "DESC" ? "ASC" : "DESC",
+    }));
+  };
+
   return (
     <section className={styles.pools}>
       <div className={styles.poolsHeader}>
@@ -59,8 +71,16 @@ const Pools = () => {
           className={styles.poolsSearchBar}
         />
       </div>
-      <MobilePools poolsData={data} />
-      <DesktopPools poolsData={data} />
+      <MobilePools
+        poolsData={data}
+        sortConfig={sortConfig}
+        handleSort={handleSort}
+      />
+      <DesktopPools
+        poolsData={data}
+        sortConfig={sortConfig}
+        handleSort={handleSort}
+      />
       {isLoading && (
         <div className={styles.loadingFallback}>
           <LoaderV2 />
