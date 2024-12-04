@@ -84,7 +84,7 @@ export const usePoolsData = (): { data: PoolData[] | undefined, isLoading: boole
   `;
 
   const { data, isLoading } = useQuery<any>({
-    queryKey: ['pools'],
+    queryKey: ['pools', page],
     queryFn: () =>
       request({
         url: SQDIndexerUrl,
