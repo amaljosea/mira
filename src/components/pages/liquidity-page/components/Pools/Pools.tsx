@@ -58,11 +58,16 @@ const Pools = () => {
 
   return (
     <section className={styles.pools}>
-      <div className={styles.poolsHeader}>
-        <p className={styles.poolsTitle}>All Pools</p>
-        <ActionButton className={clsx("mobileOnly", styles.createButton)} onClick={handleCreatePoolClick}>
+      <div className={styles.actionButtonDiv}>
+        <ActionButton
+          className={clsx("mobileOnly", styles.createButton)}
+          onClick={handleCreatePoolClick}
+        >
           Create Pool
         </ActionButton>
+      </div>
+      <div className={styles.poolsHeader}>
+        <p className={styles.poolsTitle}>All Pools</p>
         <SearchBar
           placeholder="Symbol or address..."
           className={styles.poolsSearchBar}
