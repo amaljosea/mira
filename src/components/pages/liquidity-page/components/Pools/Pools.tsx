@@ -8,6 +8,7 @@ import ActionButton from "@/src/components/common/ActionButton/ActionButton";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import {useCallback} from "react";
+import { SearchBar } from "@/src/components/common/SearchBar/SearchBar";
 
 const Pools = () => {
   const router = useRouter();
@@ -16,7 +17,24 @@ const Pools = () => {
     router.push('/liquidity/create-pool')
   }, [router]);
 
-  const { data, isLoading } = usePoolsData();
+  const { data, isLoading, moreInfo } = usePoolsData();
+
+  const {
+    data: pageInfoData,
+    totalPages,
+    setPage,
+    setOrderBy,
+    page,
+    orderBy,
+    search,
+    setSearch,
+  } = moreInfo;
+
+  console.log(moreInfo);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+  };
 
   return (
     <section className={styles.pools}>
@@ -25,6 +43,11 @@ const Pools = () => {
         <ActionButton className={clsx("mobileOnly", styles.createButton)} onClick={handleCreatePoolClick}>
           Create Pool
         </ActionButton>
+        <SearchBar
+          placeholder="Symbol or address..."
+          className={styles.poolsSearchBar}
+          onChange={handleSearchChange}
+        />
       </div>
       <MobilePools poolsData={data} />
       <DesktopPools poolsData={data} />
