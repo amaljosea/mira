@@ -28,15 +28,17 @@ export type PoolsData = {
 };
 const ITEMS_IN_PAGE=5;
 const DEFAULT_ORDER_BY = 'tvlUSD_ASC';
+const DEFAULT_PAGE=1
+const DEFAULT_SEARCH=''
 
 export const usePoolsData = (): { data: PoolData[] | undefined, isLoading: boolean } => {
-  const [page, setPage]=useState(0);
-  const [search, setSearch] = useState('');
+  const [page, setPage] = useState(DEFAULT_PAGE);
+  const [search, setSearch] = useState(DEFAULT_SEARCH);
   const [orderBy, setOrderBy] = useState(DEFAULT_ORDER_BY);
   const timestamp24hAgo = Math.floor(Date.now() / 1000) - 24 * 60 * 60;
 
   useEffect(() => {
-    setPage(0)
+    setPage(DEFAULT_PAGE);
     setOrderBy(DEFAULT_ORDER_BY);
   }, [search]);
 
@@ -99,7 +101,7 @@ export const usePoolsData = (): { data: PoolData[] | undefined, isLoading: boole
         document: query,
         variables: {
           first: 5,
-          after: page === 0 ? null : String(page * ITEMS_IN_PAGE),
+          after: page === 1 ? null : String((page-1) * ITEMS_IN_PAGE),
           orderBy,
           poolWhereInput: { asset0: { symbol_containsInsensitive: search } },
         },
