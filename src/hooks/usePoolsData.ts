@@ -26,14 +26,14 @@ export type PoolData = {
 export type PoolsData = {
   pools: PoolData[];
 };
-const ITEMS_IN_PAGE=10;
+const ITEMS_IN_PAGE=5;
 
 export const usePoolsData = (): { data: PoolData[] | undefined, isLoading: boolean } => {
-  const [page, setPage]=useState(1);
+  const [page, setPage]=useState(0);
   const timestamp24hAgo = Math.floor(Date.now() / 1000) - 24 * 60 * 60;
   const query = gql`
-    query PoolsConnection {
-      poolsConnection(orderBy: id_DESC) {
+    query PoolsConnection($first: Int!, $after: String) {
+      poolsConnection(orderBy: id_DESC, first: $first, after: $after) {
         totalCount
         pageInfo {
             hasNextPage
@@ -85,10 +85,15 @@ export const usePoolsData = (): { data: PoolData[] | undefined, isLoading: boole
 
   const { data, isLoading } = useQuery<any>({
     queryKey: ['pools'],
-    queryFn: () => request({
-      url: SQDIndexerUrl,
-      document: query,
-    }),
+    queryFn: () =>
+      request({
+        url: SQDIndexerUrl,
+        document: query,
+        variables: {
+          first: 5,
+          after: page === 0 ? null : String(page * ITEMS_IN_PAGE),
+        },
+      }),
     // enabled: shouldFetch,
   });
 
