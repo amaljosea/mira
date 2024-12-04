@@ -36,6 +36,15 @@ const Pools = () => {
     setSearch(e.target.value);
   };
 
+  const handleSort = (key: string) => {
+    setOrderBy((prev: string) => {
+      const [prevKey, prevDirection] = prev.split("_");
+      const newDirection =
+        prevKey === key && prevDirection === "ASC" ? "DESC" : "ASC";
+      return `${key}_${newDirection}`;
+    });
+  };
+
   return (
     <section className={styles.pools}>
       <div className={styles.poolsHeader}>
@@ -50,7 +59,11 @@ const Pools = () => {
         />
       </div>
       <MobilePools poolsData={data} />
-      <DesktopPools poolsData={data} />
+      <DesktopPools
+        poolsData={data}
+        orderBy={orderBy}
+        handleSort={handleSort}
+      />
       {isLoading && (
         <div className={styles.loadingFallback}>
           <LoaderV2 />
