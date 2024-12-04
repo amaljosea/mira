@@ -4,7 +4,7 @@ import {ApiBaseUrl, IndexerUrl, SQDIndexerUrl} from "@/src/utils/constants";
 import {createPoolIdFromIdString, isPoolIdValid} from "@/src/utils/common";
 import request, { gql } from "graphql-request";
 import { time } from "console";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export type PoolData = {
   id: string;
@@ -27,14 +27,22 @@ export type PoolsData = {
   pools: PoolData[];
 };
 const ITEMS_IN_PAGE=5;
+const DEFAULT_ORDER_BY = 'tvlUSD_ASC';
 
 export const usePoolsData = (): { data: PoolData[] | undefined, isLoading: boolean } => {
   const [page, setPage]=useState(0);
-  const [orderBy, setOrderBy] = useState('tvlUSD_ASC');
+  const [search, setSearch] = useState('');
+  const [orderBy, setOrderBy] = useState(DEFAULT_ORDER_BY);
   const timestamp24hAgo = Math.floor(Date.now() / 1000) - 24 * 60 * 60;
+
+  useEffect(() => {
+    setPage(0)
+    setOrderBy(DEFAULT_ORDER_BY);
+  }, [search]);
+
   const query = gql`
-    query PoolsConnection($first: Int!, $after: String, $orderBy: [PoolOrderByInput!]!) {
-      poolsConnection(first: $first, after: $after, orderBy: $orderBy) {
+    query PoolsConnection($first: Int!, $after: String, $orderBy: [PoolOrderByInput!]!, $poolWhereInput: PoolWhereInput) {
+      poolsConnection(first: $first, after: $after, orderBy: $orderBy, where: $poolWhereInput ) {
         totalCount
         pageInfo {
             hasNextPage
@@ -44,7 +52,6 @@ export const usePoolsData = (): { data: PoolData[] | undefined, isLoading: boole
         }
         totalCount
         edges {
-
             node {
               id
               isStable
@@ -85,7 +92,7 @@ export const usePoolsData = (): { data: PoolData[] | undefined, isLoading: boole
   `;
 
   const { data, isLoading } = useQuery<any>({
-    queryKey: ['pools', page, orderBy],
+    queryKey: ['pools', page, orderBy, search],
     queryFn: () =>
       request({
         url: SQDIndexerUrl,
@@ -94,6 +101,7 @@ export const usePoolsData = (): { data: PoolData[] | undefined, isLoading: boole
           first: 5,
           after: page === 0 ? null : String(page * ITEMS_IN_PAGE),
           orderBy,
+          poolWhereInput: { asset0: { symbol_containsInsensitive: search } },
         },
       }),
     // enabled: shouldFetch,
@@ -102,7 +110,16 @@ export const usePoolsData = (): { data: PoolData[] | undefined, isLoading: boole
   const totalPages = Math.ceil(data?.poolsConnection?.totalCount/ITEMS_IN_PAGE)
 
 
-  console.log({ data, totalPages, setPage, setOrderBy, page, orderBy });
+  console.log({
+    data,
+    totalPages,
+    setPage,
+    setOrderBy,
+    page,
+    orderBy,
+    search,
+    setSearch,
+  });
 
 
   const dataTransformed = data?.poolsConnection?.edges.map((poolNode: any): PoolData => {
