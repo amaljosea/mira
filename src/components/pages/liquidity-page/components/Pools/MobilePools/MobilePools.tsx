@@ -39,20 +39,20 @@ const MobilePools = ({poolsData, orderBy, handleSort}: Props) => {
         </thead>
       </table>
       <div className={clsx(styles.mobilePools, "mobileOnly")}>
-        {poolsData.map((poolData) => {
-          if (!poolData) {
-            return null;
-          }
-
-          return (
-            <Fragment key={poolData.id}>
-              <MobilePoolItem poolData={poolData} />
-              {poolsData.indexOf(poolData) !== poolsData.length - 1 && (
-                <div className={styles.separator} />
-              )}
-            </Fragment>
-          );
-        })}
+        {poolsData && poolsData.length > 0 ? (
+          poolsData.map((poolData) => {
+            return (
+              <Fragment key={poolData.id}>
+                <MobilePoolItem poolData={poolData} />
+                {poolsData.indexOf(poolData) !== poolsData.length - 1 && (
+                  <div className={styles.separator} />
+                )}
+              </Fragment>
+            );
+          })
+        ) : (
+          <p className={styles.noData}>No pools available</p>
+        )}
       </div>
     </div>
   );
