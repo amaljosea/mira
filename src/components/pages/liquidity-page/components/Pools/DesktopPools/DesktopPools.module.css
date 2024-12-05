@@ -18,7 +18,6 @@
 .desktopPools th,
 .desktopPools td {
   padding: 16px 24px;
-  text-align: left;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
