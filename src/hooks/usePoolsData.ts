@@ -32,7 +32,7 @@ const DEFAULT_ORDER_BY = "tvlUSD_ASC";
 const DEFAULT_PAGE = 1;
 const DEFAULT_SEARCH = "";
 
-export const usePoolsData = (): { data: PoolData[] | undefined; isLoading: boolean } => {
+export const usePoolsData = (): { data: PoolData[] | undefined, isLoading: boolean, moreInfo:any } => {
   const [page, setPage] = useQueryParam("page", withDefault(NumberParam, DEFAULT_PAGE));
   const [search, setSearch] = useQueryParam("search", withDefault(StringParam, DEFAULT_SEARCH));
   const [orderBy, setOrderBy] = useQueryParam("orderBy", withDefault(StringParam, DEFAULT_ORDER_BY));
@@ -113,16 +113,16 @@ export const usePoolsData = (): { data: PoolData[] | undefined; isLoading: boole
 
   const totalPages = Math.ceil(data?.poolsConnection?.totalCount / ITEMS_IN_PAGE);
 
-  console.log({
-    data,
-    totalPages,
-    setPage,
-    setOrderBy,
-    page,
-    orderBy,
-    search,
-    setSearch,
-  });
+  // console.log({
+  //   data,
+  //   totalPages,
+  //   setPage,
+  //   setOrderBy,
+  //   page,
+  //   orderBy,
+  //   search,
+  //   setSearch,
+  // });
 
   const dataTransformed = data?.poolsConnection?.edges
     .map((poolNode: any): PoolData => {
@@ -150,7 +150,16 @@ export const usePoolsData = (): { data: PoolData[] | undefined; isLoading: boole
     })
     .sort((a: PoolData, b: PoolData) => b.details.tvl - a.details.tvl);
 
-  return { data: dataTransformed, isLoading };
+  return { data: dataTransformed, isLoading, moreInfo: {
+    data,
+    totalPages,
+    setPage,
+    setOrderBy,
+    page,
+    orderBy,
+    search,
+    setSearch,
+  } };
 };
 
 export default usePoolsData;
