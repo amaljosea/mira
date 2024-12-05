@@ -1,24 +1,20 @@
+import {useCallback, useEffect, useState} from "react";
+import {useRouter} from "next/navigation";
+
 import MobilePools from "@/src/components/pages/liquidity-page/components/Pools/MobilePools/MobilePools";
 import DesktopPools from "@/src/components/pages/liquidity-page/components/Pools/DesktopPools/DesktopPools";
-
-import styles from "./Pools.module.css";
-import usePoolsData from "@/src/hooks/usePoolsData";
 import LoaderV2 from "@/src/components/common/LoaderV2/LoaderV2";
 import ActionButton from "@/src/components/common/ActionButton/ActionButton";
-import clsx from "clsx";
-import {useRouter} from "next/navigation";
-import {useCallback, useEffect, useState} from "react";
-import {SearchBar} from "@/src/components/common/SearchBar/SearchBar";
 import Pagination from "@/src/components/common/Pagination/Pagination";
+import {SearchBar} from "@/src/components/common/SearchBar/SearchBar";
+import usePoolsData from "@/src/hooks/usePoolsData";
 import {useDebounce} from "@/src/hooks/useDebounce";
+
+import clsx from "clsx";
+import styles from "./Pools.module.css";
 
 const Pools = () => {
   const router = useRouter();
-
-  const handleCreatePoolClick = useCallback(() => {
-    router.push("/liquidity/create-pool");
-  }, [router]);
-
   const {data, isLoading, moreInfo} = usePoolsData();
 
   const {
@@ -31,21 +27,26 @@ const Pools = () => {
     search,
     setSearch,
   } = moreInfo;
-  const pageInfo = pageInfoData?.poolsConnection?.pageInfo;
-  const totalCount = pageInfoData?.poolsConnection?.totalCount;
 
-  console.log(moreInfo);
   const [searchInput, setSearchInput] = useState(search || "");
   const debouncedSearchTerm = useDebounce(searchInput, 300);
 
+  // Navigate to "Create Pool" page
+  const handleCreatePoolClick = useCallback(() => {
+    router.push("/liquidity/create-pool");
+  }, [router]);
+
+  // Update search query when debounced value changes
   useEffect(() => {
     setSearch(debouncedSearchTerm);
   }, [debouncedSearchTerm, setSearch]);
 
+  // Handle search input changes
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
   };
 
+  // Handle sorting by toggling ASC/DESC
   const handleSort = (key: string) => {
     setOrderBy((prev: string) => {
       const [prevKey, prevDirection] = prev.split("_");
@@ -55,12 +56,14 @@ const Pools = () => {
     });
   };
 
-  const handlePageChange = (page: number) => {
-    setPage(page);
-  };
+  // Render pagination
+  const handlePageChange = (page: number) => setPage(page);
+
+  const totalCount = pageInfoData?.poolsConnection?.totalCount || 0;
 
   return (
     <section className={styles.pools}>
+      {/* Action Button */}
       <div className={styles.actionButtonDiv}>
         <ActionButton
           className={clsx("mobileOnly", styles.createButton)}
@@ -69,6 +72,8 @@ const Pools = () => {
           Create Pool
         </ActionButton>
       </div>
+
+      {/* Header with Search Bar */}
       <div className={styles.poolsHeader}>
         <p className={styles.poolsTitle}>All Pools</p>
         <SearchBar
@@ -78,22 +83,28 @@ const Pools = () => {
           onChange={handleSearchChange}
         />
       </div>
+
+      {/* Pools List (Mobile and Desktop) */}
       <MobilePools poolsData={data} orderBy={orderBy} handleSort={handleSort} />
       <DesktopPools
         poolsData={data}
         orderBy={orderBy}
         handleSort={handleSort}
       />
+
+      {/* Loading State */}
       {isLoading && (
         <div className={styles.loadingFallback}>
           <LoaderV2 />
           <p>Loading pools...</p>
         </div>
       )}
+
+      {/* Pagination */}
       {data && (
         <div className={styles.pagination}>
           <p>
-            Showing {data?.length} out of {totalCount} pools...
+            Showing {data.length} out of {totalCount} pools...
           </p>
           <Pagination
             currentPage={page}
