@@ -19,7 +19,7 @@ const MobilePools = ({ poolsData, orderBy, handleSort }: Props) => {
   }
 
   return (
-    <div>
+    <div className={clsx("mobileOnly")}>
       <div className={clsx(styles.mobilePoolsSort, "mobileOnly")}>
         <p>SORT BY:</p>
         <th>APR</th>
