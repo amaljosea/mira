@@ -7,7 +7,7 @@ import LoaderV2 from "@/src/components/common/LoaderV2/LoaderV2";
 import ActionButton from "@/src/components/common/ActionButton/ActionButton";
 import Pagination from "@/src/components/common/Pagination/Pagination";
 import {SearchBar} from "@/src/components/common/SearchBar/SearchBar";
-import usePoolsData from "@/src/hooks/usePoolsData";
+import usePoolsData, {DEFAULT_PAGE} from "@/src/hooks/usePoolsData";
 import {useDebounce} from "@/src/hooks/useDebounce";
 
 import clsx from "clsx";
@@ -39,7 +39,9 @@ const Pools = () => {
   // Update search query when debounced value changes
   useEffect(() => {
     setSearch(debouncedSearchTerm);
-  }, [debouncedSearchTerm, setSearch]);
+    // reset page when search text changes
+    setPage(DEFAULT_PAGE);
+  }, [debouncedSearchTerm, setPage, setSearch]);
 
   // Handle search input changes
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {

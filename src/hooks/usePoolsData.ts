@@ -34,8 +34,8 @@ export type PoolsData = {
 };
 const ITEMS_IN_PAGE = 5;
 const DEFAULT_ORDER_BY = "tvlUSD_ASC";
-const DEFAULT_PAGE = 1;
 const DEFAULT_SEARCH = "";
+export const DEFAULT_PAGE = 1;
 
 export const usePoolsData = (): {
   data: PoolData[] | undefined;
@@ -56,11 +56,6 @@ export const usePoolsData = (): {
   );
 
   const timestamp24hAgo = Math.floor(Date.now() / 1000) - 24 * 60 * 60;
-
-  useEffect(() => {
-    setPage(DEFAULT_PAGE);
-    setOrderBy(DEFAULT_ORDER_BY);
-  }, [search]);
 
   const query = gql`
     query PoolsConnection($first: Int!, $after: String, $orderBy: [PoolOrderByInput!]!, $poolWhereInput: PoolWhereInput) {
