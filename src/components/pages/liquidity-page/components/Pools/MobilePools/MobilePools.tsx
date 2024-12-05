@@ -23,7 +23,6 @@ const MobilePools = ({poolsData, orderBy, handleSort}: Props) => {
         <thead>
           <tr>
             <th>SORT BY:</th>
-            <th>APR</th>
             <SortableColumn
               title="24H Volume"
               columnKey="volumeUSD"
