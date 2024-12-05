@@ -16,7 +16,7 @@
   padding: 16px 24px;
 }
 
-.desktopPools th:first-child, .desktopPools td:first-child {
+.desktopPools th:first-child {
   text-align: left;
 }
 
@@ -31,4 +31,12 @@ button.createButton {
   font-size: 16px;
   line-height: 19px;
   box-shadow: unset;
+}
+
+.noData {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--content-tertiary);
+  padding: 16px 24px;
 }
