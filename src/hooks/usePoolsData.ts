@@ -110,10 +110,16 @@ export const usePoolsData = (): {
           first: 5,
           after: page === 1 ? null : String((page - 1) * ITEMS_IN_PAGE),
           orderBy,
-          poolWhereInput: {asset0: {symbol_containsInsensitive: search}},
+          poolWhereInput: {
+            OR: [
+              {asset0: {symbol_containsInsensitive: search}},
+              {asset1: {symbol_containsInsensitive: search}},
+              {asset0: {id_containsInsensitive: search}},
+              {asset1: {id_containsInsensitive: search}},
+            ],
+          },
         },
       }),
-    // enabled: shouldFetch,
   });
 
   const totalPages = Math.ceil(
