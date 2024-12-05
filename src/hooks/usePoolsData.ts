@@ -1,14 +1,11 @@
 import {useQuery} from "@tanstack/react-query";
 import {CoinName} from "@/src/utils/coinsConfig";
-import {ApiBaseUrl, IndexerUrl, SQDIndexerUrl} from "@/src/utils/constants";
-import {createPoolIdFromIdString, isPoolIdValid} from "@/src/utils/common";
+import {SQDIndexerUrl} from "@/src/utils/constants";
 import request, {gql} from "graphql-request";
-import {time} from "console";
-import {useEffect, useState} from "react";
 import {
   NumberParam,
   StringParam,
-  useQueryParam,
+  useQueryParams,
   withDefault,
 } from "use-query-params";
 
@@ -42,18 +39,13 @@ export const usePoolsData = (): {
   isLoading: boolean;
   moreInfo: any;
 } => {
-  const [page, setPage] = useQueryParam(
-    "page",
-    withDefault(NumberParam, DEFAULT_PAGE)
-  );
-  const [search, setSearch] = useQueryParam(
-    "search",
-    withDefault(StringParam, DEFAULT_SEARCH)
-  );
-  const [orderBy, setOrderBy] = useQueryParam(
-    "orderBy",
-    withDefault(StringParam, DEFAULT_ORDER_BY)
-  );
+  const [queryVariables, setQueryVariables] = useQueryParams({
+    page: withDefault(NumberParam, DEFAULT_PAGE),
+    search: withDefault(StringParam, DEFAULT_SEARCH),
+    orderBy: withDefault(StringParam, DEFAULT_ORDER_BY),
+  });
+
+  const {page, search, orderBy} = queryVariables;
 
   const timestamp24hAgo = Math.floor(Date.now() / 1000) - 24 * 60 * 60;
 
@@ -118,10 +110,16 @@ export const usePoolsData = (): {
           first: 5,
           after: page === 1 ? null : String((page - 1) * ITEMS_IN_PAGE),
           orderBy,
-          poolWhereInput: {asset0: {symbol_containsInsensitive: search}},
+          poolWhereInput: {
+            OR: [
+              {asset0: {symbol_containsInsensitive: search}},
+              {asset1: {symbol_containsInsensitive: search}},
+              {asset0: {id_containsInsensitive: search}},
+              {asset1: {id_containsInsensitive: search}},
+            ],
+          },
         },
       }),
-    // enabled: shouldFetch,
   });
 
   const totalPages = Math.ceil(
@@ -167,12 +165,8 @@ export const usePoolsData = (): {
     moreInfo: {
       data,
       totalPages,
-      setPage,
-      setOrderBy,
-      page,
-      orderBy,
-      search,
-      setSearch,
+      setQueryVariables,
+      queryVariables,
     },
   };
 };
