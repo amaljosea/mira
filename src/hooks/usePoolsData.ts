@@ -33,7 +33,7 @@ export type PoolsData = {
   pools: PoolData[];
 };
 const ITEMS_IN_PAGE = 5;
-const DEFAULT_ORDER_BY = "tvlUSD_ASC";
+const DEFAULT_ORDER_BY = "tvlUSD_DESC";
 const DEFAULT_SEARCH = "";
 export const DEFAULT_PAGE = 1;
 
