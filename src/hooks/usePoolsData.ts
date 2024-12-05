@@ -1,11 +1,16 @@
-import { useQuery } from "@tanstack/react-query";
-import { CoinName } from "@/src/utils/coinsConfig";
-import { ApiBaseUrl, IndexerUrl, SQDIndexerUrl } from "@/src/utils/constants";
-import { createPoolIdFromIdString, isPoolIdValid } from "@/src/utils/common";
-import request, { gql } from "graphql-request";
-import { time } from "console";
-import { useEffect, useState } from "react";
-import { NumberParam, StringParam, useQueryParam, withDefault } from "use-query-params";
+import {useQuery} from "@tanstack/react-query";
+import {CoinName} from "@/src/utils/coinsConfig";
+import {ApiBaseUrl, IndexerUrl, SQDIndexerUrl} from "@/src/utils/constants";
+import {createPoolIdFromIdString, isPoolIdValid} from "@/src/utils/common";
+import request, {gql} from "graphql-request";
+import {time} from "console";
+import {useEffect, useState} from "react";
+import {
+  NumberParam,
+  StringParam,
+  useQueryParam,
+  withDefault,
+} from "use-query-params";
 
 export type PoolData = {
   id: string;
@@ -32,10 +37,23 @@ const DEFAULT_ORDER_BY = "tvlUSD_ASC";
 const DEFAULT_PAGE = 1;
 const DEFAULT_SEARCH = "";
 
-export const usePoolsData = (): { data: PoolData[] | undefined, isLoading: boolean, moreInfo:any } => {
-  const [page, setPage] = useQueryParam("page", withDefault(NumberParam, DEFAULT_PAGE));
-  const [search, setSearch] = useQueryParam("search", withDefault(StringParam, DEFAULT_SEARCH));
-  const [orderBy, setOrderBy] = useQueryParam("orderBy", withDefault(StringParam, DEFAULT_ORDER_BY));
+export const usePoolsData = (): {
+  data: PoolData[] | undefined;
+  isLoading: boolean;
+  moreInfo: any;
+} => {
+  const [page, setPage] = useQueryParam(
+    "page",
+    withDefault(NumberParam, DEFAULT_PAGE)
+  );
+  const [search, setSearch] = useQueryParam(
+    "search",
+    withDefault(StringParam, DEFAULT_SEARCH)
+  );
+  const [orderBy, setOrderBy] = useQueryParam(
+    "orderBy",
+    withDefault(StringParam, DEFAULT_ORDER_BY)
+  );
 
   const timestamp24hAgo = Math.floor(Date.now() / 1000) - 24 * 60 * 60;
 
@@ -95,7 +113,7 @@ export const usePoolsData = (): { data: PoolData[] | undefined, isLoading: boole
     }
   `;
 
-  const { data, isLoading } = useQuery<any>({
+  const {data, isLoading} = useQuery<any>({
     queryKey: ["pools", page, orderBy, search],
     queryFn: () =>
       request({
@@ -105,30 +123,24 @@ export const usePoolsData = (): { data: PoolData[] | undefined, isLoading: boole
           first: 5,
           after: page === 1 ? null : String((page - 1) * ITEMS_IN_PAGE),
           orderBy,
-          poolWhereInput: { asset0: { symbol_containsInsensitive: search } },
+          poolWhereInput: {asset0: {symbol_containsInsensitive: search}},
         },
       }),
     // enabled: shouldFetch,
   });
 
-  const totalPages = Math.ceil(data?.poolsConnection?.totalCount / ITEMS_IN_PAGE);
+  const totalPages = Math.ceil(
+    data?.poolsConnection?.totalCount / ITEMS_IN_PAGE
+  );
 
-  // console.log({
-  //   data,
-  //   totalPages,
-  //   setPage,
-  //   setOrderBy,
-  //   page,
-  //   orderBy,
-  //   search,
-  //   setSearch,
-  // });
-
-  const dataTransformed = data?.poolsConnection?.edges
-    .map((poolNode: any): PoolData => {
+  const dataTransformed = data?.poolsConnection?.edges.map(
+    (poolNode: any): PoolData => {
       const pool = poolNode.node;
       // const volume24h = pool.snapshots.reduce((acc: number, snapshot: any) => acc + parseFloat(snapshot.volumeUSD), 0);
-      const fees24h = pool.snapshots.reduce((acc: number, snapshot: any) => acc + parseFloat(snapshot.feesUSD), 0);
+      const fees24h = pool.snapshots.reduce(
+        (acc: number, snapshot: any) => acc + parseFloat(snapshot.feesUSD),
+        0
+      );
       const apr = (fees24h / parseFloat(pool.tvlUSD)) * 365 * 100;
 
       return {
@@ -141,25 +153,33 @@ export const usePoolsData = (): { data: PoolData[] | undefined, isLoading: boole
           asset_0_symbol: pool.asset0.symbol as CoinName,
           asset_1_symbol: pool.asset1.symbol as CoinName,
           apr,
-          volume: pool.snapshots.reduce((acc: number, snapshot: any) => acc + parseFloat(snapshot.volumeUSD), 0),
+          volume: pool.snapshots.reduce(
+            (acc: number, snapshot: any) =>
+              acc + parseFloat(snapshot.volumeUSD),
+            0
+          ),
           tvl: parseFloat(pool.tvlUSD),
         },
         swap_count: 0,
         create_time: 0,
       };
-    })
-    .sort((a: PoolData, b: PoolData) => b.details.tvl - a.details.tvl);
+    }
+  );
 
-  return { data: dataTransformed, isLoading, moreInfo: {
-    data,
-    totalPages,
-    setPage,
-    setOrderBy,
-    page,
-    orderBy,
-    search,
-    setSearch,
-  } };
+  return {
+    data: dataTransformed,
+    isLoading,
+    moreInfo: {
+      data,
+      totalPages,
+      setPage,
+      setOrderBy,
+      page,
+      orderBy,
+      search,
+      setSearch,
+    },
+  };
 };
 
 export default usePoolsData;
