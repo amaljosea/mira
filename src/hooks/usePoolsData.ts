@@ -27,7 +27,7 @@ export type PoolData = {
 export type PoolsData = {
   pools: PoolData[];
 };
-const ITEMS_IN_PAGE = 5;
+const ITEMS_IN_PAGE = 10;
 const DEFAULT_ORDER_BY = "tvlUSD_ASC";
 const DEFAULT_PAGE = 1;
 const DEFAULT_SEARCH = "";
@@ -102,7 +102,7 @@ export const usePoolsData = (): { data: PoolData[] | undefined, isLoading: boole
         url: SQDIndexerUrl,
         document: query,
         variables: {
-          first: 5,
+          first: ITEMS_IN_PAGE,
           after: page === 1 ? null : String((page - 1) * ITEMS_IN_PAGE),
           orderBy,
           poolWhereInput: { asset0: { symbol_containsInsensitive: search } },
