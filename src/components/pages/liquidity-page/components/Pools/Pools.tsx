@@ -18,12 +18,12 @@ const Pools = () => {
   const {data, isLoading, moreInfo} = usePoolsData();
 
   const {
-    data: pageInfoData,
+    totalCount,
     totalPages,
-    setPage,
-    setOrderBy,
     page,
+    setPage,
     orderBy,
+    setOrderBy,
     search,
     setSearch,
   } = moreInfo;
@@ -50,18 +50,14 @@ const Pools = () => {
 
   // Handle sorting by toggling ASC/DESC
   const handleSort = (key: string) => {
-    setOrderBy((prev: string) => {
-      const [prevKey, prevDirection] = prev.split("_");
-      const newDirection =
-        prevKey === key && prevDirection === "ASC" ? "DESC" : "ASC";
-      return `${key}_${newDirection}`;
-    });
+    const [prevKey, prevDirection] = orderBy.split("_");
+    const newDirection =
+      prevKey === key && prevDirection === "ASC" ? "DESC" : "ASC";
+    setOrderBy(`${key}_${newDirection}`);
   };
 
   // Render pagination
   const handlePageChange = (page: number) => setPage(page);
-
-  const totalCount = pageInfoData?.poolsConnection?.totalCount || 0;
 
   return (
     <section className={styles.pools}>

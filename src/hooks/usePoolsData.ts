@@ -32,16 +32,30 @@ export type PoolData = {
 export type PoolsData = {
   pools: PoolData[];
 };
+
+export type MoreInfo = {
+  totalCount: number;
+  totalPages: number;
+  page: number;
+  setPage: (page: number) => void;
+  orderBy: string;
+  setOrderBy: (orderBy: string) => void;
+  search: string;
+  setSearch: (search: string) => void;
+};
+
+type Props = {
+  data: PoolData[] | undefined;
+  isLoading: boolean;
+  moreInfo: MoreInfo;
+};
+
 const ITEMS_IN_PAGE = 10;
 const DEFAULT_ORDER_BY = "tvlUSD_ASC";
 const DEFAULT_SEARCH = "";
 export const DEFAULT_PAGE = 1;
 
-export const usePoolsData = (): {
-  data: PoolData[] | undefined;
-  isLoading: boolean;
-  moreInfo: any;
-} => {
+export const usePoolsData = (): Props => {
   const [page, setPage] = useQueryParam(
     "page",
     withDefault(NumberParam, DEFAULT_PAGE)
@@ -161,16 +175,18 @@ export const usePoolsData = (): {
     }
   );
 
+  const totalCount = data?.poolsConnection?.totalCount || 0;
+
   return {
     data: dataTransformed,
     isLoading,
     moreInfo: {
-      data,
+      totalCount,
       totalPages,
-      setPage,
-      setOrderBy,
       page,
+      setPage,
       orderBy,
+      setOrderBy,
       search,
       setSearch,
     },
