@@ -20,12 +20,8 @@ const Pools = () => {
   const {
     totalCount,
     totalPages,
-    page,
-    setPage,
-    orderBy,
-    setOrderBy,
-    search,
-    setSearch,
+    queryVariables: {search, page, orderBy},
+    setQueryVariables,
   } = moreInfo;
 
   const [searchInput, setSearchInput] = useState(search || "");
@@ -38,10 +34,9 @@ const Pools = () => {
 
   // Update search query when debounced value changes
   useEffect(() => {
-    setSearch(debouncedSearchTerm);
+    setQueryVariables({search: debouncedSearchTerm, page: DEFAULT_PAGE});
     // reset page when search text changes
-    setPage(DEFAULT_PAGE);
-  }, [debouncedSearchTerm, setPage, setSearch]);
+  }, [debouncedSearchTerm, setQueryVariables]);
 
   // Handle search input changes
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,14 +45,16 @@ const Pools = () => {
 
   // Handle sorting by toggling ASC/DESC
   const handleSort = (key: string) => {
-    const [prevKey, prevDirection] = orderBy.split("_");
-    const newDirection =
-      prevKey === key && prevDirection === "ASC" ? "DESC" : "ASC";
-    setOrderBy(`${key}_${newDirection}`);
+    setQueryVariables(() => {
+      const [prevKey, prevDirection] = orderBy.split("_");
+      const newDirection =
+        prevKey === key && prevDirection === "ASC" ? "DESC" : "ASC";
+      return {orderBy: `${key}_${newDirection}`};
+    });
   };
 
   // Render pagination
-  const handlePageChange = (page: number) => setPage(page);
+  const handlePageChange = (page: number) => setQueryVariables({page: page});
 
   return (
     <section className={styles.pools}>

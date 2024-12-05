@@ -1,14 +1,11 @@
 import {useQuery} from "@tanstack/react-query";
 import {CoinName} from "@/src/utils/coinsConfig";
-import {ApiBaseUrl, IndexerUrl, SQDIndexerUrl} from "@/src/utils/constants";
-import {createPoolIdFromIdString, isPoolIdValid} from "@/src/utils/common";
+import {SQDIndexerUrl} from "@/src/utils/constants";
 import request, {gql} from "graphql-request";
-import {time} from "console";
-import {useEffect, useState} from "react";
 import {
   NumberParam,
   StringParam,
-  useQueryParam,
+  useQueryParams,
   withDefault,
 } from "use-query-params";
 
@@ -29,10 +26,6 @@ export type PoolData = {
   create_time: number;
 };
 
-export type PoolsData = {
-  pools: PoolData[];
-};
-
 export type MoreInfo = {
   totalCount: number;
   totalPages: number;
@@ -44,30 +37,22 @@ export type MoreInfo = {
   setSearch: (search: string) => void;
 };
 
-type Props = {
-  data: PoolData[] | undefined;
-  isLoading: boolean;
-  moreInfo: MoreInfo;
+export type PoolsData = {
+  pools: PoolData[];
 };
-
-const ITEMS_IN_PAGE = 10;
-const DEFAULT_ORDER_BY = "tvlUSD_ASC";
+const ITEMS_IN_PAGE = 5;
+const DEFAULT_ORDER_BY = "tvlUSD_DESC";
 const DEFAULT_SEARCH = "";
 export const DEFAULT_PAGE = 1;
 
-export const usePoolsData = (): Props => {
-  const [page, setPage] = useQueryParam(
-    "page",
-    withDefault(NumberParam, DEFAULT_PAGE)
-  );
-  const [search, setSearch] = useQueryParam(
-    "search",
-    withDefault(StringParam, DEFAULT_SEARCH)
-  );
-  const [orderBy, setOrderBy] = useQueryParam(
-    "orderBy",
-    withDefault(StringParam, DEFAULT_ORDER_BY)
-  );
+export const usePoolsData = () => {
+  const [queryVariables, setQueryVariables] = useQueryParams({
+    page: withDefault(NumberParam, DEFAULT_PAGE),
+    search: withDefault(StringParam, DEFAULT_SEARCH),
+    orderBy: withDefault(StringParam, DEFAULT_ORDER_BY),
+  });
+
+  const {page, search, orderBy} = queryVariables;
 
   const timestamp24hAgo = Math.floor(Date.now() / 1000) - 24 * 60 * 60;
 
@@ -132,10 +117,16 @@ export const usePoolsData = (): Props => {
           first: ITEMS_IN_PAGE,
           after: page === 1 ? null : String((page - 1) * ITEMS_IN_PAGE),
           orderBy,
-          poolWhereInput: {asset0: {symbol_containsInsensitive: search}},
+          poolWhereInput: {
+            OR: [
+              {asset0: {symbol_containsInsensitive: search}},
+              {asset1: {symbol_containsInsensitive: search}},
+              {asset0: {id_containsInsensitive: search}},
+              {asset1: {id_containsInsensitive: search}},
+            ],
+          },
         },
       }),
-    // enabled: shouldFetch,
   });
 
   const totalPages = Math.ceil(
@@ -183,12 +174,8 @@ export const usePoolsData = (): Props => {
     moreInfo: {
       totalCount,
       totalPages,
-      page,
-      setPage,
-      orderBy,
-      setOrderBy,
-      search,
-      setSearch,
+      setQueryVariables,
+      queryVariables,
     },
   };
 };
