@@ -1,3 +1,5 @@
+import {ArrowLeftIcon} from "../../icons/ArrowLeft/ArrowLeftIcon";
+import {ArrowRightIcon} from "../../icons/ArrowRight/ArrowRightIcon";
 import styles from "./Pagination.module.css";
 
 interface PaginationProps {
@@ -49,7 +51,8 @@ const Pagination = ({
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
       >
-        Previous
+        <ArrowLeftIcon />
+        <span>Previous</span>
       </button>
       {generatePages().map((page, index) => (
         <button
@@ -68,7 +71,8 @@ const Pagination = ({
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
       >
-        Next
+        <ArrowRightIcon />
+        <span>Next</span>
       </button>
     </div>
   );

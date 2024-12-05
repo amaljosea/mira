@@ -66,3 +66,10 @@
 .pagination > p {
   font-size: 14px;
 }
+
+@media (max-width: 1024px) {
+  .pagination {
+    justify-content: center;
+    align-items: center;
+  }
+}
