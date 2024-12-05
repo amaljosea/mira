@@ -22,12 +22,7 @@ const MobilePools = ({ poolsData, orderBy, handleSort }: Props) => {
     <div>
       <div className={clsx(styles.mobilePoolsSort, "mobileOnly")}>
         <p>SORT BY:</p>
-        <SortableColumn
-          title="APR"
-          columnKey="apr"
-          orderBy={orderBy}
-          onSort={handleSort}
-        />
+        <th>APR</th>
         <SortableColumn
           title="24H Volume"
           columnKey="volumeUSD"
