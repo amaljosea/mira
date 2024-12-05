@@ -6,19 +6,20 @@ import usePoolsData from "@/src/hooks/usePoolsData";
 import LoaderV2 from "@/src/components/common/LoaderV2/LoaderV2";
 import ActionButton from "@/src/components/common/ActionButton/ActionButton";
 import clsx from "clsx";
-import { useRouter } from "next/navigation";
-import {useCallback} from "react";
-import { SearchBar } from "@/src/components/common/SearchBar/SearchBar";
+import {useRouter} from "next/navigation";
+import {useCallback, useEffect, useState} from "react";
+import {SearchBar} from "@/src/components/common/SearchBar/SearchBar";
 import Pagination from "@/src/components/common/Pagination/Pagination";
+import {useDebounce} from "@/src/hooks/useDebounce";
 
 const Pools = () => {
   const router = useRouter();
 
   const handleCreatePoolClick = useCallback(() => {
-    router.push('/liquidity/create-pool')
+    router.push("/liquidity/create-pool");
   }, [router]);
 
-  const { data, isLoading, moreInfo } = usePoolsData();
+  const {data, isLoading, moreInfo} = usePoolsData();
 
   const {
     data: pageInfoData,
@@ -27,16 +28,22 @@ const Pools = () => {
     setOrderBy,
     page,
     orderBy,
-    // search,
+    search,
     setSearch,
   } = moreInfo;
   const pageInfo = pageInfoData?.poolsConnection?.pageInfo;
   const totalCount = pageInfoData?.poolsConnection?.totalCount;
 
   console.log(moreInfo);
+  const [searchInput, setSearchInput] = useState(search || "");
+  const debouncedSearchTerm = useDebounce(searchInput, 300);
+
+  useEffect(() => {
+    setSearch(debouncedSearchTerm);
+  }, [debouncedSearchTerm, setSearch]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
+    setSearchInput(e.target.value);
   };
 
   const handleSort = (key: string) => {
@@ -67,6 +74,7 @@ const Pools = () => {
         <SearchBar
           placeholder="Symbol or address..."
           className={styles.poolsSearchBar}
+          value={searchInput}
           onChange={handleSearchChange}
         />
       </div>

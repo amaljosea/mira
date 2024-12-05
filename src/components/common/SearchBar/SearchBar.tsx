@@ -1,13 +1,14 @@
-import { clsx } from "clsx";
+import {clsx} from "clsx";
 import styles from "./searchBar.module.css";
 import SearchIcon from "../../icons/Search/SearchIcon";
-import { SearchBarProps } from "./SearchBarProps";
+import {SearchBarProps} from "./SearchBarProps";
 
 export const SearchBar: React.FC<SearchBarProps> = ({
   placeholder,
   onChange,
   inputRef,
   className,
+  value,
 }) => {
   return (
     <div className={clsx(styles.searchBar, className)}>
@@ -16,6 +17,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         className={styles.searchInput}
         type="text"
         placeholder={placeholder}
+        value={value}
         onChange={onChange}
         ref={inputRef}
       />
