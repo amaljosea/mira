@@ -1,6 +1,6 @@
 import styles from "./DesktopPools.module.css";
-import { useRouter } from "next/navigation";
-import { clsx } from "clsx";
+import {useRouter} from "next/navigation";
+import {clsx} from "clsx";
 import {PoolData} from "@/src/hooks/usePoolsData";
 import DesktopPoolRow from "./DesktopPoolRow";
 import ActionButton from "@/src/components/common/ActionButton/ActionButton";
@@ -13,7 +13,7 @@ type Props = {
   handleSort: (key: string) => void;
 };
 
-const DesktopPools = ({ poolsData, orderBy, handleSort }: Props) => {
+const DesktopPools = ({poolsData, orderBy, handleSort}: Props) => {
   const router = useRouter();
 
   if (!poolsData) {
@@ -25,12 +25,7 @@ const DesktopPools = ({ poolsData, orderBy, handleSort }: Props) => {
       <thead>
         <tr>
           <th>Pools</th>
-          <SortableColumn
-            title="APR"
-            columnKey="apr"
-            orderBy={orderBy}
-            onSort={handleSort}
-          />
+          <th>APR</th>
           <SortableColumn
             title="24H Volume"
             columnKey="volumeUSD"
@@ -53,9 +48,17 @@ const DesktopPools = ({ poolsData, orderBy, handleSort }: Props) => {
         </tr>
       </thead>
       <tbody>
-        {poolsData.map((poolData) => (
-          <DesktopPoolRow key={poolData.id} poolData={poolData} />
-        ))}
+        {poolsData && poolsData.length > 0 ? (
+          poolsData.map((poolData) => (
+            <DesktopPoolRow key={poolData.id} poolData={poolData} />
+          ))
+        ) : (
+          <tr>
+            <td colSpan={5} className={styles.noData}>
+              No pools available
+            </td>
+          </tr>
+        )}
       </tbody>
     </table>
   );

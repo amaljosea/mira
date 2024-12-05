@@ -18,7 +18,7 @@ const Pools = () => {
   const {data, isLoading, moreInfo} = usePoolsData();
 
   const {
-    data: pageInfoData,
+    totalCount,
     totalPages,
     queryVariables: {search, page, orderBy},
     setQueryVariables,
@@ -55,8 +55,6 @@ const Pools = () => {
 
   // Render pagination
   const handlePageChange = (page: number) => setQueryVariables({page: page});
-
-  const totalCount = pageInfoData?.poolsConnection?.totalCount || 0;
 
   return (
     <section className={styles.pools}>
@@ -98,10 +96,10 @@ const Pools = () => {
       )}
 
       {/* Pagination */}
-      {data && (
+      {data && data.length > 0 && (
         <div className={styles.pagination}>
           <p className={clsx("desktopOnly")}>
-            Page {page} of {totalPages}
+            Showing {data.length} out of {totalCount} pools...
           </p>
           <Pagination
             currentPage={page}
