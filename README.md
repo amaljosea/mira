@@ -14,9 +14,9 @@ within the Mira protocol.
 - [TypeScript SDK](https://github.com/mira-amm/mira-v1-ts)
 - [Rust SDK](https://github.com/mira-amm/mira-v1-rs)
 
-# GraphQL Code Generation
+## GraphQL Code Generation
 
-## How `graphql-codegen:watch` Works
+### How `graphql-codegen:watch` Works
 
 The `graphql-codegen:watch` script in the `package.json` file runs the GraphQL Code Generator in watch mode. This means it will automatically regenerate TypeScript types whenever there are changes to GraphQL schema or operations.
 
