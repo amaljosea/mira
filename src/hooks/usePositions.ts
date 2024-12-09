@@ -7,27 +7,20 @@ import {createPoolIdFromIdString} from "../utils/common";
 import {Asset, PoolId} from "mira-dex-ts";
 
 import getPoolPositionsQuery from "@/src/graphql/queries/getPoolPositions.graphql";
+import {Query} from "../generated/graphql";
 
-export interface Position {
-  poolId: PoolId;
-  lpAssetId: string;
-  isStable: boolean;
-  token0Position: Asset;
-  token1Position: Asset;
-}
-
-const usePositions = (): {data: Position[] | undefined; isLoading: boolean} => {
+const usePositions = () => {
   const mira = useReadonlyMira();
   const {balances} = useBalances();
 
   const miraExists = Boolean(mira);
 
-  const {data, isLoading} = useQuery({
+  const {data, isLoading} = useQuery<Query>({
     queryKey: ["positions", balances],
     queryFn: async () => {
       const assetIds = balances?.map((balance) => balance.assetId);
 
-      const result = await request<{pools: any[]}>({
+      const result = await request<Query>({
         url: SQDIndexerUrl,
         document: getPoolPositionsQuery,
         variables: assetIds,
