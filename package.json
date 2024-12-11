@@ -6,9 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "codegen": "graphql-codegen",
-    "codegen:watch": "graphql-codegen --watch"
+    "lint": "next lint"
   },
   "dependencies": {
     "@fuels/connectors": "0.36.0",
@@ -18,7 +16,6 @@
     "fuels": "0.96.1",
     "graphql": "^16.9.0",
     "graphql-request": "^7.1.0",
-    "graphql-tag": "^2.12.6",
     "mira-dex-ts": "^1.0.42",
     "next": "14.2.15",
     "next-query-params": "^5.0.1",
@@ -29,9 +26,6 @@
     "usehooks-ts": "^3.1.0"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "^5.0.3",
-    "@graphql-codegen/typescript": "^4.1.2",
-    "@graphql-tools/webpack-loader": "^7.0.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

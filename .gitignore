@@ -34,9 +34,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-# graphql
-graphql.d.ts
 
 .idea/
-
-
