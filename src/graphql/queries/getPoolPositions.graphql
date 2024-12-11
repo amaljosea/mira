@@ -1,0 +1,15 @@
+query GetPoolPositions($assetIds: [String!]) {
+  pools(where: {lpToken: {id_in: $assetIds}}) {
+    id
+    lpToken {
+      id
+    }
+    asset0 {
+      id
+    }
+    asset1 {
+      id
+    }
+    isStable
+  }
+}

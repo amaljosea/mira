@@ -1,0 +1,8 @@
+query GetPoolAPR($poolId: String!, $time24HoursAgo: Int!) {
+  poolById(id: $poolId) {
+    snapshots(where: {timestamp_gt: $time24HoursAgo}, orderBy: timestamp_ASC) {
+      feesUSD
+    }
+    tvlUSD
+  }
+}
