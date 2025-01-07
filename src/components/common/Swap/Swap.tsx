@@ -33,6 +33,7 @@ import {useAssetPrice} from "@/src/hooks/useAssetPrice";
 import useAssetMetadata from "@/src/hooks/useAssetMetadata";
 import {SlippageSetting} from "../SlippageSetting/SlippageSetting";
 import Loader from "@/src/components/common/Loader/Loader";
+import {ScriptTransactionRequest, TransactionCost} from "fuels";
 
 export type CurrencyBoxMode = "buy" | "sell";
 export type CurrencyBoxState = {
@@ -91,11 +92,15 @@ const Swap = () => {
     useState<InputsState>(initialInputsState);
   const [activeMode, setActiveMode] = useState<CurrencyBoxMode>("sell");
   const [slippage, setSlippage] = useState<number>(DefaultSlippageValue);
+  const [txCostData, setTxCostData] = useState<
+    {tx: ScriptTransactionRequest; txCost: TransactionCost} | undefined
+  >();
   const [txCost, setTxCost] = useState<number | null>(null);
   const [slippageMode, setSlippageMode] = useState<SlippageMode>("auto");
   const [swapButtonTitle, setSwapButtonTitle] = useState<string>("Review");
   const [review, setReview] = useState<boolean>(false);
   const [showInsufficientBalance, setShowInsufficientBalance] = useState(true);
+  const [customErrorTitle, setCustomErrorTitle] = useState<string>("");
 
   const [swapCoins, setSwapCoins] = useLocalStorage("swapCoins", {
     sell: initialSwapState.sell.assetId,
@@ -359,46 +364,25 @@ const Swap = () => {
     review,
   ]);
 
+  //Fetches cost during review button click
   const fetchCost = useCallback(async () => {
     try {
       const txCostData = await fetchTxCost();
+
+      setTxCostData(txCostData);
+
       if (txCostData?.txCost.gasPrice) {
         setTxCost(txCostData.txCost.gasPrice.toNumber() / 10 ** 9);
       }
-    } catch (error) {
+      setCustomErrorTitle("");
+    } catch (e) {
+      setCustomErrorTitle("Review failed, please try again");
       setTxCost(null);
+      setReview(false);
+      setSwapButtonTitle("Review");
+      openFailure();
     }
-  }, [fetchTxCost, setTxCost]);
-
-  //Calculate txCost dynamically
-  /*  useEffect(() => {
-    if (!amountMissing && !coinMissing && isValidNetwork) {
-      const fetchCost = async () => {
-        try {
-          const txCostData = await fetchTxCost();
-          if (txCostData?.txCost.gasPrice) {
-            setTxCost(txCostData.txCost.gasPrice.toNumber() / 10 ** 9);
-          }
-        } catch (error) {
-          setTxCost(null);
-        }
-      };
-      // Debounce the function to prevent excessive calls
-      const debounceFetch = setTimeout(fetchCost, 300);
-
-      return () => clearTimeout(debounceFetch);
-    } else {
-      setTxCost(null);
-    }
-  }, [
-    inputsState,
-    swapState,
-    activeMode,
-    isValidNetwork,
-    fetchTxCost,
-    amountMissing,
-    coinMissing,
-  ]); */
+  }, [fetchTxCost, setTxCost, openFailure]);
 
   const handleSwapClick = useCallback(async () => {
     if (swapButtonTitle === "Review") {
@@ -419,18 +403,14 @@ const Swap = () => {
       }
       swapStateForPreview.current = swapState;
       try {
-        const txCostData = await fetchTxCost();
-
-        if (txCostData?.txCost.gasPrice) {
-          setTxCost(txCostData.txCost.gasPrice.toNumber() / 10 ** 9);
-        }
-
         if (txCostData?.tx) {
           const swapResult = await triggerSwap(txCostData.tx);
           if (swapResult) {
             openSuccess();
             await refetchBalances();
           }
+        } else {
+          openFailure();
         }
       } catch (e) {
         console.error(e);
@@ -623,7 +603,7 @@ const Swap = () => {
               variant="primary"
               disabled={swapDisabled}
               onClick={handleSwapClick}
-              loading={balancesPending || previewLoading}
+              loading={balancesPending || previewLoading || txCostPending}
             >
               {swapButtonTitle}
             </ActionButton>
@@ -660,6 +640,7 @@ const Swap = () => {
         <SwapFailureModal
           error={txCostError || swapError}
           closeModal={closeFailureModal}
+          customTitle={customErrorTitle}
         />
       </FailureModal>
     </>
