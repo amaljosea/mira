@@ -32,6 +32,7 @@ import {useAssetImage} from "@/src/hooks/useAssetImage";
 import {useAssetPrice} from "@/src/hooks/useAssetPrice";
 import useAssetMetadata from "@/src/hooks/useAssetMetadata";
 import {SlippageSetting} from "../SlippageSetting/SlippageSetting";
+import Loader from "@/src/components/common/Loader/Loader";
 
 export type CurrencyBoxMode = "buy" | "sell";
 export type CurrencyBoxState = {
@@ -92,6 +93,9 @@ const Swap = () => {
   const [slippage, setSlippage] = useState<number>(DefaultSlippageValue);
   const [txCost, setTxCost] = useState<number | null>(null);
   const [slippageMode, setSlippageMode] = useState<SlippageMode>("auto");
+  const [swapButtonTitle, setSwapButtonTitle] = useState<string>("Review");
+  const [review, setReview] = useState<boolean>(false);
+  const [showInsufficientBalance, setShowInsufficientBalance] = useState(true);
 
   const [swapCoins, setSwapCoins] = useLocalStorage("swapCoins", {
     sell: initialSwapState.sell.assetId,
@@ -332,38 +336,110 @@ const Swap = () => {
   const amountMissing =
     swapState.buy.amount === "" || swapState.sell.amount === "";
   const sufficientEthBalance = useCheckEthBalance(swapState.sell);
-  const handleSwapClick = useCallback(async () => {
-    if (!sufficientEthBalance) {
-      openNewTab(`${FuelAppUrl}/bridge?from=eth&to=fuel&auto_close=true&=true`);
-      return;
-    }
 
-    if (amountMissing || swapPending) {
-      return;
+  useEffect(() => {
+    if (!isValidNetwork) {
+      setSwapButtonTitle("Incorrect network");
+    } else if (swapPending) {
+      setSwapButtonTitle("Waiting for approval in wallet");
+    } else if (!sufficientEthBalance) {
+      setSwapButtonTitle("Bridge more ETH to pay for gas");
+    } else if (showInsufficientBalance) {
+      setSwapButtonTitle("Insufficient balance");
+    } else if (!review) {
+      setSwapButtonTitle("Review");
+    } else {
+      setSwapButtonTitle("Swap");
     }
+  }, [
+    isValidNetwork,
+    showInsufficientBalance,
+    sufficientEthBalance,
+    swapPending,
+    review,
+  ]);
 
-    swapStateForPreview.current = swapState;
+  const fetchCost = useCallback(async () => {
     try {
       const txCostData = await fetchTxCost();
-
       if (txCostData?.txCost.gasPrice) {
         setTxCost(txCostData.txCost.gasPrice.toNumber() / 10 ** 9);
       }
+    } catch (error) {
+      setTxCost(null);
+    }
+  }, [fetchTxCost, setTxCost]);
 
-      if (txCostData?.tx) {
-        const swapResult = await triggerSwap(txCostData.tx);
-        if (swapResult) {
-          openSuccess();
-          await refetchBalances();
+  //Calculate txCost dynamically
+  /*  useEffect(() => {
+    if (!amountMissing && !coinMissing && isValidNetwork) {
+      const fetchCost = async () => {
+        try {
+          const txCostData = await fetchTxCost();
+          if (txCostData?.txCost.gasPrice) {
+            setTxCost(txCostData.txCost.gasPrice.toNumber() / 10 ** 9);
+          }
+        } catch (error) {
+          setTxCost(null);
         }
+      };
+      // Debounce the function to prevent excessive calls
+      const debounceFetch = setTimeout(fetchCost, 300);
+
+      return () => clearTimeout(debounceFetch);
+    } else {
+      setTxCost(null);
+    }
+  }, [
+    inputsState,
+    swapState,
+    activeMode,
+    isValidNetwork,
+    fetchTxCost,
+    amountMissing,
+    coinMissing,
+  ]); */
+
+  const handleSwapClick = useCallback(async () => {
+    if (swapButtonTitle === "Review") {
+      setReview(true);
+      setSwapButtonTitle("Swap");
+      fetchCost();
+      return;
+    } else {
+      if (!sufficientEthBalance) {
+        openNewTab(
+          `${FuelAppUrl}/bridge?from=eth&to=fuel&auto_close=true&=true`
+        );
+        return;
       }
-    } catch (e) {
-      console.error(e);
-      if (
-        e instanceof Error &&
-        !e.message.includes("User canceled sending transaction")
-      ) {
-        openFailure();
+
+      if (amountMissing || swapPending) {
+        return;
+      }
+      swapStateForPreview.current = swapState;
+      try {
+        const txCostData = await fetchTxCost();
+
+        if (txCostData?.txCost.gasPrice) {
+          setTxCost(txCostData.txCost.gasPrice.toNumber() / 10 ** 9);
+        }
+
+        if (txCostData?.tx) {
+          const swapResult = await triggerSwap(txCostData.tx);
+          if (swapResult) {
+            openSuccess();
+            await refetchBalances();
+          }
+        }
+      } catch (e) {
+        console.error(e);
+        if (
+          e instanceof Error &&
+          !e.message.includes("User canceled sending transaction")
+        ) {
+          openFailure();
+        }
       }
     }
   }, [
@@ -376,26 +452,20 @@ const Swap = () => {
     openSuccess,
     openFailure,
     refetchBalances,
+    swapButtonTitle,
+    fetchCost,
   ]);
 
-  let showInsufficientBalance = true;
-  try {
-    const insufficientSellBalance = sellBalanceValue.lt(
-      bn.parseUnits(sellValue, sellMetadata.decimals || 0)
-    );
-    showInsufficientBalance = insufficientSellBalance && sufficientEthBalance;
-  } catch (e) {}
-
-  let swapButtonTitle = "Swap";
-  if (!isValidNetwork) {
-    swapButtonTitle = "Incorrect network";
-  } else if (swapPending) {
-    swapButtonTitle = "Waiting for approval in wallet";
-  } else if (!sufficientEthBalance) {
-    swapButtonTitle = "Bridge more ETH to pay for gas";
-  } else if (showInsufficientBalance) {
-    swapButtonTitle = "Insufficient balance";
-  }
+  useEffect(() => {
+    try {
+      const insufficientSellBalance = sellBalanceValue.lt(
+        bn.parseUnits(sellValue, sellMetadata.decimals || 0)
+      );
+      setShowInsufficientBalance(
+        insufficientSellBalance && sufficientEthBalance
+      );
+    } catch (e) {}
+  }, [sellValue, sellMetadata, sufficientEthBalance, sellBalanceValue]);
 
   const swapDisabled =
     !isValidNetwork ||
@@ -403,7 +473,8 @@ const Swap = () => {
     showInsufficientBalance ||
     Boolean(previewError) ||
     !sellValue ||
-    !buyValue;
+    !buyValue ||
+    previewLoading;
 
   const exchangeRate = useExchangeRate(swapState);
   const feePercent =
@@ -489,42 +560,55 @@ const Swap = () => {
                 : null
             }
           />
-          {swapPending && (
+          {review && (
             <div className={styles.summary}>
               <div className={styles.summaryEntry}>
                 <p>Rate</p>
-                <p>{exchangeRate}</p>
+                {previewLoading ? <Loader /> : <p>{exchangeRate}</p>}
               </div>
 
               <div className={styles.summaryEntry}>
                 <p>Order routing</p>
                 <div className={styles.feeLine}>
-                  {previewData?.pools.map((pool, index) => {
-                    const poolKey = createPoolKey(pool);
+                  {previewLoading ? (
+                    <Loader />
+                  ) : (
+                    previewData?.pools.map((pool, index) => {
+                      const poolKey = createPoolKey(pool);
 
-                    return (
-                      <div className={styles.poolsFee} key={poolKey}>
-                        <SwapRouteItem pool={pool} />
-                        {index !== previewData.pools.length - 1 && "+"}
-                      </div>
-                    );
-                  })}
+                      return (
+                        <div className={styles.poolsFee} key={poolKey}>
+                          <SwapRouteItem pool={pool} />
+                          {index !== previewData.pools.length - 1 && "+"}
+                        </div>
+                      );
+                    })
+                  )}
                 </div>
               </div>
 
               <div className={styles.summaryEntry}>
                 <p>Estimated fees</p>
-                <p>
-                  {feeValue} {sellMetadata.symbol}
-                </p>
+                {previewLoading ? (
+                  <Loader />
+                ) : (
+                  <p>
+                    {feeValue} {sellMetadata.symbol}
+                  </p>
+                )}
               </div>
 
               <div className={styles.summaryEntry}>
                 <p>Network cost</p>
-                <p>{txCost?.toFixed(9)} ETH</p>
+                {previewLoading || txCostPending ? (
+                  <Loader />
+                ) : (
+                  <p>{txCost?.toFixed(9)} ETH</p>
+                )}
               </div>
             </div>
           )}
+
           {!isConnected && (
             <ActionButton
               variant="secondary"
@@ -539,7 +623,7 @@ const Swap = () => {
               variant="primary"
               disabled={swapDisabled}
               onClick={handleSwapClick}
-              loading={balancesPending || txCostPending}
+              loading={balancesPending || previewLoading}
             >
               {swapButtonTitle}
             </ActionButton>
