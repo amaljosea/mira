@@ -26,7 +26,7 @@ const DesktopPoolRow = ({poolData}: Props) => {
         />
       </td>
       <td className={styles.aprTd}>
-        <AprBadge aprValue={aprValue} small={false} />
+        <AprBadge aprValue={aprValue} small={false} shouldHover={true} />
       </td>
 
       <td>{volumeValue}</td>

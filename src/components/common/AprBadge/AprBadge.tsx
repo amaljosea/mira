@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import styles from "./AprBadge.module.css";
 import WhiteStarIcon from "@/src/components/icons/Stars/WhiteStar";
 import {clsx} from "clsx";
@@ -6,16 +6,37 @@ import {clsx} from "clsx";
 interface AprBadgeProps {
   aprValue: string | null;
   small: boolean;
+  shouldHover?: boolean;
 }
 
-const AprBadge: React.FC<AprBadgeProps> = ({aprValue, small}) => {
+const AprBadge: React.FC<AprBadgeProps> = ({aprValue, small, shouldHover}) => {
   const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    if (small && isHovered) {
+      const handleClickOutside = () => setIsHovered(false);
+
+      document.addEventListener("click", handleClickOutside);
+
+      return () => {
+        document.removeEventListener("click", handleClickOutside);
+      };
+    }
+  }, [small, isHovered]);
+
   const iconWidth = small ? 15 : 20;
   const iconHeight = small ? 15 : 18;
   return (
     <div
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => {
+        if (!small) setIsHovered(true); // Desktop
+      }}
+      onMouseLeave={() => {
+        if (!small) setIsHovered(false); // Desktop
+      }}
+      onClick={() => {
+        if (small) setIsHovered((prev) => !prev); // Mobile
+      }}
       className={clsx(styles.badgeWrapper)}
     >
       <div
@@ -36,8 +57,8 @@ const AprBadge: React.FC<AprBadgeProps> = ({aprValue, small}) => {
           {aprValue}
         </span>
         {/*  UI on hover */}
-        {isHovered && !small && (
-          <div className={styles.hoverUI}>
+        {isHovered && shouldHover && (
+          <div onClick={() => setIsHovered(false)} className={styles.hoverUI}>
             <div className={styles.columns}>
               <div className={styles.row}>
                 <span className={styles.label}>Swap fees</span>

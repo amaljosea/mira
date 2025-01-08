@@ -20,13 +20,12 @@
 .large {
   width: 96px;
   padding: 7px;
-  margin-left: 40px;
+  margin-left: 35px;
 }
 
 .small {
   width: 76px;
   padding: 5px 0;
-  margin-left: 5px;
   height: 26px;
 }
 
