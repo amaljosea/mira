@@ -236,7 +236,7 @@ const AddLiquidityDialog = ({poolId, setPreviewData}: Props) => {
               <Info tooltipText={APRTooltip} tooltipKey="apr" />
               <div className={styles.apr}>
                 <AprBadge
-                  aprValue={aprValue}
+                  aprValue={aprValue ? `${aprValue}%` : "Pending"}
                   small={true}
                   shouldHover={false}
                 />
