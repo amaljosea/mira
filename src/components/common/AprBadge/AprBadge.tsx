@@ -6,10 +6,14 @@ import {clsx} from "clsx";
 interface AprBadgeProps {
   aprValue: string | null;
   small: boolean;
-  leftPos?: boolean;
+  isLeftAligned?: boolean;
 }
 
-const AprBadge: React.FC<AprBadgeProps> = ({aprValue, small, leftPos}) => {
+const AprBadge: React.FC<AprBadgeProps> = ({
+  aprValue,
+  small,
+  isLeftAligned,
+}) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -74,7 +78,8 @@ const AprBadge: React.FC<AprBadgeProps> = ({aprValue, small, leftPos}) => {
         {isHovered && (
           <div
             onClick={() => setIsHovered(false)}
-            className={clsx(styles.hoverUI, leftPos && styles.pos)}
+            className={clsx(styles.hoverUI)}
+            style={{left: isLeftAligned ? 0 : "-160px"}}
           >
             <div className={styles.columns}>
               <div className={styles.row}>
