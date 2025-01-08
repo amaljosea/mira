@@ -238,7 +238,7 @@ const AddLiquidityDialog = ({poolId, setPreviewData}: Props) => {
                 <AprBadge
                   aprValue={aprValue ? `${aprValue}%` : "Pending"}
                   small={true}
-                  shouldHover={false}
+                  leftPos={true}
                 />
               </div>
             </div>
