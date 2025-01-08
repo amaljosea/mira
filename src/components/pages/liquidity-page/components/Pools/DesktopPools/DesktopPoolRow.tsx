@@ -5,6 +5,7 @@ import Link from "next/link";
 import styles from "./DesktopPools.module.css";
 import clsx from "clsx";
 import {PoolData} from "@/src/hooks/usePoolsData";
+import AprBadge from "@/src/components/common/AprBadge/AprBadge";
 
 type Props = {
   poolData: PoolData;
@@ -24,7 +25,10 @@ const DesktopPoolRow = ({poolData}: Props) => {
           withPoolDescription
         />
       </td>
-      <td className={clsx(!aprValue && styles.pending)}>{aprValue}</td>
+      <td>
+        <AprBadge aprValue={aprValue} small={false} />
+      </td>
+
       <td>{volumeValue}</td>
       <td>{tvlValue}</td>
       <td>

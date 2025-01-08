@@ -18,7 +18,7 @@
 .desktopPools th,
 .desktopPools td {
   padding: 16px 24px;
-  overflow: hidden;
+  overflow: visible;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -54,7 +54,7 @@ button.createButton {
 }
 
 .desktopPools th:nth-child(2) {
-  width: 15%; /* Width for the "APR" column */
+  width: 20%; /* Width for the "APR" column */
 }
 
 .desktopPools th:nth-child(3),
