@@ -61,7 +61,8 @@ const Header = ({isHomePage}: Props) => {
           <Logo />
           <div className={clsx("desktopOnly", styles.links)}>
             <Link
-              href="/swap"
+              //TEMPORARY ROUTING SINCE LANDING PAGE IS DISABLED
+              href="/"
               className={clsx(
                 styles.link,
                 pathname.includes("/swap") && styles.activeLink

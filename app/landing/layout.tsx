@@ -1,27 +1,12 @@
 import type {Metadata} from "next";
-import Script from "next/script";
+
 import {ReactNode} from "react";
-import {clsx} from "clsx";
-import {Prompt, Inter} from "next/font/google";
-import localFont from "next/font/local";
 
 import "@/public/css/globals.css";
-import Providers from "@/src/core/providers/Providers";
 
 type Props = Readonly<{
   children: ReactNode;
 }>;
-
-const prompt = Prompt({
-  subsets: ["latin"],
-  weight: "700",
-  variable: "--font-prompt",
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://mira.ly/"),
@@ -49,25 +34,8 @@ export const metadata: Metadata = {
     images: "https://mira.ly/images/preview.png",
   },
 };
-
-const RootLayout = ({children}: Props) => {
-  return (
-    <html lang="en">
-      <head>
-        <link rel="preload" as="image" href="/images/loader.webp" />
-      </head>
-      <body className={clsx(inter.className, inter.variable, prompt.variable)}>
-        <Providers>{children}</Providers>
-      </body>
-      <Script src="https://www.googletagmanager.com/gtag/js?id=G-K113JNM8XN" />
-      <Script id="gtag">{`
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){ dataLayer.push(arguments); }
-      gtag('js', new Date());
-      gtag('config', 'G-K113JNM8XN');
-    `}</Script>
-    </html>
-  );
+const LandingLayout = ({children}: Props) => {
+  return <>{children}</>;
 };
 
-export default RootLayout;
+export default LandingLayout;
