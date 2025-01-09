@@ -6,6 +6,7 @@
   gap: 5px;
   border-radius: 10px;
   position: relative;
+  cursor: pointer;
 }
 
 .badgeIcon {
