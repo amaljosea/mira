@@ -1,8 +1,13 @@
+import { CSSProperties } from 'react';
 import styles from './LoaderV2.module.css';
 
-const LoaderV2 = () => {
+interface LoaderV2Props {
+  style?: CSSProperties;
+}
+
+const LoaderV2: React.FC<LoaderV2Props> = ({ style }) => {
   return (
-    <img src="/images/loader.webp" className={styles.loader} />
+    <img src="/images/loader.webp" className={styles.loader} style={style} />
   );
 }
 

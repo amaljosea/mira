@@ -62,6 +62,7 @@ const PositionView = ({ pool }: Props) => {
     : null;
 
   const [removeLiquidityPercentage, setRemoveLiquidityPercentage] = useState(50);
+  const [isRemoving, setIsRemoving] = useState(false); 
 
   const [assetA, assetB] = assets || [[pool[0], bn(0)], [pool[1], bn(0)]];
 
@@ -90,6 +91,9 @@ const PositionView = ({ pool }: Props) => {
   }, [openRemoveLiquidityModal]);
 
   const handleRemoveLiquidity = useCallback(async () => {
+    if (isRemoving) return;
+
+    setIsRemoving(true);
     try {
       const result = await removeLiquidity();
       if (result) {
@@ -101,8 +105,10 @@ const PositionView = ({ pool }: Props) => {
       console.error(e);
       closeRemoveLiquidityModal();
       openFailureModal();
+    } finally {
+      setIsRemoving(false);
     }
-  }, [removeLiquidity, closeRemoveLiquidityModal, openSuccessModal]);
+  }, [removeLiquidity, closeRemoveLiquidityModal, openSuccessModal, openFailureModal, coinAAmountToWithdrawStr, coinBAmountToWithdrawStr, isRemoving]);
 
   const redirectToLiquidity = useCallback(() => {
     router.push('/liquidity');
@@ -264,6 +270,7 @@ const PositionView = ({ pool }: Props) => {
           setLiquidityValue={setRemoveLiquidityPercentage}
           handleRemoveLiquidity={handleRemoveLiquidity}
           isValidNetwork={isValidNetwork}
+          isLoading={isRemoving}
         />
       </RemoveLiquidityModal>
       <SuccessModal title={<></>} onClose={redirectToLiquidity}>

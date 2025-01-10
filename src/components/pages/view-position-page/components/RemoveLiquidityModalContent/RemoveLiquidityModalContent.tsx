@@ -16,6 +16,7 @@ import {
 import {useDebounceCallback} from "usehooks-ts";
 import useAssetMetadata from '@/src/hooks/useAssetMetadata';
 import { B256Address } from 'fuels';
+import LoaderV2 from '@/src/components/common/LoaderV2/LoaderV2';
 
 type Props = {
   coinA: B256Address;
@@ -30,9 +31,10 @@ type Props = {
   closeModal: VoidFunction;
   handleRemoveLiquidity: VoidFunction;
   isValidNetwork: boolean;
+  isLoading: boolean;
 }
 
-const RemoveLiquidityModalContent = ({coinA, coinB, isStablePool, currentCoinAValue, currentCoinBValue, coinAValueToWithdraw, coinBValueToWithdraw, closeModal, liquidityValue, setLiquidityValue, handleRemoveLiquidity, isValidNetwork }: Props) => {
+const RemoveLiquidityModalContent = ({coinA, coinB, isStablePool, currentCoinAValue, currentCoinBValue, coinAValueToWithdraw, coinBValueToWithdraw, closeModal, liquidityValue, setLiquidityValue, handleRemoveLiquidity, isValidNetwork, isLoading }: Props) => {
   const [displayValue, setDisplayValue] = useState(liquidityValue);
   const coinAMetadata = useAssetMetadata(coinA);
   const coinBMetadata = useAssetMetadata(coinB);
@@ -65,8 +67,6 @@ const RemoveLiquidityModalContent = ({coinA, coinB, isStablePool, currentCoinAVa
   if (!isValidNetwork) {
     buttonTitle = 'Incorrect network';
   }
-
-  const withdrawalDisabled = !isValidNetwork;
 
   return (
     <div className={styles.removeLiquidityContent}>
@@ -130,9 +130,9 @@ const RemoveLiquidityModalContent = ({coinA, coinB, isStablePool, currentCoinAVa
       </div>
       <div className={styles.buttons}>
         <ActionButton onClick={handleRemoveLiquidity}
-                      disabled={withdrawalDisabled}
+                      disabled={isLoading}
         >
-          {buttonTitle}
+          {isLoading ? <LoaderV2 style={{ width: '20px', height: '20px' }} /> : `${buttonTitle}`}
         </ActionButton>
         <ActionButton variant="outlined" onClick={closeModal}>
           Cancel
