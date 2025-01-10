@@ -10,15 +10,19 @@ type Props = {
   children: ReactNode;
 };
 
-const DisclaimerWrapper = ({ children }: Props) => {
-  const { lock, unlock } = useScrollLock({ autoLock: false });
+const DisclaimerWrapper = ({children}: Props) => {
+  const {lock, unlock} = useScrollLock({autoLock: false});
 
-  const { isConnected } = useIsConnected();
-  const { disconnectAsync, isPending: disconnectIsPending  } = useDisconnect();
+  const {isConnected} = useIsConnected();
+  const {disconnectAsync, isPending: disconnectIsPending} = useDisconnect();
 
   // TODO: Change message to the one accepted by API
-  const { signatureData: existingSignatureData, isSignatureLoading, refetchSignature } = useSavedSignatures(DisclaimerMessage);
-  const { sign, signingIsPending } = useSendSignature(DisclaimerMessage);
+  const {
+    signatureData: existingSignatureData,
+    isSignatureLoading,
+    refetchSignature,
+  } = useSavedSignatures(DisclaimerMessage);
+  const {sign, signingIsPending} = useSendSignature(DisclaimerMessage);
 
   const handleConfirmClick = useCallback(async () => {
     await sign();
@@ -29,7 +33,8 @@ const DisclaimerWrapper = ({ children }: Props) => {
     await disconnectAsync();
   }, [disconnectAsync]);
 
-  const showPopup = isConnected && !isSignatureLoading && !existingSignatureData;
+  const showPopup =
+    isConnected && !isSignatureLoading && !existingSignatureData;
 
   useEffect(() => {
     if (showPopup) {
