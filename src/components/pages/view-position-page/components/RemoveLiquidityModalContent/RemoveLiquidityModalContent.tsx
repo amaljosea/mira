@@ -68,6 +68,8 @@ const RemoveLiquidityModalContent = ({coinA, coinB, isStablePool, currentCoinAVa
     buttonTitle = 'Incorrect network';
   }
 
+  const withdrawalDisabled = !isValidNetwork;
+
   return (
     <div className={styles.removeLiquidityContent}>
       <CoinPair firstCoin={coinA} secondCoin={coinB} isStablePool={isStablePool} />
@@ -130,9 +132,9 @@ const RemoveLiquidityModalContent = ({coinA, coinB, isStablePool, currentCoinAVa
       </div>
       <div className={styles.buttons}>
         <ActionButton onClick={handleRemoveLiquidity}
-                      disabled={isLoading}
+                      disabled={withdrawalDisabled || isLoading}
         >
-          {isLoading ? <LoaderV2 style={{ width: '20px', height: '20px' }} /> : `${buttonTitle}`}
+          {withdrawalDisabled || isLoading ? <LoaderV2 style={{ width: '20px', height: '20px' }} /> : `${buttonTitle}`}
         </ActionButton>
         <ActionButton variant="outlined" onClick={closeModal}>
           Cancel
