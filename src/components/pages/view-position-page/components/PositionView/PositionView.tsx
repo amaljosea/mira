@@ -102,7 +102,7 @@ const PositionView = ({ pool }: Props) => {
       closeRemoveLiquidityModal();
       openFailureModal();
     }
-  }, [removeLiquidity, closeRemoveLiquidityModal, openSuccessModal, openFailureModal, coinAAmountToWithdrawStr, coinBAmountToWithdrawStr, isPending]);
+  }, [removeLiquidity, closeRemoveLiquidityModal, openSuccessModal, openFailureModal, coinAAmountToWithdrawStr, coinBAmountToWithdrawStr]);
 
   const redirectToLiquidity = useCallback(() => {
     router.push('/liquidity');
