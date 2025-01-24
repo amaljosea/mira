@@ -423,11 +423,9 @@ const Swap = () => {
       const insufficientSellBalance = sellBalanceValue.lt(
         bn.parseUnits(sellValue, sellMetadata.decimals || 0),
       );
-      setShowInsufficientBalance(
-        insufficientSellBalance && sufficientEthBalance,
-      );
+      setShowInsufficientBalance(insufficientSellBalance);
     } catch (e) {}
-  }, [sellValue, sellMetadata, sufficientEthBalance, sellBalanceValue]);
+  }, [sellValue, sellMetadata, sellBalanceValue]);
 
   const feePercent =
     previewData?.pools.reduce((percent, pool) => {
@@ -458,8 +456,10 @@ const Swap = () => {
       setSwapButtonTitle("Incorrect network");
     } else if (swapPending) {
       setSwapButtonTitle("Waiting for approval in wallet");
-    } else if (!sufficientEthBalance || showInsufficientBalance) {
+    } else if (showInsufficientBalance) {
       setSwapButtonTitle("Insufficient balance");
+    } else if (!sufficientEthBalance && sellMetadata.name !== "Ethereum") {
+      setSwapButtonTitle("Bridge more ETH to pay for gas");
     } else if (!review && !amountMissing) {
       setSwapButtonTitle("Review");
     } else if (amountMissing) {
@@ -472,13 +472,14 @@ const Swap = () => {
     swapPending,
     review,
     amountMissing,
+    sellMetadata.name,
   ]);
 
   useEffect(() => {
-    if (amountMissing) {
+    if (amountMissing || showInsufficientBalance) {
       setReview(false);
     }
-  }, [amountMissing]);
+  }, [amountMissing, showInsufficientBalance]);
 
   const inputPreviewLoading = previewLoading && activeMode === "buy";
   const outputPreviewLoading = previewLoading && activeMode === "sell";
