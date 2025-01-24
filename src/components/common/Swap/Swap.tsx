@@ -449,22 +449,28 @@ const Swap = () => {
     Boolean(previewError) ||
     !sellValue ||
     !buyValue ||
-    previewLoading;
+    previewLoading ||
+    swapButtonTitle === "Input amounts";
 
   useEffect(() => {
+    const swapBtnTemp = swapButtonTitle;
+    setSwapButtonTitle("");
     if (!isValidNetwork) {
       setSwapButtonTitle("Incorrect network");
     } else if (swapPending) {
       setSwapButtonTitle("Waiting for approval in wallet");
     } else if (showInsufficientBalance) {
       setSwapButtonTitle("Insufficient balance");
-    } else if (!sufficientEthBalance && sellMetadata.name !== "Ethereum") {
+    } else if (!sufficientEthBalance) {
       setSwapButtonTitle("Bridge more ETH to pay for gas");
     } else if (!review && !amountMissing) {
       setSwapButtonTitle("Review");
     } else if (amountMissing) {
       setSwapButtonTitle("Input amounts");
+    } else {
+      setSwapButtonTitle(swapBtnTemp);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isValidNetwork,
     showInsufficientBalance,
