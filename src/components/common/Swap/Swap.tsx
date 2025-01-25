@@ -339,7 +339,10 @@ const Swap = () => {
   const coinMissing =
     swapState.buy.assetId === null || swapState.sell.assetId === null;
   const amountMissing =
-    swapState.buy.amount === "" || swapState.sell.amount === "";
+    swapState.buy.amount === "" ||
+    swapState.sell.amount === "" ||
+    Number(swapState.buy.amount) <= 0 ||
+    Number(swapState.sell.amount) <= 0;
   const sufficientEthBalance = useCheckEthBalance(swapState.sell);
   const exchangeRate = useExchangeRate(swapState);
 
@@ -476,11 +479,10 @@ const Swap = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isValidNetwork,
-    showInsufficientBalance,
-    sufficientEthBalance,
-    swapPending,
-    review,
     amountMissing,
+    swapPending,
+    sufficientEthBalance,
+    showInsufficientBalance,
   ]);
 
   useEffect(() => {
@@ -516,6 +518,7 @@ const Swap = () => {
     swapDisabled &&
     !previewLoading &&
     !balancesPending &&
+    !showInsufficientBalance &&
     (txCostPending || amountMissing);
 
   //If amount is missing txCostPending is irrelevant
@@ -523,7 +526,7 @@ const Swap = () => {
   const isActionLoading =
     balancesPending ||
     (previewLoading && swapButtonTitle !== "Insufficient balance") ||
-    (!amountMissing && txCostPending);
+    (!amountMissing && !showInsufficientBalance && txCostPending);
 
   return (
     <>
