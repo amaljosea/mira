@@ -453,23 +453,26 @@ const Swap = () => {
     swapButtonTitle === "Input amounts";
 
   useEffect(() => {
-    const swapBtnTemp = swapButtonTitle;
-    setSwapButtonTitle("");
+    let newSwapButtonTitle = "";
+
     if (!isValidNetwork) {
-      setSwapButtonTitle("Incorrect network");
+      newSwapButtonTitle = "Incorrect network";
     } else if (swapPending) {
-      setSwapButtonTitle("Waiting for approval in wallet");
+      newSwapButtonTitle = "Waiting for approval in wallet";
     } else if (showInsufficientBalance) {
-      setSwapButtonTitle("Insufficient balance");
+      newSwapButtonTitle = "Insufficient balance";
     } else if (!sufficientEthBalance) {
-      setSwapButtonTitle("Bridge more ETH to pay for gas");
+      newSwapButtonTitle = "Bridge more ETH to pay for gas";
     } else if (!review && !amountMissing) {
-      setSwapButtonTitle("Review");
+      newSwapButtonTitle = "Review";
     } else if (amountMissing) {
-      setSwapButtonTitle("Input amounts");
+      newSwapButtonTitle = "Input amounts";
     } else {
-      setSwapButtonTitle(swapBtnTemp);
+      newSwapButtonTitle = swapButtonTitle; // Default to previous title
     }
+
+    setSwapButtonTitle(newSwapButtonTitle);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isValidNetwork,
@@ -478,7 +481,6 @@ const Swap = () => {
     swapPending,
     review,
     amountMissing,
-    sellMetadata.name,
   ]);
 
   useEffect(() => {
