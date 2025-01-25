@@ -34,7 +34,6 @@
 .aprDiv {
   display: flex;
   flex-direction: column;
-  align-items: center;
 }
 
 .title {
@@ -61,7 +60,6 @@
 .subContent {
   display: flex;
   flex-direction: column;
-  align-items: center;
   line-height: 20px;
 }
 
