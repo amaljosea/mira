@@ -70,20 +70,11 @@ const usePositions = (): {data: Position[] | undefined; isLoading: boolean} => {
               lpBalance!.amount.toString(),
             );
 
-          const price1 = result?.pools.find(
-            (pool) => pool.asset0.id === token0Position[0].bits,
-          );
+          const price1 = pool.asset0.price;
+          const price2 = pool.asset1.price;
 
-          const price2 = result?.pools.find(
-            (pool) => pool.asset1.id === token1Position[0].bits,
-          );
-
-          const token0Price = parseFloat(
-            parseFloat(price1?.asset0.price).toFixed(2),
-          );
-          const token1Price = parseFloat(
-            parseFloat(price2?.asset1.price).toFixed(2),
-          );
+          const token0Price = parseFloat(parseFloat(price1).toFixed(2));
+          const token1Price = parseFloat(parseFloat(price2).toFixed(2));
 
           const token0Item = {
             token0Position: token0Position,
