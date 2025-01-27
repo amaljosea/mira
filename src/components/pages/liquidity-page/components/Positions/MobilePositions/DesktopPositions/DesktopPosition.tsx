@@ -40,10 +40,8 @@ export const DesktopPosition = ({
   const coinBAmount = formatUnits(amountB, assetBMetadata.decimals);
 
   const size =
-    amountInUsdA &&
-    amountInUsdB &&
     parseFloat(coinAAmount) * amountInUsdA +
-      parseFloat(coinBAmount) * amountInUsdB;
+    parseFloat(coinBAmount) * amountInUsdB;
 
   const poolId = buildPoolId(assetIdA, assetIdB, isStablePool);
   const poolKey = createPoolKey(poolId);
