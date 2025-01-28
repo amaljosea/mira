@@ -38,7 +38,7 @@ const useExchangeRate = (
     const priceString = rate.toLocaleString(DefaultLocale, {
       minimumFractionDigits: metadata.decimals || 0,
     });
-    return `1 ${metadata.symbol} ≈ ${priceString} ${otherMetadata.symbol}`;
+    return `1 ${metadata.symbol} ≈ ${priceString} ${otherMetadata?.symbol ? otherMetadata.symbol : ""}`;
   }, [
     swapState.buy.amount,
     swapState.sell.amount,
