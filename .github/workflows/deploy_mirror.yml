@@ -8,19 +8,27 @@ jobs:
     # see https://docs.github.com/en/actions/learn-github-actions/expressions#example-matching-an-array-of-strings
     if: contains(fromJSON('["mpoplavkov", "dmihal", "FossilFrank"]'), github.event.sender.login)
     steps:
+      # Step 1: Checkout code
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Step 2: Check formatting with Prettier
+      - name: Check formatting with Prettier
+        run: npx prettier --check .
+
+      # Step 3: Initialize (AWS setup)
       - uses: ./.github/actions/initialize
         with:
           aws_access_key: ${{ secrets.MIRA_AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.MIRA_AWS_SECRET_ACCESS_KEY }}
 
+      # Step 4: Deploy static site to S3 bucket
       - name: Deploy static site to S3 bucket
         env:
           BUCKET_NAME: "mainnet.mira.ly"
         run: aws s3 sync ./out/ s3://${{ env.BUCKET_NAME }} --delete
 
+      # Step 5: Invalidate CloudFront
       - name: Invalidate CloudFront
         uses: chetan/invalidate-cloudfront-action@v2
         env:
