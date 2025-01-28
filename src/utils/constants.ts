@@ -38,7 +38,10 @@ export const EthDecimals = 9 as const;
 export const MinEthValue = 0.0001 as const;
 export const MinEthValueBN = MinEthValue * 10 ** EthDecimals;
 
-export const MAX_U256 = bn("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", 16);
+export const MAX_U256 = bn(
+  "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  16,
+);
 
 export const DefaultLocale = "en-US" as const;
 
