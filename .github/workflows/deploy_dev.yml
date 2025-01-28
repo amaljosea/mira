@@ -10,35 +10,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Step 2: Set up Node.js
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "node"
-
-      # Step 3: Install Prettier only (without saving to package.json)
-      - name: Install Prettier
-        run: npm install --no-save prettier
-
-      # Step 4: Check formatting with Prettier
+      # Step 2: Check formatting with Prettier
       - name: Check formatting with Prettier
-        run: npm run format:check
+        run: npx prettier --check .
 
-      # # Step 5: Initialize (custom action for AWS setup)
-      # - uses: ./.github/actions/initialize
-      #   with:
-      #     aws_access_key: ${{ secrets.MIRA_AWS_ACCESS_KEY_ID }}
-      #     aws_secret_access_key: ${{ secrets.MIRA_AWS_SECRET_ACCESS_KEY }}
+      # Step 3: Initialize (AWS setup)
+      - uses: ./.github/actions/initialize
+        with:
+          aws_access_key: ${{ secrets.MIRA_AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.MIRA_AWS_SECRET_ACCESS_KEY }}
 
-      # # Step 6: Deploy static site to S3 bucket
-      # - name: Deploy static site to S3 bucket
-      #   env:
-      #     BUCKET_NAME: "miraly-dev-website"
-      #   run: aws s3 sync ./out/ s3://${{ env.BUCKET_NAME }} --delete
+      # Step 4: Deploy static site to S3 bucket
+      - name: Deploy static site to S3 bucket
+        env:
+          BUCKET_NAME: "miraly-dev-website"
+        run: aws s3 sync ./out/ s3://${{ env.BUCKET_NAME }} --delete
 
-      # # Step 7: Invalidate CloudFront
-      # - name: Invalidate CloudFront
-      #   uses: chetan/invalidate-cloudfront-action@v2
-      #   env:
-      #     DISTRIBUTION: ${{ secrets.DEV_CLOUD_FRONT_DISTRIBUTION_ID }}
-      #     PATHS: "/*"
+      # Step 5: Invalidate CloudFront
+      - name: Invalidate CloudFront
+        uses: chetan/invalidate-cloudfront-action@v2
+        env:
+          DISTRIBUTION: ${{ secrets.DEV_CLOUD_FRONT_DISTRIBUTION_ID }}
+          PATHS: "/*"
