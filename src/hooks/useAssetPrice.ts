@@ -1,26 +1,23 @@
 import {useQuery} from "@tanstack/react-query";
+import {Contract} from "fuels";
+import {useProvider} from "@fuels/react";
 import {useAssetMinterContract} from "./useAssetMinterContract";
-import useProvider from "./useProvider/useProvider";
 import src7Abi from "@/src/abis/src7-abi.json";
-import {Contract, Provider} from "fuels";
-import {NetworkUrl} from "../utils/constants";
 
 const ETH_ASSET_ID =
   "0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07";
 const NATIVE_BRIDGE_MINTER_CONTRACT =
   "0x4ea6ccef1215d9479f1024dff70fc055ca538215d2c8c348beddffd54583d0e8";
 
-const providerPromise = Provider.create(NetworkUrl);
-
 export const useAssetPrice = (
   assetId: string | null,
 ): {price: number | null; isLoading: boolean} => {
   const {contractId} = useAssetMinterContract(assetId);
+  const {provider} = useProvider();
 
   const {data, isLoading} = useQuery({
     queryKey: ["assetPrice", assetId],
     queryFn: async () => {
-      const provider = await providerPromise;
       const src7Contract = new Contract(
         NATIVE_BRIDGE_MINTER_CONTRACT,
         src7Abi,
