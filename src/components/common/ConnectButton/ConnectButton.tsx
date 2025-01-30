@@ -20,8 +20,8 @@ import {DropDownButtons} from "@/src/utils/DropDownButtons";
 import {CopyNotification} from "../../common/CopyNotification/CopyNotification";
 import {openNewTab} from "@/src/utils/common";
 import TransactionsHistory from "@/src/components/common/TransactionsHistory/TransactionsHistory";
-import {FuelAppUrl} from "@/src/utils/constants";
 import {useScrollLock} from "usehooks-ts";
+import useAppUrl from "@/src/hooks/useAppUrl";
 
 type Props = {
   className?: string;
@@ -34,6 +34,8 @@ const ConnectButton = ({className}: Props) => {
   const {account} = useAccount();
 
   const {lock, unlock} = useScrollLock({autoLock: false});
+
+  const appUrl = useAppUrl();
 
   // TODO: Hack to avoid empty button when account is changed to the not connected one in wallet
   // It is not reproducible on Fuelet, but on Fuel wallet
@@ -135,9 +137,9 @@ const ConnectButton = ({className}: Props) => {
     }
   }, [account, isConnected]);
 
-  const handleExplorerClick = () => {
-    openNewTab(`${FuelAppUrl}/account/${account}/transactions`);
-  };
+  const handleExplorerClick = useCallback(() => {
+    openNewTab(`${appUrl}/account/${account}/transactions`);
+  }, [appUrl, account]);
 
   const handleHistoryOpen = () => {
     setHistoryOpened(true);

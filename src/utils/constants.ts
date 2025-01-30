@@ -41,7 +41,13 @@ export const SQDIndexerUrl =
   "https://mira-dex.squids.live/mira-indexer@v2/api/graphql" as const;
 export const ApiBaseUrl = "https://prod.api.mira.ly" as const;
 
-export const FuelAppUrl = "https://app.fuel.network" as const;
+const FuelAppUrlMainnet = "https://app.fuel.network" as const;
+const FuelAppUrlTestnet = "https://app-testnet.fuel.network/" as const;
+
+export const FUEL_APP_URL_MAP: ReadonlyMap<number, string> = new Map([
+  [CHAIN_IDS.fuel.mainnet, FuelAppUrlMainnet],
+  [CHAIN_IDS.fuel.testnet, FuelAppUrlTestnet],
+]);
 
 export const EthDecimals = 9 as const;
 export const MinEthValue = 0.0001 as const;
