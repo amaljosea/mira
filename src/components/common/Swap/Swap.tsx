@@ -79,6 +79,55 @@ function SwapRouteItem({pool}: {pool: PoolId}) {
   );
 }
 
+const SWAP_STATES = {
+  INCORRECT_NETWORK: {buttonText: "Incorrect network", disabled: true},
+  WAITING_FOR_APPROVAL: {
+    buttonText: "Waiting for approval in wallet",
+    disabled: true,
+  },
+  INSUFFICIENT_BALANCE: {
+    buttonText: "Insufficient balance",
+    disabled: true,
+  },
+  INSUFFICIENT_ETH_BALANCE: {
+    buttonText: "Bridge more ETH to pay for gas",
+    disabled: false,
+  },
+  REVIEW: {buttonText: "Review", disabled: false},
+  INPUT_AMOUNTS: {buttonText: "Input amounts", disabled: true},
+  SWAP: {buttonText: "Swap", disabled: false},
+};
+
+const getSwapButtonState = ({
+  isValidNetwork,
+  swapPending,
+  showInsufficientBalance,
+  sufficientEthBalance,
+  review,
+  amountMissing,
+}: {
+  isValidNetwork: boolean;
+  swapPending: boolean;
+  showInsufficientBalance: boolean;
+  sufficientEthBalance: boolean;
+  review: boolean;
+  amountMissing: boolean;
+}) => {
+  if (!isValidNetwork) {
+    return SWAP_STATES.INCORRECT_NETWORK;
+  } else if (swapPending) {
+    return SWAP_STATES.WAITING_FOR_APPROVAL;
+  } else if (showInsufficientBalance) {
+    return SWAP_STATES.INSUFFICIENT_BALANCE;
+  } else if (!sufficientEthBalance) {
+    return SWAP_STATES.INSUFFICIENT_ETH_BALANCE;
+  } else if (!review && !amountMissing) {
+    return SWAP_STATES.REVIEW;
+  } else if (amountMissing) {
+    return SWAP_STATES.INPUT_AMOUNTS;
+  }
+  return SWAP_STATES.SWAP;
+};
 const Swap = () => {
   const [SettingsModal, openSettingsModal, closeSettingsModal] = useModal();
   const [CoinsModal, openCoinsModal, closeCoinsModal] = useModal();
@@ -347,7 +396,7 @@ const Swap = () => {
     swapState.sell.amount === "" ||
     Number(swapState.buy.amount) <= 0 ||
     Number(swapState.sell.amount) <= 0;
-  const sufficientEthBalance = useCheckEthBalance(swapState.sell);
+  const sufficientEthBalance = true;
   const exchangeRate = useExchangeRate(swapState);
 
   //Fetches cost during review button click
@@ -430,9 +479,12 @@ const Swap = () => {
       const insufficientSellBalance = sellBalanceValue.lt(
         bn.parseUnits(sellValue, sellMetadata.decimals || 0),
       );
+
       setShowInsufficientBalance(insufficientSellBalance);
     } catch (e) {}
   }, [sellValue, sellMetadata, sellBalanceValue]);
+
+  console.log({showInsufficientBalance});
 
   const feePercent =
     previewData?.pools.reduce((percent, pool) => {
@@ -449,45 +501,14 @@ const Swap = () => {
           sellMetadata.decimals || 0,
         );
 
-  const swapDisabled =
-    !isValidNetwork ||
-    coinMissing ||
-    showInsufficientBalance ||
-    Boolean(previewError) ||
-    !sellValue ||
-    !buyValue ||
-    previewLoading ||
-    swapButtonTitle === "Input amounts";
-
-  useEffect(() => {
-    let newSwapButtonTitle = "";
-
-    if (!isValidNetwork) {
-      newSwapButtonTitle = "Incorrect network";
-    } else if (swapPending) {
-      newSwapButtonTitle = "Waiting for approval in wallet";
-    } else if (showInsufficientBalance) {
-      newSwapButtonTitle = "Insufficient balance";
-    } else if (!sufficientEthBalance) {
-      newSwapButtonTitle = "Bridge more ETH to pay for gas";
-    } else if (!review && !amountMissing) {
-      newSwapButtonTitle = "Review";
-    } else if (amountMissing) {
-      newSwapButtonTitle = "Input amounts";
-    } else {
-      newSwapButtonTitle = swapButtonTitle; // Default to previous title
-    }
-
-    setSwapButtonTitle(newSwapButtonTitle);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
+  const swapButtonState = getSwapButtonState({
     isValidNetwork,
-    amountMissing,
     swapPending,
-    sufficientEthBalance,
     showInsufficientBalance,
-  ]);
+    sufficientEthBalance,
+    review,
+    amountMissing,
+  });
 
   useEffect(() => {
     if (amountMissing || showInsufficientBalance) {
@@ -517,13 +538,6 @@ const Swap = () => {
 
   const sellAssetPrice = useAssetPrice(swapState.sell.assetId);
   const buyAssetPrice = useAssetPrice(swapState.buy.assetId);
-
-  const isActionDisabled =
-    swapDisabled &&
-    !previewLoading &&
-    !balancesPending &&
-    !showInsufficientBalance &&
-    (txCostPending || amountMissing);
 
   //If amount is missing txCostPending is irrelevant
   //If in sufficient fund, previewLoading is irrelevant
@@ -646,11 +660,11 @@ const Swap = () => {
           {isConnected && (
             <ActionButton
               variant="primary"
-              disabled={!sufficientEthBalance ? false : isActionDisabled}
+              disabled={swapButtonState?.disabled}
               onClick={handleSwapClick}
               loading={isActionLoading}
             >
-              {swapButtonTitle}
+              {swapButtonState?.buttonText}
             </ActionButton>
           )}
         </div>
