@@ -5,7 +5,6 @@ import {ChangeEvent, memo, useEffect, useMemo, useRef, useState} from "react";
 import styles from "./CoinsListModal.module.css";
 import {BN, CoinQuantity} from "fuels";
 import {useAssetList} from "@/src/hooks/useAssetList";
-import UnknownCoinListItem from "../UnknownCoinListItem";
 import {useQuery} from "@tanstack/react-query";
 import {VerifiedAssets} from "../CoinListItem/checkIfCoinVerified";
 import EmptySearchResults from "../EmptySearchResults";
@@ -125,17 +124,7 @@ const CoinsListModal = ({selectCoin, balances, verifiedAssetsOnly}: Props) => {
       </div>
       <div className={styles.tokenList}>
         {sortedCoinsList.length === 0 && value !== "" && (
-          <>
-            {assetIdRegex.test(value) ? (
-              <UnknownCoinListItem
-                assetId={value}
-                balance={balances?.find((b) => b.assetId === value)}
-                onClick={() => selectCoin(value)}
-              />
-            ) : (
-              <EmptySearchResults value={value} />
-            )}
-          </>
+          <EmptySearchResults value={value} />
         )}
         {sortedCoinsList.map(({assetId, name, symbol, decimals, icon}) => {
           const metadata = {

@@ -48,8 +48,6 @@ const CoinListItem = ({assetId, balance, metadata}: Props) => {
         width={32}
         height={32}
         quality={80}
-        placeholder="blur"
-        blurDataURL={defaultImage.src}
       />
 
       <div className={styles.names}>
