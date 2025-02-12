@@ -14,16 +14,3 @@
   border: none;
   color: var(--content-primary);
 }
-
-.tokenList {
-}
-
-.tokenListItem {
-  padding: 8px 16px;
-  border-radius: 8px;
-}
-
-.tokenListItem:hover {
-  background-color: var(--background-grey-dark);
-  cursor: pointer;
-}

@@ -126,23 +126,16 @@ const CoinsListModal = ({selectCoin, balances, verifiedAssetsOnly}: Props) => {
         {sortedCoinsList.length === 0 && value !== "" && (
           <EmptySearchResults value={value} />
         )}
-        {sortedCoinsList.map(({assetId, name, symbol, decimals, icon}) => {
-          const metadata = {
-            name: name ?? "",
-            symbol: symbol ?? "",
-            decimals: decimals ?? 0,
-            icon: icon || null,
-          };
+        {sortedCoinsList.map(({assetId}) => {
           return (
-            <div
-              className={styles.tokenListItem}
-              onClick={() => selectCoin(assetId)}
-              key={assetId}
-            >
+            <div onClick={() => selectCoin(assetId)} key={assetId}>
               <CoinListItem
                 assetId={assetId}
                 balance={balances?.find((b) => b.assetId === assetId)}
-                metadata={metadata}
+                icon={
+                  sortedCoinsList?.find((asset) => asset.assetId === assetId)
+                    ?.icon
+                }
               />
             </div>
           );

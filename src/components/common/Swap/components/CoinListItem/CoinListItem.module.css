@@ -72,3 +72,23 @@
     border-radius: 100%;
   }
 }
+
+.tokenListItem {
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.tokenListItem:hover {
+  background-color: var(--background-grey-dark);
+  cursor: pointer;
+}
+
+.disableHover:hover {
+  background-color: transparent;
+  cursor: default;
+}
+
+.zeroPadding {
+  padding: 8px 0px;
+}
