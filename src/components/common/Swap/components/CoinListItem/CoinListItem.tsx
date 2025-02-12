@@ -9,6 +9,7 @@ import {checkIfCoinVerified} from "./checkIfCoinVerified";
 import "react-tooltip/dist/react-tooltip.css";
 import {Tooltip} from "react-tooltip";
 import defaultImage from "@/assets/unknown-asset.svg";
+import Image from "next/image";
 
 type Metadata = {
   name: string;
@@ -31,8 +32,8 @@ const CoinListItem = ({assetId, balance, metadata}: Props) => {
 
   const isVerified = verifiedAssetData
     ? checkIfCoinVerified({
-        symbol: symbol,
-        assetId: assetId,
+        symbol,
+        assetId,
         verifiedAssetData,
       })
     : false;
@@ -40,7 +41,16 @@ const CoinListItem = ({assetId, balance, metadata}: Props) => {
   return (
     <span className={clsx(styles.coin, !name && styles.centered)}>
       <Tooltip id="verified-tooltip" />
-      <img src={assetIcon} alt={`${name} icon`} />
+
+      <Image
+        src={assetIcon}
+        alt={`${name} icon`}
+        width={32}
+        height={32}
+        quality={80}
+        placeholder="blur"
+        blurDataURL={defaultImage.src}
+      />
 
       <div className={styles.names}>
         <div className={styles.name_container}>
@@ -56,6 +66,7 @@ const CoinListItem = ({assetId, balance, metadata}: Props) => {
         </div>
         <p className={styles.fullName}>{name}</p>
       </div>
+
       {balanceValue.gt(0) && (
         <p className={styles.balance}>
           {balanceValue.formatUnits(decimals || 0)}
