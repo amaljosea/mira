@@ -3,39 +3,48 @@ import {clsx} from "clsx";
 import {BN, CoinQuantity} from "fuels";
 
 import styles from "./CoinListItem.module.css";
-import {useAssetImage} from "@/src/hooks/useAssetImage";
-import useAssetMetadata from "@/src/hooks/useAssetMetadata";
+import {useVerifiedAssets} from "@/src/hooks/useVerifiedAssets";
 import SuccessIcon from "@/src/components/icons/Success/SuccessIcon";
 import {checkIfCoinVerified} from "./checkIfCoinVerified";
 import "react-tooltip/dist/react-tooltip.css";
 import {Tooltip} from "react-tooltip";
-import {useVerifiedAssets} from "@/src/hooks/useVerifiedAssets";
+import defaultImage from "@/assets/unknown-asset.svg";
+
+type Metadata = {
+  name: string;
+  symbol: string;
+  decimals: number;
+  icon: string | null;
+};
 
 type Props = {
   assetId: string;
   balance?: CoinQuantity | undefined;
+  metadata: Metadata;
 };
 
-const CoinListItem = ({assetId, balance}: Props) => {
+const CoinListItem = ({assetId, balance, metadata}: Props) => {
   const verifiedAssetData = useVerifiedAssets();
-  const metadata = useAssetMetadata(assetId);
   const balanceValue = balance?.amount ?? new BN(0);
-  const icon = useAssetImage(assetId);
+  const {name, symbol, decimals, icon} = metadata;
+  const assetIcon = icon || defaultImage.src;
+
   const isVerified = verifiedAssetData
     ? checkIfCoinVerified({
-        symbol: metadata.symbol,
+        symbol: symbol,
         assetId: assetId,
         verifiedAssetData,
       })
     : false;
 
   return (
-    <span className={clsx(styles.coin, !metadata.name && styles.centered)}>
+    <span className={clsx(styles.coin, !name && styles.centered)}>
       <Tooltip id="verified-tooltip" />
-      {icon && <img src={icon} alt={`${metadata.name} icon`} />}
+      <img src={assetIcon} alt={`${name} icon`} />
+
       <div className={styles.names}>
         <div className={styles.name_container}>
-          <p className={styles.name}>{metadata.symbol}</p>
+          <p className={styles.name}>{symbol}</p>
           {isVerified && (
             <span
               data-tooltip-id="verified-tooltip"
@@ -45,11 +54,11 @@ const CoinListItem = ({assetId, balance}: Props) => {
             </span>
           )}
         </div>
-        <p className={styles.fullName}>{metadata.name}</p>
+        <p className={styles.fullName}>{name}</p>
       </div>
       {balanceValue.gt(0) && (
         <p className={styles.balance}>
-          {balanceValue.formatUnits(metadata.decimals || 0)}
+          {balanceValue.formatUnits(decimals || 0)}
         </p>
       )}
     </span>
