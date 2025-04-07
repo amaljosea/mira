@@ -13,11 +13,6 @@ const SwapPageLayout = () => {
   const [dinoPosition, setDinoPosition] = useState("50vw");
   const [showRainbow, setShowRainbow] = useState(false);
 
-  const handleRainbowClick = () => {
-    setShowRainbow(true);
-    setTimeout(() => setShowRainbow(false), 5000);
-  };
-
   const handleDinoClick = () => {
     const randomLeft = Math.floor(Math.random() * 80) + 10;
     setDinoPosition(`${randomLeft}vw`);
@@ -28,16 +23,13 @@ const SwapPageLayout = () => {
     }, 3000);
   };
 
-  const RainbowPortal = () => {
-    return (
-      <div className={styles.container}>
-        <div className={`${styles.rainbowColor} ${styles.rainbowColor1}`}></div>
-        <div className={`${styles.rainbowColor} ${styles.rainbowColor2}`}></div>
-        <div className={`${styles.rainbowColor} ${styles.rainbowColor3}`}></div>
-        <div className={`${styles.rainbowColor} ${styles.rainbowColor4}`}></div>
-        <div className={`${styles.rainbowColor} ${styles.rainbowColor5}`}></div>
-      </div>
-    );
+  const handleRainbowClick = () => {
+    setShowRainbow(true);
+
+    // Remove the rainbow after fade-out animation completes
+    setTimeout(() => {
+      setShowRainbow(false);
+    }, 5000);
   };
 
   return (
@@ -58,8 +50,30 @@ const SwapPageLayout = () => {
           className={clsx(styles.dino, {[styles.visible]: showDino})}
           style={{left: dinoPosition, width: "190px", height: "170px"}}
         />
-        {showRainbow && <RainbowPortal />}
+        {showRainbow && (
+          <>
+            <div className={styles.rainbowContainer}>
+              <div
+                className={`${styles.rainbowColor} ${styles.rainbowColor1}`}
+              ></div>
+              <div
+                className={`${styles.rainbowColor} ${styles.rainbowColor2}`}
+              ></div>
+              <div
+                className={`${styles.rainbowColor} ${styles.rainbowColor3}`}
+              ></div>
+              <div
+                className={`${styles.rainbowColor} ${styles.rainbowColor4}`}
+              ></div>
+              <div
+                className={`${styles.rainbowColor} ${styles.rainbowColor5}`}
+              ></div>
+            </div>
+            <div className={styles.hainText}>HAIN</div>
+          </>
+        )}
       </main>
+
       <Footer />
     </div>
   );

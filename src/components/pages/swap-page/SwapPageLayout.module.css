@@ -68,83 +68,137 @@
   opacity: 1;
 }
 
-.container {
-  position: fixed;
+/* Rainbow overlay with VHS grain effect */
+.rainbowContainer {
+  position: relative;
+  top: 40%;
   left: 50%;
-  top: 20%;
-  transform: translateX(-50%);
-  width: 100vw; /* full screen width */
-  height: 200px; /* controls arc size */
-  z-index: 999;
+  width: 600px;
+  height: 34em;
+  transform: translate(-50%, -100%);
+  z-index: 9999;
   pointer-events: none;
 }
 
+/* Common rainbow arc style */
 .rainbowColor {
+  background-color: transparent;
+  opacity: 0;
   position: absolute;
+  transform: translate(100%, 100%);
   left: 50%;
-  transform: translateX(-50%);
-  transform-origin: bottom center;
-  animation: appear 1.5s ease forwards;
+  transform-origin: 50% 0;
+  animation: spin 5s ease-in forwards;
+
+  animation-fill-mode: forwards;
 }
 
-@keyframes appear {
-  from {
-    transform: translateX(-50%) rotateX(90deg);
+@keyframes spin {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
     opacity: 0;
   }
-  to {
-    transform: translateX(-50%) rotateX(0deg);
+  20% {
+    transform: translate(-50%, -50%) rotate(90deg);
+    opacity: 0;
+  }
+  40% {
+    transform: translate(-50%, -50%) rotate(135deg);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(-50%, -50%) rotate(180deg);
     opacity: 1;
+  }
+  70% {
+    transform: translate(-50%, -50%) rotate(180deg);
+    opacity: 1;
+  }
+  80% {
+    transform: translate(-50%, -50%) rotate(180deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(180deg);
+    opacity: 0;
   }
 }
 
-/* Rainbow bands */
 .rainbowColor1 {
-  height: 300px;
-  width: 80vw;
-  border: 20px solid #fd004c;
+  height: 21.25em;
+  width: 42.5em;
+  border: 1.25em solid #fd004c;
   border-top: none;
-  top: 0;
-  border-radius: 0 0 50% 50%;
-  z-index: 5;
+  top: calc(50% + 5.62em);
+  border-radius: 0 0 23.25em 23.25em;
+  animation-delay: 0.8s;
 }
-
 .rainbowColor2 {
-  height: 270px;
-  width: 75vw;
-  border: 20px solid #fe9000;
+  height: 20em;
+  width: 40em;
+  border: 1.25em solid #fe9000;
   border-top: none;
-  top: 15px;
-  border-radius: 0 0 50% 50%;
-  z-index: 4;
+  top: calc(50% + 5em);
+  border-radius: 0 0 20em 20em;
+  animation-delay: 0.6s;
 }
-
 .rainbowColor3 {
-  height: 240px;
-  width: 70vw;
-  border: 20px solid #fff020;
+  height: 18.75em;
+  width: 37.5em;
+  border: 1.25em solid #fff020;
   border-top: none;
-  top: 30px;
-  border-radius: 0 0 50% 50%;
-  z-index: 3;
+  top: calc(50% + 4.37em);
+  border-radius: 0 0 18.75em 18.75em;
+  animation-delay: 0.4s;
 }
-
 .rainbowColor4 {
-  height: 210px;
-  width: 65vw;
-  border: 20px solid #3edf4b;
+  height: 17.5em;
+  width: 35em;
+  border: 1.25em solid #3edf4b;
   border-top: none;
-  top: 45px;
-  border-radius: 0 0 50% 50%;
-  z-index: 2;
+  top: calc(50% + 3.75em);
+  border-radius: 0 0 17.5em 17.5em;
+  animation-delay: 0.2s;
+}
+.rainbowColor5 {
+  height: 16.25em;
+  width: 32.5em;
+  border: 1.25em solid #3363ff;
+  border-top: none;
+  top: calc(50% + 3.12em);
+  border-radius: 0 0 16.25em 16.25em;
 }
 
-.rainbowColor5 {
-  height: 180px;
-  width: 60vw;
-  border: 20px solid #3363ff;
-  border-top: none;
-  top: 60px;
-  border-radius: 0 0 50% 50%;
-  z-index: 1;
+/* HAIN animated text */
+.hainText {
+  position: fixed;
+  bottom: 40px;
+  width: 100%;
+  text-align: center;
+  font-size: 3rem;
+  font-weight: bold;
+  color: white;
+  text-shadow:
+    0 0 5px #ff00ff,
+    0 0 15px #00ffff;
+  animation: hainPop 2s ease-in-out forwards;
+  z-index: 10000;
+}
+
+@keyframes hainPop {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  30% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
 }
