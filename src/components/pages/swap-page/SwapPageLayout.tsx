@@ -24,12 +24,42 @@ const SwapPageLayout = () => {
   };
 
   const handleRainbowClick = () => {
+    if (showRainbow) {
+      return;
+    }
     setShowRainbow(true);
-
     // Remove the rainbow after fade-out animation completes
     setTimeout(() => {
       setShowRainbow(false);
-    }, 5000);
+    }, 10000);
+  };
+
+  const Rainbow = () => {
+    return (
+      <>
+        <div className={styles.rainbowContainer}>
+          <div
+            className={`${styles.rainbowColor} ${styles.rainbowColor1}`}
+          ></div>
+          <div
+            className={`${styles.rainbowColor} ${styles.rainbowColor2}`}
+          ></div>
+          <div
+            className={`${styles.rainbowColor} ${styles.rainbowColor3}`}
+          ></div>
+          <div
+            className={`${styles.rainbowColor} ${styles.rainbowColor4}`}
+          ></div>
+          <div
+            className={`${styles.rainbowColor} ${styles.rainbowColor5}`}
+          ></div>
+        </div>
+        <div className={styles.hainText}>
+          Easy there, Gordon Gecko. If you keep switching these prices, the
+          market will tank.
+        </div>
+      </>
+    );
   };
 
   return (
@@ -43,35 +73,13 @@ const SwapPageLayout = () => {
         <button onClick={handleRainbowClick} className={styles.rainbowButton}>
           🌈 Unleash Rainbow
         </button>
-
+        {showRainbow && <Rainbow />}
         <img
           src={dino.src}
           alt="Derek Dino"
           className={clsx(styles.dino, {[styles.visible]: showDino})}
           style={{left: dinoPosition, width: "190px", height: "170px"}}
         />
-        {showRainbow && (
-          <>
-            <div className={styles.rainbowContainer}>
-              <div
-                className={`${styles.rainbowColor} ${styles.rainbowColor1}`}
-              ></div>
-              <div
-                className={`${styles.rainbowColor} ${styles.rainbowColor2}`}
-              ></div>
-              <div
-                className={`${styles.rainbowColor} ${styles.rainbowColor3}`}
-              ></div>
-              <div
-                className={`${styles.rainbowColor} ${styles.rainbowColor4}`}
-              ></div>
-              <div
-                className={`${styles.rainbowColor} ${styles.rainbowColor5}`}
-              ></div>
-            </div>
-            <div className={styles.hainText}>HAIN</div>
-          </>
-        )}
       </main>
 
       <Footer />
