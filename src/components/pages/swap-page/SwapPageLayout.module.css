@@ -15,3 +15,136 @@
     padding: 84px 16px 48px;
   }
 }
+
+/* Dino animation */
+
+.dinoButton {
+  position: fixed;
+  width: 220px;
+  height: 50px;
+  bottom: 80px;
+  right: 80px;
+  padding: 10px 20px;
+  background-color: purple;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.rainbowButton {
+  position: fixed;
+  width: 220px;
+  height: 50px;
+  bottom: 80px;
+  right: 320px;
+  padding: 10px 20px;
+  background-color: purple;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.dino {
+  position: fixed;
+  bottom: -100px;
+  width: 80px;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.4s ease-out,
+    opacity 0.4s ease-out;
+  z-index: 999;
+  transform-origin: bottom left;
+}
+
+.visible {
+  transform: rotate(-40deg) translateY(-30vh);
+  opacity: 1;
+}
+
+.container {
+  position: fixed;
+  left: 50%;
+  top: 20%;
+  transform: translateX(-50%);
+  width: 100vw; /* full screen width */
+  height: 200px; /* controls arc size */
+  z-index: 999;
+  pointer-events: none;
+}
+
+.rainbowColor {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  transform-origin: bottom center;
+  animation: appear 1.5s ease forwards;
+}
+
+@keyframes appear {
+  from {
+    transform: translateX(-50%) rotateX(90deg);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) rotateX(0deg);
+    opacity: 1;
+  }
+}
+
+/* Rainbow bands */
+.rainbowColor1 {
+  height: 300px;
+  width: 80vw;
+  border: 20px solid #fd004c;
+  border-top: none;
+  top: 0;
+  border-radius: 0 0 50% 50%;
+  z-index: 5;
+}
+
+.rainbowColor2 {
+  height: 270px;
+  width: 75vw;
+  border: 20px solid #fe9000;
+  border-top: none;
+  top: 15px;
+  border-radius: 0 0 50% 50%;
+  z-index: 4;
+}
+
+.rainbowColor3 {
+  height: 240px;
+  width: 70vw;
+  border: 20px solid #fff020;
+  border-top: none;
+  top: 30px;
+  border-radius: 0 0 50% 50%;
+  z-index: 3;
+}
+
+.rainbowColor4 {
+  height: 210px;
+  width: 65vw;
+  border: 20px solid #3edf4b;
+  border-top: none;
+  top: 45px;
+  border-radius: 0 0 50% 50%;
+  z-index: 2;
+}
+
+.rainbowColor5 {
+  height: 180px;
+  width: 60vw;
+  border: 20px solid #3363ff;
+  border-top: none;
+  top: 60px;
+  border-radius: 0 0 50% 50%;
+  z-index: 1;
+}
