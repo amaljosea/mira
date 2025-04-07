@@ -77,7 +77,7 @@
   width: 600px;
   height: 34em;
   transform: translate(-50%, -100%);
-  z-index: 9999;
+  z-index: 999;
   pointer-events: none;
 }
 
