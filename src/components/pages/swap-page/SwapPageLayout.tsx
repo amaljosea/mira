@@ -28,7 +28,7 @@ const SwapPageLayout = () => {
     // Remove the rainbow after fade-out animation completes
     setTimeout(() => {
       setShowRainbow(false);
-    }, 10000);
+    }, 5000);
   };
 
   const Rainbow = () => {
