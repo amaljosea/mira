@@ -10,12 +10,9 @@ import clsx from "clsx";
 
 const SwapPageLayout = () => {
   const [showDino, setShowDino] = useState(false);
-  const [dinoPosition, setDinoPosition] = useState("50vw");
   const [showRainbow, setShowRainbow] = useState(false);
 
   const handleDinoClick = () => {
-    const randomLeft = Math.floor(Math.random() * 80) + 10;
-    setDinoPosition(`${randomLeft}vw`);
     setShowDino(true);
 
     setTimeout(() => {
@@ -54,10 +51,10 @@ const SwapPageLayout = () => {
             className={`${styles.rainbowColor} ${styles.rainbowColor5}`}
           ></div>
         </div>
-        <div className={styles.hainText}>
+        {/*  <div className={styles.hainText}>
           Easy there, Gordon Gecko. If you keep switching these prices, the
           market will tank.
-        </div>
+        </div> */}
       </>
     );
   };
@@ -78,7 +75,7 @@ const SwapPageLayout = () => {
           src={dino.src}
           alt="Derek Dino"
           className={clsx(styles.dino, {[styles.visible]: showDino})}
-          style={{left: dinoPosition, width: "190px", height: "170px"}}
+          style={{left: "30%", width: "190px", height: "170px"}}
         />
       </main>
 
