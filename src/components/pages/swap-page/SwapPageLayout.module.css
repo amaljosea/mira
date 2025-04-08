@@ -129,16 +129,17 @@
 .rainbowColor1 {
   height: 21.25em;
   width: 42.5em;
-  border: 1.25em solid #fd004c;
+  border: 1.25em solid #ff0000;
   border-top: none;
   top: calc(50% + 5.62em);
   border-radius: 0 0 23.25em 23.25em;
   animation-delay: 0s;
 }
+
 .rainbowColor2 {
   height: 20em;
   width: 40em;
-  border: 1.25em solid #fe9000;
+  border: 1.25em solid #ff8000;
   border-top: none;
   top: calc(50% + 5em);
   border-radius: 0 0 20em 20em;
@@ -147,7 +148,7 @@
 .rainbowColor3 {
   height: 18.75em;
   width: 37.5em;
-  border: 1.25em solid #fff020;
+  border: 1.25em solid #ffff00;
   border-top: none;
   top: calc(50% + 4.37em);
   border-radius: 0 0 18.75em 18.75em;
@@ -156,7 +157,7 @@
 .rainbowColor4 {
   height: 17.5em;
   width: 35em;
-  border: 1.25em solid #3edf4b;
+  border: 1.25em solid #00ff00;
   border-top: none;
   top: calc(50% + 3.75em);
   border-radius: 0 0 17.5em 17.5em;
@@ -165,7 +166,7 @@
 .rainbowColor5 {
   height: 16.25em;
   width: 32.5em;
-  border: 1.25em solid #3363ff;
+  border: 1.25em solid #0000ff;
   border-top: none;
   top: calc(50% + 3.12em);
   border-radius: 0 0 16.25em 16.25em;
