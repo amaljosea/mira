@@ -72,11 +72,14 @@
 /* Rainbow overlay with VHS grain effect */
 .rainbowContainer {
   position: absolute;
-  top: 70%;
-  left: 30%;
+  top: 80%;
+  left: 50%;
+  right: 50%;
   width: 600px;
   height: 34em;
+  transform-origin: 50% 0;
   transform: translate(-50%, -100%);
+  transform: translate(-50%, -100%) scale(1.5);
   z-index: 999;
   pointer-events: none;
 }
