@@ -76,7 +76,6 @@
   left: 50%;
   right: 50%;
   width: 600px;
-
   transform-origin: 50% 0;
   transform: translate(-50%, -100%);
   transform: translate(-50%, -100%) scale(1.5);
@@ -92,7 +91,7 @@
   transform: translate(100%, 100%);
   left: 50%;
   transform-origin: 50% 0;
-  animation: spin 1s ease-in-out forwards;
+  animation: spin 7s ease-in-out forwards;
   animation-fill-mode: forwards;
 }
 
@@ -102,9 +101,28 @@
     opacity: 1;
   }
 
-  100% {
+  50% {
     transform: translate(-50%, -50%) rotate(180deg);
     opacity: 1;
+  }
+  80% {
+    transform: translate(-50%, -50%) rotate(180deg);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(180deg);
+    opacity: 0;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(180deg) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(180deg) scale(0.8);
   }
 }
 

@@ -17,7 +17,7 @@ const SwapPageLayout = () => {
 
     setTimeout(() => {
       setShowDino(false);
-    }, 3000);
+    }, 1000);
   };
 
   const handleRainbowClick = () => {
@@ -28,7 +28,7 @@ const SwapPageLayout = () => {
     // Remove the rainbow after fade-out animation completes
     setTimeout(() => {
       setShowRainbow(false);
-    }, 5000);
+    }, 7000);
   };
 
   const Rainbow = () => {
