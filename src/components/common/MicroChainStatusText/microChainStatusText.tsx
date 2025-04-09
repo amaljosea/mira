@@ -27,11 +27,12 @@ const MicroChainStatusText = () => {
 
     return (
         <div className={`${styles.widget} ${stage === 4 && displayText === 'MICROCHAIN' ? styles.green : ''}`}>
-            <div style={{ marginBottom: "10px" }}>
+            <div style={{ marginBottom: "16px" }}>
                 <button className="incrementButton" onClick={() => setStage((stage + 1) % 5)}>CLICK</button>
             </div>
 
-            <div style={{ height: "50px", display: "flex", gap: "2px" }}>
+            <div style={{ height: "50px", display: "flex", gap: "3px" }}>
+                <span>[</span>
                 {/* Revealed Letters */}
                 {staticText.split('').map((char, index) => (
                     <span key={`static-${char}-${index}`}>{char}</span>
@@ -54,11 +55,11 @@ const MicroChainStatusText = () => {
                     <span
                         key={`empty-${index}`}
                         className={styles.emptyChar}
-                        style={{ marginRight: '2px' }}
                     >
                         _
                     </span>
                 ))}
+                <span>]</span>
             </div>
         </div>
     );
