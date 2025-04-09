@@ -7,10 +7,12 @@ import styles from "./SwapPageLayout.module.css";
 import dino from "@/public/dino.png";
 import {useState} from "react";
 import clsx from "clsx";
+import rainbow from "@/public/Rainbow.png";
 
 const SwapPageLayout = () => {
   const [showDino, setShowDino] = useState(false);
   const [showRainbow, setShowRainbow] = useState(false);
+  const [showRainbowImg, setRainbowImg] = useState(false);
 
   const handleDinoClick = () => {
     setShowDino(true);
@@ -29,6 +31,16 @@ const SwapPageLayout = () => {
     setTimeout(() => {
       setShowRainbow(false);
     }, 7000);
+  };
+  const handleRainbowImageClick = () => {
+    if (showRainbowImg) {
+      return;
+    }
+    setRainbowImg(true);
+    // Remove the rainbow after fade-out animation completes
+    setTimeout(() => {
+      setRainbowImg(false);
+    }, 5000);
   };
 
   const Rainbow = () => {
@@ -59,6 +71,14 @@ const SwapPageLayout = () => {
     );
   };
 
+  const RainBowImage = () => {
+    return (
+      <div className={styles.rainbowImageWrapper}>
+        <img className={styles.rainbowImage} src={rainbow.src} alt="Rainbow" />
+      </div>
+    );
+  };
+
   return (
     <div className={styles.swapPage}>
       <Header />
@@ -70,7 +90,14 @@ const SwapPageLayout = () => {
         <button onClick={handleRainbowClick} className={styles.rainbowButton}>
           🌈 Unleash Rainbow
         </button>
+        <button
+          onClick={handleRainbowImageClick}
+          className={styles.rainbowButtonImage}
+        >
+          🌈 Rainbow image
+        </button>
         {showRainbow && <Rainbow />}
+        {showRainbowImg && <RainBowImage />}
         <img
           src={dino.src}
           alt="Derek Dino"
