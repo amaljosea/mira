@@ -27,6 +27,7 @@
     "@wagmi/core": "^2.16.5",
     "axios": "^1.7.9",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.6.3",
     "fuels": "0.96.1",
     "graphql": "^16.9.0",
     "graphql-request": "^7.1.0",
