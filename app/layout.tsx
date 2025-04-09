@@ -7,6 +7,7 @@ import {metadata} from "./metadata";
 
 import "@/public/css/globals.css";
 import Providers from "@/src/core/providers/Providers";
+import MicroChainStatusText from "@/src/components/common/MicroChainStatusText/microChainStatusText";
 
 type Props = Readonly<{
   children: ReactNode;
@@ -55,6 +56,7 @@ const RootLayout = ({children}: Props) => {
       </head>
       <body className={clsx(inter.className, inter.variable, prompt.variable)}>
         <Providers>{children}</Providers>
+        <MicroChainStatusText />
       </body>
       <Script src="https://www.googletagmanager.com/gtag/js?id=G-K113JNM8XN" />
       <Script id="gtag">{`
