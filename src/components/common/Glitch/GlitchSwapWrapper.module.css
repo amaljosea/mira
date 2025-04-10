@@ -23,7 +23,7 @@
   clip-path: inset(5% 0 90% 0);
   transform: translate(2px, 0);
   opacity: 0.8;
-  filter: drop-shadow(-2px 0 red);
+  filter: drop-shadow(-2px 0 #01ec97);
 }
 
 .glitchLayer2 {
@@ -31,7 +31,7 @@
   clip-path: inset(80% 0 10% 0);
   transform: translate(-2px, 0);
   opacity: 0.8;
-  filter: drop-shadow(2px 0 blue);
+  filter: drop-shadow(2px 0 #f95465);
 }
 
 @keyframes glitch-anim-1 {

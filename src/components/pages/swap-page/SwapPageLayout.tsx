@@ -14,17 +14,33 @@ import GlitchSwapWrapper from "../../common/Glitch/GlitchSwapWrapper";
 import GlitchTearFullScreen from "../../common/Glitch/GlitchTearFullScreen";
 
 const SwapPageLayout = () => {
-  const [showScan, setShowScan] = useState(false);
+  const [showScan1, setShowScan1] = useState(false);
   const [showScan2, setShowScan2] = useState(false);
-  const [triggerSweep, setTriggerSweep] = useState(false);
+  const [triggerSweep1, setTriggerSweep1] = useState(false);
+  const [triggerSweep2, setTriggerSweep2] = useState(false);
   const [showGlitchText, setShowGlitchText] = useState(false);
   const [showGlitchText1, setShowGlitchText1] = useState(false);
   const [showGlitchSwap, setShowGlitchSwap] = useState(false);
   const [showTearing, setShowTearing] = useState(false);
 
-  const handleSweep = () => {
-    setTriggerSweep(false);
-    requestAnimationFrame(() => setTriggerSweep(true));
+  const triggerScanEffect = (type: "scan1" | "scan2") => {
+    if (type === "scan1") {
+      setShowScan1(true);
+      setTriggerSweep1(true);
+    } else {
+      setShowScan2(true);
+      setTriggerSweep2(true);
+    }
+  };
+
+  const handleSweepComplete = (type: "scan1" | "scan2") => {
+    if (type === "scan1") {
+      setShowScan1(false);
+      setTriggerSweep1(false);
+    } else {
+      setShowScan2(false);
+      setTriggerSweep2(false);
+    }
   };
 
   if (showGlitchSwap) {
@@ -45,47 +61,46 @@ const SwapPageLayout = () => {
         <Header />
         <main className={styles.swapLayout}>
           <button
-            onClick={() => setShowScan(!showScan)}
+            onClick={() => triggerScanEffect("scan1")}
             style={buttonStyle(20)}
           >
-            {showScan ? "Disable" : "Enable"} Scanlines 1
+            Trigger Scanlines 1
           </button>
 
           <button
-            onClick={() => setShowScan2(!showScan2)}
+            onClick={() => triggerScanEffect("scan2")}
             style={buttonStyle(60)}
           >
-            {showScan2 ? "Disable" : "Enable"} Scanlines 2
-          </button>
-
-          <button onClick={handleSweep} style={buttonStyle(100, "#0ff")}>
-            Trigger Scan Sweep
+            Trigger Scanlines 2
           </button>
 
           <button
             onClick={() => setShowGlitchText(!showGlitchText)}
-            style={buttonStyle(140, "#f0f")}
+            style={buttonStyle(100, "#f0f")}
           >
             {showGlitchText ? "Hide" : "Show"} Glitch Text
           </button>
 
           <button
             onClick={() => setShowGlitchText1(!showGlitchText1)}
-            style={buttonStyle(180, "#f0f")}
+            style={buttonStyle(140, "#f0f")}
           >
             {showGlitchText1 ? "Hide" : "Show"} Glitch Text 1
           </button>
 
           <button
-            onClick={() => setShowGlitchSwap(!showGlitchSwap)}
-            style={buttonStyle(220, "#0ff")}
+            onClick={() => {
+              setShowGlitchSwap(true);
+              setTimeout(() => setShowGlitchSwap(false), 2500);
+            }}
+            style={buttonStyle(180, "#0ff")}
           >
-            {showGlitchSwap ? "Disable" : "Enable"} Glitch Swap
+            Trigger Glitch Swap
           </button>
 
           <button
             onClick={() => setShowTearing(!showTearing)}
-            style={buttonStyle(260, "#0ff")}
+            style={buttonStyle(220, "#0ff")}
           >
             {showTearing ? "Hide" : "Show"} Fullscreen Tear
           </button>
@@ -94,12 +109,21 @@ const SwapPageLayout = () => {
         </main>
 
         <Footer />
+
         {showTearing && <GlitchTearFullScreen />}
-        {showScan && <ScanLines />}
+        {showScan1 && <ScanLines />}
         {showScan2 && <ScanLinesOverlay />}
         {showGlitchText && <GlitchText />}
         {showGlitchText1 && <GlitchText1 />}
-        <ScanSweep trigger={triggerSweep} />
+
+        <ScanSweep
+          trigger={triggerSweep1}
+          onComplete={() => handleSweepComplete("scan1")}
+        />
+        <ScanSweep
+          trigger={triggerSweep2}
+          onComplete={() => handleSweepComplete("scan2")}
+        />
       </div>
     );
   }
