@@ -1,0 +1,135 @@
+@import url("https://fonts.googleapis.com/css2?family=Varela&display=swap");
+
+.glitchWrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  animation: fadeOut 3s ease-in-out forwards;
+  pointer-events: none;
+}
+
+.glitch {
+  font-family: "Varela", sans-serif;
+  font-size: 80px;
+  color: white;
+  position: relative;
+  text-align: center;
+  animation:
+    flicker 2s infinite,
+    glitchSkew 1s infinite alternate;
+}
+
+/* Red channel - shifts to right */
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 2px;
+  color: white;
+  text-shadow: -2px 0 red;
+  animation: glitchShift 2s infinite linear alternate-reverse;
+  z-index: -1;
+}
+
+/* Blue channel - shifts to left */
+.glitch::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: -2px;
+  color: white;
+  text-shadow: 2px 0 blue;
+  animation: glitchShift2 3s infinite linear alternate-reverse;
+  z-index: -1;
+}
+
+/* Whole text jitter */
+@keyframes glitchShift {
+  0% {
+    transform: translate(0px, 0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-1px, -1px);
+  }
+  60% {
+    transform: translate(2px, 1px);
+  }
+  80% {
+    transform: translate(-2px, -2px);
+  }
+  100% {
+    transform: translate(1px, 2px);
+  }
+}
+
+@keyframes glitchShift2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(2px, -1px);
+  }
+  40% {
+    transform: translate(-1px, 2px);
+  }
+  60% {
+    transform: translate(1px, -1px);
+  }
+  80% {
+    transform: translate(-2px, 1px);
+  }
+  100% {
+    transform: translate(0px, 0);
+  }
+}
+
+/* Flicker */
+@keyframes flicker {
+  0%,
+  20%,
+  40%,
+  60%,
+  80%,
+  100% {
+    opacity: 1;
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    opacity: 0.5;
+  }
+}
+
+/* Slight skew animation */
+@keyframes glitchSkew {
+  0% {
+    transform: translate(-50%, -50%) skew(0deg);
+  }
+  50% {
+    transform: translate(-50%, -50%) skew(1deg, 1deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) skew(-1deg, -1deg);
+  }
+}
+
+/* Disappear from screen after animation */
+/* @keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 100%);
+  }
+} */
