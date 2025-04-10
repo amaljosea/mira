@@ -1,23 +1,28 @@
+import {useMemo} from "react";
 import MobilePositions from "@/src/components/pages/liquidity-page/components/Positions/MobilePositions/MobilePositions";
 
 import styles from "./Positions.module.css";
 import DesktopPositions from "@/src/components/pages/liquidity-page/components/Positions/MobilePositions/DesktopPositions/DesktopPositions";
+import {useIsConnected} from "@fuels/react";
+import {POSITIONS_COUNT} from "@/src/utils/constants";
+import {useLoadingLocalStorage} from "@/src/hooks/useLoadingLocalStorage";
 import usePositions from "@/src/hooks/usePositions";
+import PositionsLoader from "./PositionsLoader/PositionsLoader";
 import DocumentIcon from "@/src/components/icons/Document/DocumentIcon";
-import LoaderV2 from "@/src/components/common/LoaderV2/LoaderV2";
 
 const Positions = (): JSX.Element => {
+  const {isConnected} = useIsConnected();
   const {data, isLoading} = usePositions();
+  const positionsCount = useLoadingLocalStorage({
+    key: POSITIONS_COUNT,
+    initialValue: 3,
+    data,
+  });
 
   return (
     <section className={styles.positions}>
       <p className={styles.positionsTitle}>Your Positions</p>
-      {isLoading ? (
-        <div className={styles.positionsFallback}>
-          <LoaderV2 />
-          <p>Loading positions...</p>
-        </div>
-      ) : (data && data.length === 0) || !data ? (
+      {!isConnected || data?.length === 0 ? (
         <div className={styles.positionsFallback}>
           <div className={styles.fallbackTop}>
             <div className={styles.icon}>
@@ -25,15 +30,14 @@ const Positions = (): JSX.Element => {
             </div>
             <p>Your liquidity will appear here</p>
           </div>
-          {/*<button className={styles.viewArchivedButton}>*/}
-          {/*  View archive positions*/}
-          {/*</button>*/}
         </div>
-      ) : (
+      ) : data && data.length > 0 && !isLoading ? (
         <>
-          <MobilePositions positions={data} />
           <DesktopPositions positions={data} />
+          <MobilePositions positions={data} />
         </>
+      ) : (
+        <PositionsLoader count={positionsCount} />
       )}
     </section>
   );
