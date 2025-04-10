@@ -1,0 +1,113 @@
+@import url("https://fonts.googleapis.com/css?family=Varela");
+
+.glitchWrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  animation: fadeOut 3s ease-in-out forwards;
+  height: 100px; /* fix: reserve height for clip-path animations */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.glitch {
+  color: white;
+  font-size: 72px;
+  font-family: "Varela", sans-serif;
+  position: relative;
+  text-align: center;
+  line-height: 1;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  width: 100%;
+  color: white;
+  background: black;
+  overflow: hidden;
+}
+
+.glitch::before {
+  left: -2px;
+  text-shadow: 1px 0 blue;
+  animation: noiseAnim2 2s infinite linear alternate-reverse;
+}
+
+.glitch::after {
+  left: 2px;
+  text-shadow: -1px 0 red;
+  animation: noiseAnim 2s infinite linear alternate-reverse;
+}
+
+/* Clip animation */
+@keyframes noiseAnim {
+  1% {
+    clip-path: inset(5% 0 90% 0);
+  }
+  5% {
+    clip-path: inset(30% 0 55% 0);
+  }
+  10% {
+    clip-path: inset(60% 0 25% 0);
+  }
+  15% {
+    clip-path: inset(15% 0 65% 0);
+  }
+  20% {
+    clip-path: inset(45% 0 35% 0);
+  }
+  30% {
+    clip-path: inset(10% 0 80% 0);
+  }
+  50% {
+    clip-path: inset(80% 0 10% 0);
+  }
+  70% {
+    clip-path: inset(25% 0 50% 0);
+  }
+  90% {
+    clip-path: inset(5% 0 90% 0);
+  }
+  100% {
+    clip-path: inset(60% 0 25% 0);
+  }
+}
+
+@keyframes noiseAnim2 {
+  1% {
+    clip-path: inset(80% 0 10% 0);
+  }
+  5% {
+    clip-path: inset(5% 0 90% 0);
+  }
+  10% {
+    clip-path: inset(15% 0 75% 0);
+  }
+  15% {
+    clip-path: inset(35% 0 45% 0);
+  }
+  20% {
+    clip-path: inset(25% 0 50% 0);
+  }
+  30% {
+    clip-path: inset(50% 0 20% 0);
+  }
+  50% {
+    clip-path: inset(10% 0 80% 0);
+  }
+  70% {
+    clip-path: inset(60% 0 20% 0);
+  }
+  90% {
+    clip-path: inset(30% 0 40% 0);
+  }
+  100% {
+    clip-path: inset(80% 0 10% 0);
+  }
+}

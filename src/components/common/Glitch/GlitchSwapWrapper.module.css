@@ -1,0 +1,71 @@
+/* GlitchSwapWrapper.module.css */
+
+.glitchContainer {
+  position: relative;
+}
+
+.glitchLayer1,
+.glitchLayer2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: inherit;
+  background: inherit;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  overflow: hidden;
+}
+
+.glitchLayer1 {
+  animation: glitch-anim-1 2s infinite linear alternate-reverse;
+  clip-path: inset(5% 0 90% 0);
+  transform: translate(2px, 0);
+  opacity: 0.8;
+  filter: drop-shadow(-2px 0 red);
+}
+
+.glitchLayer2 {
+  animation: glitch-anim-2 2s infinite linear alternate-reverse;
+  clip-path: inset(80% 0 10% 0);
+  transform: translate(-2px, 0);
+  opacity: 0.8;
+  filter: drop-shadow(2px 0 blue);
+}
+
+@keyframes glitch-anim-1 {
+  0% {
+    clip-path: inset(5% 0 90% 0);
+  }
+  25% {
+    clip-path: inset(30% 0 55% 0);
+  }
+  50% {
+    clip-path: inset(60% 0 25% 0);
+  }
+  75% {
+    clip-path: inset(15% 0 65% 0);
+  }
+  100% {
+    clip-path: inset(5% 0 90% 0);
+  }
+}
+
+@keyframes glitch-anim-2 {
+  0% {
+    clip-path: inset(80% 0 10% 0);
+  }
+  25% {
+    clip-path: inset(5% 0 90% 0);
+  }
+  50% {
+    clip-path: inset(15% 0 75% 0);
+  }
+  75% {
+    clip-path: inset(35% 0 45% 0);
+  }
+  100% {
+    clip-path: inset(80% 0 10% 0);
+  }
+}
