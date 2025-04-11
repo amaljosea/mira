@@ -2,7 +2,11 @@ import {create} from "zustand";
 import {subscribeWithSelector} from "zustand/middleware";
 
 type AnimationTrigger = () => void;
-type AnimationType = "timer" | "tripleClick" | "magicNumber";
+type AnimationType =
+  | "timer"
+  | "tripleClick"
+  | "magicNumber"
+  | "globalAnimation";
 
 interface AnimationState {
   masterEnabled: boolean;
@@ -10,11 +14,15 @@ interface AnimationState {
   subscribers: AnimationTrigger[];
   inputBuffer: string;
   lastClicks: number[];
-  setToggle: (type: AnimationType, enabled: boolean) => void;
+  intervalId: NodeJS.Timeout | null;
+  isGlobalActive: boolean;
   subscribe: (callback: AnimationTrigger) => () => void;
   triggerAnimations: () => void;
   handleMagicTripleClick: () => void;
   handleMagicInput: (value: string) => void;
+  startGlobalAnimation: () => void;
+  stopGlobalAnimation: () => void;
+  triggerGlobalAnimation: () => void;
 }
 
 // Master toggle
@@ -28,15 +36,13 @@ export const useAnimationStore = create<AnimationState>()(
       timer: true,
       tripleClick: true,
       magicNumber: true,
+      globalAnimation: true,
     },
     subscribers: [],
     inputBuffer: "",
     lastClicks: [],
-
-    setToggle: (type, enabled) =>
-      set((state) => ({
-        toggles: {...state.toggles, [type]: enabled},
-      })),
+    intervalId: null,
+    isGlobalActive: false,
 
     subscribe: (callback) => {
       set((state) => ({subscribers: [...state.subscribers, callback]}));
@@ -101,5 +107,33 @@ export const useAnimationStore = create<AnimationState>()(
         set({inputBuffer: ""});
       }
     },
+
+    startGlobalAnimation: () => {
+      const {masterEnabled, toggles} = get();
+      if (!masterEnabled || !toggles.magicNumber) return;
+
+      const intervalId = setInterval(() => {
+        get().triggerGlobalAnimation();
+      }, 60000); // 1 minute
+
+      set({intervalId, isGlobalActive: true});
+    },
+
+    stopGlobalAnimation: () => {
+      const {intervalId} = get();
+      if (intervalId) {
+        clearInterval(intervalId);
+        set({intervalId: null, isGlobalActive: false});
+      }
+    },
+
+    triggerGlobalAnimation: () => {
+      alert("Global animation");
+    },
   })),
 );
+
+// Initialize when store loads - global animation
+if (typeof window !== "undefined") {
+  useAnimationStore.getState().startGlobalAnimation();
+}
