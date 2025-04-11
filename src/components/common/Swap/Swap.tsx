@@ -43,6 +43,7 @@ import {SlippageSetting} from "../SlippageSetting/SlippageSetting";
 import Loader from "@/src/components/common/Loader/Loader";
 import ConnectButton from "@/src/components/common/ConnectButton/ConnectButton";
 import {TradeState} from "@/src/hooks/useSwapRouter";
+import {useAnimationStore} from "@/src/stores/useMiniGame";
 
 export type CurrencyBoxMode = "buy" | "sell";
 export type CurrencyBoxState = {
@@ -230,6 +231,8 @@ const Swap = ({isWidget}: {isWidget?: boolean}) => {
       buy: prevState.sell,
       sell: prevState.buy,
     }));
+
+    useAnimationStore.getState().handleMagicTripleClick();
   }, [isWidget, setSwapCoins]);
 
   const selectCoin = useCallback(
