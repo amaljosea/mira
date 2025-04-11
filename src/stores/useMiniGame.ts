@@ -5,7 +5,7 @@ type AnimationTrigger = () => void;
 type AnimationType = "timer" | "tripleClick" | "magicNumber";
 
 interface AnimationState {
-  masterEnabled: boolean; // Hardcoded value (no setter)
+  masterEnabled: boolean;
   toggles: Record<AnimationType, boolean>;
   subscribers: AnimationTrigger[];
   inputBuffer: string;
@@ -17,12 +17,13 @@ interface AnimationState {
   handleInputChange: (value: string) => void;
 }
 
-// Master toggle is set here (change as needed)
+// Master toggle
 const MASTER_ENABLED = true;
 
 export const useAnimationStore = create<AnimationState>()(
   subscribeWithSelector((set, get) => ({
     masterEnabled: MASTER_ENABLED,
+    // individual toggles
     toggles: {
       timer: true,
       tripleClick: true,
@@ -55,24 +56,21 @@ export const useAnimationStore = create<AnimationState>()(
       if (!masterEnabled || !toggles.tripleClick) return;
 
       const now = Date.now();
-      const recentClicks = lastClicks.filter((t) => now - t < 1000); // 1-second window
+      const recentClicks = lastClicks.filter((t) => now - t < 1000);
 
       if (recentClicks.length >= 2) {
-        // 3rd click
-        set({lastClicks: []}); // Reset click tracker
+        set({lastClicks: []});
 
-        // TEMPORARY subscriber pattern
-        const alertSubscriber = () => {
+        const animationSubscriber = () => {
+          // define animation here (will figure out how to call animation later)
           alert("GLITCH");
-          // Immediately unsubscribe after firing
           get().subscribers = get().subscribers.filter(
-            (sub) => sub !== alertSubscriber,
+            (sub) => sub !== animationSubscriber,
           );
         };
 
-        // Add temporarily
-        get().subscribers.push(alertSubscriber);
-        get().triggerAnimations(); // Fires ONLY the new subscriber
+        get().subscribers.push(animationSubscriber);
+        get().triggerAnimations();
       } else {
         set({lastClicks: [...recentClicks, now]});
       }
@@ -92,22 +90,4 @@ export const useAnimationStore = create<AnimationState>()(
       }
     },
   })),
-);
-
-// Timer logic (unchanged)
-let timerInterval: NodeJS.Timeout | null = null;
-
-const startTimer = () => {
-  if (timerInterval) clearInterval(timerInterval);
-  timerInterval = setInterval(() => {
-    useAnimationStore.getState().triggerAnimations();
-  }, 60_000);
-};
-
-useAnimationStore.subscribe(
-  (state) => state.masterEnabled && state.toggles.timer,
-  (enabled) => {
-    enabled ? startTimer() : timerInterval && clearInterval(timerInterval);
-  },
-  {fireImmediately: true},
 );
