@@ -130,13 +130,6 @@ const Swap = ({isWidget}: {isWidget?: boolean}) => {
 
   const isValidNetwork = useCheckActiveNetwork();
 
-  const handleTripleClick = useAnimationStore(
-    (state) => state.handleTripleClick,
-  );
-  const animationEnabled = useAnimationStore(
-    (state) => state.masterEnabled && state.toggles.tripleClick,
-  );
-
   useEffect(() => {
     if (!isConnected) {
       setSwapState(initialSwapState);
@@ -239,7 +232,7 @@ const Swap = ({isWidget}: {isWidget?: boolean}) => {
       sell: prevState.buy,
     }));
 
-    if (animationEnabled) handleTripleClick();
+    useAnimationStore.getState().handleMagicTripleClick();
   }, [isWidget, setSwapCoins]);
 
   const selectCoin = useCallback(

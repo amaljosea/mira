@@ -13,8 +13,8 @@ interface AnimationState {
   setToggle: (type: AnimationType, enabled: boolean) => void;
   subscribe: (callback: AnimationTrigger) => () => void;
   triggerAnimations: () => void;
-  handleTripleClick: () => void;
-  handleInputChange: (value: string) => void;
+  handleMagicTripleClick: () => void;
+  handleMagicInput: (value: string) => void;
 }
 
 // Master toggle
@@ -51,7 +51,7 @@ export const useAnimationStore = create<AnimationState>()(
       get().subscribers.forEach((cb) => cb());
     },
 
-    handleTripleClick: () => {
+    handleMagicTripleClick: () => {
       const {masterEnabled, toggles, lastClicks} = get();
       if (!masterEnabled || !toggles.tripleClick) return;
 
@@ -76,15 +76,27 @@ export const useAnimationStore = create<AnimationState>()(
       }
     },
 
-    handleInputChange: (value) => {
+    handleMagicInput: (value) => {
       const {masterEnabled, toggles, inputBuffer} = get();
       if (!masterEnabled || !toggles.magicNumber) return;
 
       const newBuffer = (inputBuffer + value).slice(-5).replace(/[^0-9.]/g, "");
-
       set({inputBuffer: newBuffer});
 
       if (newBuffer === "19.85") {
+        const magicNumberSubscriber = () => {
+          // define animation here (will figure out how to call animation later)
+          alert("🔢 Magic number detected!");
+          set((state) => ({
+            subscribers: state.subscribers.filter(
+              (sub) => sub !== magicNumberSubscriber,
+            ),
+          }));
+        };
+
+        set((state) => ({
+          subscribers: [...state.subscribers, magicNumberSubscriber],
+        }));
         get().triggerAnimations();
         set({inputBuffer: ""});
       }
