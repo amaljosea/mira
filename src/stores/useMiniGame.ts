@@ -92,7 +92,7 @@ export const useAnimationStore = create<AnimationState>()(
       if (newBuffer === "19.85") {
         const magicNumberSubscriber = () => {
           // define animation here (will figure out how to call animation later)
-          alert("🔢 Magic number detected!");
+          alert("19.85 detected!");
           set((state) => ({
             subscribers: state.subscribers.filter(
               (sub) => sub !== magicNumberSubscriber,
