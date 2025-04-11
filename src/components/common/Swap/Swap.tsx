@@ -1,8 +1,8 @@
-import {useConnectUI, useIsConnected} from "@fuels/react";
-import {useLocalStorage} from "usehooks-ts";
-import {clsx} from "clsx";
+import { useConnectUI, useIsConnected } from "@fuels/react";
+import { useLocalStorage } from "usehooks-ts";
+import { clsx } from "clsx";
 import Logo from "@/src/components/common/Logo/Logo";
-import {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import ActionButton from "@/src/components/common/ActionButton/ActionButton";
 import IconButton from "@/src/components/common/IconButton/IconButton";
@@ -15,7 +15,7 @@ import styles from "./Swap.module.css";
 
 import ExchangeRate from "@/src/components/common/Swap/components/ExchangeRate/ExchangeRate";
 import useExchangeRate from "@/src/hooks/useExchangeRate/useExchangeRate";
-import {createPoolKey, openNewTab} from "@/src/utils/common";
+import { createPoolKey, openNewTab } from "@/src/utils/common";
 import useBalances from "@/src/hooks/useBalances/useBalances";
 import CoinsListModal from "@/src/components/common/Swap/components/CoinsListModal/CoinsListModal";
 import SwapSuccessModal from "@/src/components/common/Swap/components/SwapSuccessModal/SwapSuccessModal";
@@ -25,7 +25,7 @@ import useInitialSwapState from "@/src/hooks/useInitialSwapState/useInitialSwapS
 import useCheckActiveNetwork from "@/src/hooks/useCheckActiveNetwork";
 import usePreview from "@/src/hooks/useSwapPreviewV2";
 import PriceImpact from "@/src/components/common/Swap/components/PriceImpact/PriceImpact";
-import {FuelAppUrl} from "@/src/utils/constants";
+import { FuelAppUrl } from "@/src/utils/constants";
 import useReservesPrice from "@/src/hooks/useReservesPrice";
 import SwapFailureModal from "@/src/components/common/Swap/components/SwapFailureModal/SwapFailureModal";
 import {
@@ -35,14 +35,15 @@ import {
   ScriptTransactionRequest,
   TransactionCost,
 } from "fuels";
-import {PoolId} from "mira-dex-ts";
-import {useAssetImage} from "@/src/hooks/useAssetImage";
-import {useAssetPrice} from "@/src/hooks/useAssetPrice";
+import { PoolId } from "mira-dex-ts";
+import { useAssetImage } from "@/src/hooks/useAssetImage";
+import { useAssetPrice } from "@/src/hooks/useAssetPrice";
 import useAssetMetadata from "@/src/hooks/useAssetMetadata";
-import {SlippageSetting} from "../SlippageSetting/SlippageSetting";
+import { SlippageSetting } from "../SlippageSetting/SlippageSetting";
 import Loader from "@/src/components/common/Loader/Loader";
 import ConnectButton from "@/src/components/common/ConnectButton/ConnectButton";
-import {TradeState} from "@/src/hooks/useSwapRouter";
+import { TradeState } from "@/src/hooks/useSwapRouter";
+import { useAnimationStore } from "@/src/stores/useMiniGame";
 
 export type CurrencyBoxMode = "buy" | "sell";
 export type CurrencyBoxState = {
@@ -69,7 +70,7 @@ export type SlippageMode = "auto" | "custom";
 
 export const DefaultSlippageValue = 100;
 
-function SwapRouteItem({pool}: {pool: PoolId}) {
+function SwapRouteItem({ pool }: { pool: PoolId }) {
   const firstAssetIcon = useAssetImage(pool[0].bits);
   const secondAssetIcon = useAssetImage(pool[1].bits);
 
@@ -88,7 +89,7 @@ function SwapRouteItem({pool}: {pool: PoolId}) {
   );
 }
 
-const Swap = ({isWidget}: {isWidget?: boolean}) => {
+const Swap = ({ isWidget }: { isWidget?: boolean }) => {
   const [SettingsModal, openSettingsModal, closeSettingsModal] = useModal();
   const [CoinsModal, openCoinsModal, closeCoinsModal] = useModal();
   const [SuccessModal, openSuccess] = useModal();
@@ -102,7 +103,7 @@ const Swap = ({isWidget}: {isWidget?: boolean}) => {
   const [activeMode, setActiveMode] = useState<CurrencyBoxMode>("sell");
   const [slippage, setSlippage] = useState<number>(DefaultSlippageValue);
   const [txCostData, setTxCostData] = useState<
-    {tx: ScriptTransactionRequest; txCost: TransactionCost} | undefined
+    { tx: ScriptTransactionRequest; txCost: TransactionCost } | undefined
   >();
   const [txCost, setTxCost] = useState<number | null>(null);
   const [slippageMode, setSlippageMode] = useState<SlippageMode>("auto");
@@ -123,11 +124,16 @@ const Swap = ({isWidget}: {isWidget?: boolean}) => {
   const swapStateForPreview = useRef(swapState);
   const modeForCoinSelector = useRef<CurrencyBoxMode>("sell");
 
-  const {isConnected} = useIsConnected();
-  const {connect, isConnecting} = useConnectUI();
-  const {balances, balancesPending, refetchBalances} = useBalances();
+  const { isConnected } = useIsConnected();
+  const { connect, isConnecting } = useConnectUI();
+  const { balances, balancesPending, refetchBalances } = useBalances();
 
   const isValidNetwork = useCheckActiveNetwork();
+
+  const handleTripleClick = useAnimationStore((state) => state.handleTripleClick);
+  const animationEnabled = useAnimationStore(
+    (state) => state.masterEnabled && state.toggles.tripleClick
+  );
 
   useEffect(() => {
     if (!isConnected) {
@@ -164,13 +170,13 @@ const Swap = ({isWidget}: {isWidget?: boolean}) => {
 
   const previewValueString =
     !trade ||
-    tradeState === TradeState.INVALID ||
-    tradeState === TradeState.NO_ROUTE_FOUND ||
-    !trade?.amountIn ||
-    trade?.amountIn?.eq(0) ||
-    !trade?.amountOut ||
-    trade?.amountOut?.eq(0) ||
-    !decimals
+      tradeState === TradeState.INVALID ||
+      tradeState === TradeState.NO_ROUTE_FOUND ||
+      !trade?.amountIn ||
+      trade?.amountIn?.eq(0) ||
+      !trade?.amountOut ||
+      trade?.amountOut?.eq(0) ||
+      !decimals
       ? ""
       : activeMode === "sell"
         ? trade.amountOut.formatUnits(decimals)
@@ -230,6 +236,8 @@ const Swap = ({isWidget}: {isWidget?: boolean}) => {
       buy: prevState.sell,
       sell: prevState.buy,
     }));
+
+    if (animationEnabled) handleTripleClick();
   }, [isWidget, setSwapCoins]);
 
   const selectCoin = useCallback(
@@ -473,11 +481,11 @@ const Swap = ({isWidget}: {isWidget?: boolean}) => {
         bn.parseUnits(sellValue, sellMetadata.decimals || 0),
       );
       setShowInsufficientBalance(insufficientSellBalance);
-    } catch (e) {}
+    } catch (e) { }
   }, [sellValue, sellMetadata, sellBalanceValue]);
 
   const feePercent =
-    trade?.bestRoute?.pools.reduce((percent, {poolId}) => {
+    trade?.bestRoute?.pools.reduce((percent, { poolId }) => {
       const isStablePool = poolId[2];
       const poolPercent = isStablePool ? 0.05 : 0.3;
 
@@ -488,8 +496,8 @@ const Swap = ({isWidget}: {isWidget?: boolean}) => {
     sellValue === ""
       ? 0
       : ((feePercent / 100) * parseFloat(sellValue)).toFixed(
-          sellMetadata.decimals || 0,
-        );
+        sellMetadata.decimals || 0,
+      );
 
   const swapDisabled =
     !isValidNetwork ||
@@ -540,7 +548,7 @@ const Swap = ({isWidget}: {isWidget?: boolean}) => {
   const inputPreviewLoading = previewLoading && activeMode === "buy";
   const outputPreviewLoading = previewLoading && activeMode === "sell";
 
-  const {reservesPrice} = useReservesPrice({
+  const { reservesPrice } = useReservesPrice({
     pools,
     sellAssetId: swapState.sell.assetId,
     buyAssetId: swapState.buy.assetId,
