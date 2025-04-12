@@ -23,8 +23,8 @@ interface AnimationState {
 
   handleMagicInput: (value: string) => void;
 
-  startGlobalAnimation: () => void;
-  stopGlobalAnimation: () => void;
+  startPeriodicGlobalAnimation: () => void;
+  stopPeriodicGlobalAnimation: () => void;
   triggerGlobalAnimation: () => void;
   handleVisibilityChange: () => void;
   initializeGlobalAnimation: () => () => void;
@@ -113,7 +113,7 @@ export const useAnimationStore = create<AnimationState>()(
       }
     },
 
-    startGlobalAnimation: () => {
+    startPeriodicGlobalAnimation: () => {
       const {masterEnabled, toggles} = get();
       if (!masterEnabled || !toggles.magicNumber) return;
 
@@ -124,7 +124,7 @@ export const useAnimationStore = create<AnimationState>()(
       set({intervalId, isGlobalActive: true});
     },
 
-    stopGlobalAnimation: () => {
+    stopPeriodicGlobalAnimation: () => {
       const {intervalId} = get();
       if (intervalId) {
         clearInterval(intervalId);
@@ -134,9 +134,9 @@ export const useAnimationStore = create<AnimationState>()(
 
     handleVisibilityChange: () => {
       if (document.visibilityState === "visible") {
-        get().startGlobalAnimation();
+        get().startPeriodicGlobalAnimation();
       } else {
-        get().stopGlobalAnimation();
+        get().stopPeriodicGlobalAnimation();
       }
     },
 
@@ -144,14 +144,14 @@ export const useAnimationStore = create<AnimationState>()(
       if (typeof window === "undefined") return () => {};
 
       const store = get();
-      store.startGlobalAnimation();
+      store.startPeriodicGlobalAnimation();
       document.addEventListener(
         "visibilitychange",
         store.handleVisibilityChange,
       );
 
       return () => {
-        store.stopGlobalAnimation();
+        store.stopPeriodicGlobalAnimation();
         document.removeEventListener(
           "visibilitychange",
           store.handleVisibilityChange,
@@ -160,7 +160,20 @@ export const useAnimationStore = create<AnimationState>()(
     },
 
     triggerGlobalAnimation: () => {
-      alert("Global animation");
+      if (typeof window === "undefined") return;
+      const glitchElements = document.querySelectorAll(".glitchLayer");
+      glitchElements.forEach((el) => {
+        alert("GLITCH");
+        (el as HTMLElement).style.display = "block";
+      });
+
+      const timeoutId = setTimeout(() => {
+        glitchElements.forEach((el) => {
+          (el as HTMLElement).style.display = "none";
+        });
+      }, 5000);
+
+      return () => clearTimeout(timeoutId);
     },
   })),
 );

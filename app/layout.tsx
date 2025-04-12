@@ -1,9 +1,9 @@
 import Script from "next/script";
-import {ReactNode} from "react";
-import {clsx} from "clsx";
-import {Prompt, Inter} from "next/font/google";
+import { ReactNode } from "react";
+import { clsx } from "clsx";
+import { Prompt, Inter } from "next/font/google";
 import localFont from "next/font/local";
-import {metadata} from "./metadata";
+import { metadata } from "./metadata";
 
 import "@/public/css/globals.css";
 import Providers from "@/src/core/providers/Providers";
@@ -23,7 +23,7 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-export {metadata};
+export { metadata };
 
 //TEMPORARY, DO NOT DELETE
 /* export const metadata: Metadata = {
@@ -47,14 +47,19 @@ export {metadata};
   },
 }; */
 
-const RootLayout = ({children}: Props) => {
+const RootLayout = ({ children }: Props) => {
   return (
     <html lang="en">
       <head>
         <link rel="preload" as="image" href="/images/loader.webp" />
       </head>
       <body className={clsx(inter.className, inter.variable, prompt.variable)}>
-        <Providers>{children}</Providers>
+        <Providers>
+          <div style={{ position: "relative" }}>
+            {children}
+            <div className="glitchLayer">{children}</div>
+          </div>
+        </Providers>
       </body>
       <Script src="https://www.googletagmanager.com/gtag/js?id=G-K113JNM8XN" />
       <Script id="gtag">{`
