@@ -18,11 +18,16 @@ interface AnimationState {
   isGlobalActive: boolean;
   subscribe: (callback: AnimationTrigger) => () => void;
   triggerAnimations: () => void;
+
   handleMagicTripleClick: () => void;
+
   handleMagicInput: (value: string) => void;
+
   startGlobalAnimation: () => void;
   stopGlobalAnimation: () => void;
   triggerGlobalAnimation: () => void;
+  handleVisibilityChange: () => void;
+  initializeGlobalAnimation: () => () => void;
 }
 
 // Master toggle
@@ -127,13 +132,40 @@ export const useAnimationStore = create<AnimationState>()(
       }
     },
 
+    handleVisibilityChange: () => {
+      if (document.visibilityState === "visible") {
+        get().startGlobalAnimation();
+      } else {
+        get().stopGlobalAnimation();
+      }
+    },
+
+    initializeGlobalAnimation: () => {
+      if (typeof window === "undefined") return () => {};
+
+      const store = get();
+      store.startGlobalAnimation();
+      document.addEventListener(
+        "visibilitychange",
+        store.handleVisibilityChange,
+      );
+
+      return () => {
+        store.stopGlobalAnimation();
+        document.removeEventListener(
+          "visibilitychange",
+          store.handleVisibilityChange,
+        );
+      };
+    },
+
     triggerGlobalAnimation: () => {
       alert("Global animation");
     },
   })),
 );
 
-// Initialize when store loads - global animation
 if (typeof window !== "undefined") {
-  useAnimationStore.getState().startGlobalAnimation();
+  const cleanup = useAnimationStore.getState().initializeGlobalAnimation();
+  window.addEventListener("beforeunload", cleanup);
 }
