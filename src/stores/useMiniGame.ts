@@ -25,7 +25,7 @@ interface AnimationState {
 
   startPeriodicGlobalAnimation: () => void;
   stopPeriodicGlobalAnimation: () => void;
-  triggerGlobalAnimation: () => void;
+  triggerClassAnimation: (classname: string, duration: number) => void;
   handleVisibilityChange: () => void;
   initializeGlobalAnimation: () => () => void;
 }
@@ -118,8 +118,8 @@ export const useAnimationStore = create<AnimationState>()(
       if (!masterEnabled || !toggles.magicNumber) return;
 
       const intervalId = setInterval(() => {
-        get().triggerGlobalAnimation();
-      }, 6000); // 1 minute
+        get().triggerClassAnimation("glitchLayer", 5000);
+      }, 60000); // 1 minute
 
       set({intervalId, isGlobalActive: true});
     },
@@ -159,9 +159,9 @@ export const useAnimationStore = create<AnimationState>()(
       };
     },
 
-    triggerGlobalAnimation: () => {
+    triggerClassAnimation: (classname: string, duration: number) => {
       if (typeof window === "undefined") return;
-      const glitchElements = document.querySelectorAll(".glitchLayer");
+      const glitchElements = document.querySelectorAll(`.${classname}`);
       glitchElements.forEach((el) => {
         (el as HTMLElement).style.display = "block";
       });
@@ -170,7 +170,7 @@ export const useAnimationStore = create<AnimationState>()(
         glitchElements.forEach((el) => {
           (el as HTMLElement).style.display = "none";
         });
-      }, 5000);
+      }, duration);
 
       return () => clearTimeout(timeoutId);
     },

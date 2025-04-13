@@ -6,6 +6,7 @@ import localFont from "next/font/local";
 import { metadata } from "./metadata";
 
 import "@/public/css/globals.css";
+import "@/public/css/animations.css";
 import Providers from "@/src/core/providers/Providers";
 
 type Props = Readonly<{
@@ -58,6 +59,13 @@ const RootLayout = ({ children }: Props) => {
           <div style={{ position: "relative" }}>
             {children}
             <div className="glitchLayer">{children}</div>
+            <div className="rainbowContainer">
+              <div className="rainbowColor rainbowColor1"></div>
+              <div className="rainbowColor rainbowColor2"></div>
+              <div className="rainbowColor rainbowColor3"></div>
+              <div className="rainbowColor rainbowColor4"></div>
+              <div className="rainbowColor rainbowColor5"></div>
+            </div>
           </div>
         </Providers>
       </body>
