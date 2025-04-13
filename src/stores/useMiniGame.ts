@@ -119,7 +119,7 @@ export const useAnimationStore = create<AnimationState>()(
 
       const intervalId = setInterval(() => {
         get().triggerGlobalAnimation();
-      }, 60000); // 1 minute
+      }, 6000); // 1 minute
 
       set({intervalId, isGlobalActive: true});
     },
@@ -163,7 +163,6 @@ export const useAnimationStore = create<AnimationState>()(
       if (typeof window === "undefined") return;
       const glitchElements = document.querySelectorAll(".glitchLayer");
       glitchElements.forEach((el) => {
-        alert("GLITCH");
         (el as HTMLElement).style.display = "block";
       });
 
