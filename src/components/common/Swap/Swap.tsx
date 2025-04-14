@@ -439,6 +439,7 @@ const Swap = ({isWidget}: {isWidget?: boolean}) => {
             setInputsState(initialInputsState);
             setReview(false);
             openSuccess();
+            useAnimationStore.getState().triggerClassAnimation("dino", 2000);
             await refetchBalances();
           }
         } else {

@@ -1,5 +1,7 @@
 import {create} from "zustand";
 import {subscribeWithSelector} from "zustand/middleware";
+import {TextScramble} from "../utils/textScrambler";
+// import radioAudioSrc from "../../public/audio/radio-audio.mp3";
 
 type AnimationTrigger = () => void;
 type AnimationType =
@@ -36,6 +38,8 @@ interface AnimationState {
   triggerClassAnimation: (classname: string, duration: number) => void;
   handleVisibilityChange: () => void;
   initializeGlobalAnimation: () => () => void;
+  triggerTextScrambler: () => void;
+  // playRadioAudio: () => void;
 }
 
 // Master toggle
@@ -116,7 +120,7 @@ export const useAnimationStore = create<AnimationState>()(
         set({lastClicks: []});
 
         const animationSubscriber = () => {
-          get().triggerClassAnimation("glitchLayer", 5000);
+          get().triggerTextScrambler();
           get().subscribers = get().subscribers.filter(
             (sub) => sub !== animationSubscriber,
           );
@@ -170,7 +174,8 @@ export const useAnimationStore = create<AnimationState>()(
 
       if (newBuffer === "19.85") {
         const magicNumberSubscriber = () => {
-          alert("19.85 detected!");
+          get().triggerClassAnimation("glitchLayer", 5000);
+          // get().playRadioAudio();
           set((state) => ({
             subscribers: state.subscribers.filter(
               (sub) => sub !== magicNumberSubscriber,
@@ -347,6 +352,30 @@ export const useAnimationStore = create<AnimationState>()(
 
       return () => clearTimeout(timeoutId);
     },
+
+    triggerTextScrambler: () => {
+      const headerElement = document.querySelectorAll("p");
+      headerElement.forEach((el) => {
+        const textScramble = new TextScramble(el);
+        textScramble.setText(el.innerText);
+      });
+    },
+
+    // playRadioAudio: () => {
+    //   const play = () => {
+    //     const audio = new Audio(radioAudioSrc);
+    //     audio.volume = 0.7;
+    //     audio.play().catch((e) => console.error("Audio error:", e));
+
+    //     // Auto-stop after 3 seconds
+    //     setTimeout(() => {
+    //       audio.pause();
+    //       audio.currentTime = 0;
+    //     }, 3000);
+    //   };
+
+    //   return {play};
+    // },
   })),
 );
 
