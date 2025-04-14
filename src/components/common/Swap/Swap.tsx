@@ -232,7 +232,7 @@ const Swap = ({isWidget}: {isWidget?: boolean}) => {
       sell: prevState.buy,
     }));
 
-    useAnimationStore.getState().handleMagicTripleClick();
+    useAnimationStore.getState().handleMagicTripleClickToken();
   }, [isWidget, setSwapCoins]);
 
   const selectCoin = useCallback(

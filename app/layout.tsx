@@ -9,6 +9,7 @@ import "@/public/css/globals.css";
 import "@/public/css/animations.css";
 import dino from "@/public/images/dino.png";
 import Providers from "@/src/core/providers/Providers";
+import MicroChainStatusText from "@/src/components/common/MicroChainStatusText/microChainStatusText";
 
 type Props = Readonly<{
   children: ReactNode;
@@ -73,6 +74,7 @@ const RootLayout = ({ children }: Props) => {
               className="dino"
               style={{ left: "30%", width: "190px", height: "170px" }}
             />
+            <MicroChainStatusText />
           </div>
         </Providers>
       </body>

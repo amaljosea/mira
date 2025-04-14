@@ -16,12 +16,20 @@ interface AnimationState {
   lastClicks: number[];
   intervalId: NodeJS.Timeout | null;
   isGlobalActive: boolean;
+  calledAnimations: {
+    tripleClickTokenSwap: boolean;
+    magicInput: boolean;
+    tripleClickCurrencySwap: boolean;
+  };
+  animationCallCount: number;
+
   subscribe: (callback: AnimationTrigger) => () => void;
   triggerAnimations: () => void;
-
-  handleMagicTripleClick: () => void;
-
+  getAnimationCallCount: () => number;
+  handleMagicTripleClickToken: () => void;
   handleMagicInput: (value: string) => void;
+  handleMagicTripleClickCurrency: () => void;
+  resetAnimationCalls: () => void;
 
   startPeriodicGlobalAnimation: () => void;
   stopPeriodicGlobalAnimation: () => void;
@@ -33,10 +41,13 @@ interface AnimationState {
 // Master toggle
 const MASTER_ENABLED = true;
 
+// Local storage keys
+const ANIMATION_CALLS_KEY = "animation-calls";
+const ANIMATION_COUNT_KEY = "animation-count";
+
 export const useAnimationStore = create<AnimationState>()(
   subscribeWithSelector((set, get) => ({
     masterEnabled: MASTER_ENABLED,
-    // individual toggles
     toggles: {
       timer: true,
       tripleClick: true,
@@ -48,6 +59,22 @@ export const useAnimationStore = create<AnimationState>()(
     lastClicks: [],
     intervalId: null,
     isGlobalActive: false,
+    // Initialize from localStorage if available
+    calledAnimations:
+      typeof window !== "undefined"
+        ? JSON.parse(
+            localStorage.getItem(ANIMATION_CALLS_KEY) ||
+              '{"tripleClickTokenSwap":false,"magicInput":false,"tripleClickCurrencySwap":false}',
+          )
+        : {
+            tripleClickTokenSwap: false,
+            magicInput: false,
+            tripleClickCurrencySwap: false,
+          },
+    animationCallCount:
+      typeof window !== "undefined"
+        ? parseInt(localStorage.getItem(ANIMATION_COUNT_KEY) || "0")
+        : 0,
 
     subscribe: (callback) => {
       set((state) => ({subscribers: [...state.subscribers, callback]}));
@@ -62,9 +89,25 @@ export const useAnimationStore = create<AnimationState>()(
       get().subscribers.forEach((cb) => cb());
     },
 
-    handleMagicTripleClick: () => {
-      const {masterEnabled, toggles, lastClicks} = get();
-      if (!masterEnabled || !toggles.tripleClick) return;
+    getAnimationCallCount: () => {
+      return get().animationCallCount;
+    },
+
+    handleMagicTripleClickToken: () => {
+      const {
+        masterEnabled,
+        toggles,
+        lastClicks,
+        calledAnimations,
+        animationCallCount,
+      } = get();
+      if (
+        !masterEnabled ||
+        !toggles.tripleClick ||
+        calledAnimations.tripleClickTokenSwap ||
+        animationCallCount >= 3
+      )
+        return;
 
       const now = Date.now();
       const recentClicks = lastClicks.filter((t) => now - t < 1000);
@@ -73,12 +116,31 @@ export const useAnimationStore = create<AnimationState>()(
         set({lastClicks: []});
 
         const animationSubscriber = () => {
-          // define animation here (will figure out how to call animation later)
-          alert("GLITCH");
+          get().triggerClassAnimation("glitchLayer", 5000);
           get().subscribers = get().subscribers.filter(
             (sub) => sub !== animationSubscriber,
           );
         };
+
+        // Update call tracking
+        const newCalledAnimations = {
+          ...calledAnimations,
+          tripleClickTokenSwap: true,
+        };
+        const newCount = animationCallCount + 1;
+
+        set({
+          calledAnimations: newCalledAnimations,
+          animationCallCount: newCount,
+        });
+
+        if (typeof window !== "undefined") {
+          localStorage.setItem(
+            ANIMATION_CALLS_KEY,
+            JSON.stringify(newCalledAnimations),
+          );
+          localStorage.setItem(ANIMATION_COUNT_KEY, newCount.toString());
+        }
 
         get().subscribers.push(animationSubscriber);
         get().triggerAnimations();
@@ -87,16 +149,27 @@ export const useAnimationStore = create<AnimationState>()(
       }
     },
 
-    handleMagicInput: (value) => {
-      const {masterEnabled, toggles, inputBuffer} = get();
-      if (!masterEnabled || !toggles.magicNumber) return;
+    handleMagicInput: (value: string) => {
+      const {
+        masterEnabled,
+        toggles,
+        inputBuffer,
+        calledAnimations,
+        animationCallCount,
+      } = get();
+      if (
+        !masterEnabled ||
+        !toggles.magicNumber ||
+        calledAnimations.magicInput ||
+        animationCallCount >= 3
+      )
+        return;
 
       const newBuffer = (inputBuffer + value).slice(-5).replace(/[^0-9.]/g, "");
       set({inputBuffer: newBuffer});
 
       if (newBuffer === "19.85") {
         const magicNumberSubscriber = () => {
-          // define animation here (will figure out how to call animation later)
           alert("19.85 detected!");
           set((state) => ({
             subscribers: state.subscribers.filter(
@@ -105,21 +178,121 @@ export const useAnimationStore = create<AnimationState>()(
           }));
         };
 
+        // Update call tracking
+        const newCalledAnimations = {...calledAnimations, magicInput: true};
+        const newCount = animationCallCount + 1;
+
+        set({
+          calledAnimations: newCalledAnimations,
+          animationCallCount: newCount,
+          inputBuffer: "",
+        });
+
+        if (typeof window !== "undefined") {
+          localStorage.setItem(
+            ANIMATION_CALLS_KEY,
+            JSON.stringify(newCalledAnimations),
+          );
+          localStorage.setItem(ANIMATION_COUNT_KEY, newCount.toString());
+        }
+
         set((state) => ({
           subscribers: [...state.subscribers, magicNumberSubscriber],
         }));
         get().triggerAnimations();
-        set({inputBuffer: ""});
+      }
+    },
+
+    handleMagicTripleClickCurrency: () => {
+      const {
+        masterEnabled,
+        toggles,
+        lastClicks,
+        calledAnimations,
+        animationCallCount,
+      } = get();
+      if (
+        !masterEnabled ||
+        !toggles.tripleClick ||
+        calledAnimations.tripleClickCurrencySwap ||
+        animationCallCount >= 3
+      )
+        return;
+
+      const now = Date.now();
+      const recentClicks = lastClicks.filter((t) => now - t < 1000);
+
+      if (recentClicks.length >= 2) {
+        set({lastClicks: []});
+
+        const animationSubscriber = () => {
+          get().triggerClassAnimation("rainbowColor", 7000);
+          get().subscribers = get().subscribers.filter(
+            (sub) => sub !== animationSubscriber,
+          );
+        };
+
+        // Update call tracking
+        const newCalledAnimations = {
+          ...calledAnimations,
+          tripleClickCurrencySwap: true,
+        };
+        const newCount = animationCallCount + 1;
+
+        set({
+          calledAnimations: newCalledAnimations,
+          animationCallCount: newCount,
+        });
+
+        if (typeof window !== "undefined") {
+          localStorage.setItem(
+            ANIMATION_CALLS_KEY,
+            JSON.stringify(newCalledAnimations),
+          );
+          localStorage.setItem(ANIMATION_COUNT_KEY, newCount.toString());
+        }
+
+        get().subscribers.push(animationSubscriber);
+        get().triggerAnimations();
+      } else {
+        set({lastClicks: [...recentClicks, now]});
+      }
+    },
+
+    resetAnimationCalls: () => {
+      const defaultCalled = {
+        tripleClickTokenSwap: false,
+        magicInput: false,
+        tripleClickCurrencySwap: false,
+      };
+      set({
+        calledAnimations: defaultCalled,
+        animationCallCount: 0,
+      });
+
+      if (typeof window !== "undefined") {
+        localStorage.setItem(
+          ANIMATION_CALLS_KEY,
+          JSON.stringify(defaultCalled),
+        );
+        localStorage.setItem(ANIMATION_COUNT_KEY, "0");
       }
     },
 
     startPeriodicGlobalAnimation: () => {
       const {masterEnabled, toggles} = get();
-      if (!masterEnabled || !toggles.magicNumber) return;
+      if (!masterEnabled || !toggles.globalAnimation) return;
+
+      let isGlitchNext = true;
 
       const intervalId = setInterval(() => {
-        get().triggerClassAnimation("glitchLayer", 5000);
-      }, 60000); // 1 minute
+        if (isGlitchNext) {
+          get().triggerClassAnimation("glitchLayer", 5000);
+        } else {
+          get().triggerClassAnimation("dino", 2000);
+        }
+        isGlitchNext = !isGlitchNext;
+      }, 30000); // 30 second interval
 
       set({intervalId, isGlobalActive: true});
     },

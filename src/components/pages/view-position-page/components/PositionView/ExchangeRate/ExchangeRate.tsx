@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react";
 import ExchangeIcon from "@/src/components/icons/Exchange/ExchangeIcon";
 import styles from "./ExchangeRate.module.css";
 import {calculateFlooredRate} from "./utils";
+import {useAnimationStore} from "@/src/stores/useMiniGame";
 interface AssetMetadata {
   name?: string;
   symbol?: string;
@@ -46,13 +47,15 @@ const ExchangeRate = ({
     return null;
   }
 
+  const handleOnclick = () => {
+    setIsBaseCoinA(!isBaseCoinA);
+    useAnimationStore.getState().handleMagicTripleClickCurrency();
+  };
+
   return (
     <div className={styles.reserveItems}>
       <p>Price</p>
-      <div
-        className={styles.exchangeRate}
-        onClick={() => setIsBaseCoinA(!isBaseCoinA)}
-      >
+      <div className={styles.exchangeRate} onClick={handleOnclick}>
         <p className={styles.exchangeRate}>
           {isBaseCoinA
             ? `1 ${assetBMetadata.symbol} ≈ ${flooredRate} ${assetAMetadata.symbol}`
