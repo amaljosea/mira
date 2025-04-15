@@ -6,8 +6,9 @@ import {TextScramble} from "../utils/textScrambler";
 type AnimationTrigger = () => void;
 type AnimationType =
   | "timer"
-  | "tripleClick"
+  | "tripleClickToken"
   | "magicNumber"
+  | "tripleClickCurrency"
   | "globalAnimation";
 
 interface AnimationState {
@@ -51,8 +52,9 @@ export const useAnimationStore = create<AnimationState>()(
     masterEnabled: process.env.NEXT_PUBLIC_MINIGAME_MASTER === "true",
     toggles: {
       timer: true,
-      tripleClick: true,
+      tripleClickToken: true,
       magicNumber: true,
+      tripleClickCurrency: true,
       globalAnimation: true,
     },
     subscribers: [],
@@ -104,9 +106,9 @@ export const useAnimationStore = create<AnimationState>()(
       } = get();
       if (
         !masterEnabled ||
-        !toggles.tripleClick ||
+        !toggles.tripleClickToken ||
         calledAnimations.tripleClickTokenSwap ||
-        animationCallCount >= 3
+        animationCallCount !== 0
       )
         return;
 
@@ -162,7 +164,7 @@ export const useAnimationStore = create<AnimationState>()(
         !masterEnabled ||
         !toggles.magicNumber ||
         calledAnimations.magicInput ||
-        animationCallCount >= 3
+        animationCallCount !== 1
       )
         return;
 
@@ -215,9 +217,9 @@ export const useAnimationStore = create<AnimationState>()(
       } = get();
       if (
         !masterEnabled ||
-        !toggles.tripleClick ||
+        !toggles.tripleClickCurrency ||
         calledAnimations.tripleClickCurrencySwap ||
-        animationCallCount >= 3
+        animationCallCount !== 2
       )
         return;
 
