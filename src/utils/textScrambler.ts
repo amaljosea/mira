@@ -119,16 +119,3 @@ export class TextScramble {
     return this.chars[Math.floor(Math.random() * this.chars.length)];
   }
 }
-
-// Usage Example:
-// Get a reference to your text element
-const headerElement = document.querySelector("p");
-if (headerElement) {
-  // Create a new TextScramble instance
-  const textScramble = new TextScramble(headerElement);
-
-  // Scramble the text
-  textScramble.setText("New Text After Scramble").then(() => {
-    console.log("Scramble animation completed");
-  });
-}

@@ -42,16 +42,13 @@ interface AnimationState {
   // playRadioAudio: () => void;
 }
 
-// Master toggle
-const MASTER_ENABLED = true;
-
 // Local storage keys
 const ANIMATION_CALLS_KEY = "animation-calls";
 const ANIMATION_COUNT_KEY = "animation-count";
 
 export const useAnimationStore = create<AnimationState>()(
   subscribeWithSelector((set, get) => ({
-    masterEnabled: MASTER_ENABLED,
+    masterEnabled: process.env.NEXT_PUBLIC_MINIGAME_MASTER === "true",
     toggles: {
       timer: true,
       tripleClick: true,

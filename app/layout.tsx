@@ -10,6 +10,7 @@ import "@/public/css/animations.css";
 import dino from "@/public/images/dino.png";
 import Providers from "@/src/core/providers/Providers";
 import MicroChainStatusText from "@/src/components/common/MicroChainStatusText/microChainStatusText";
+import { useAnimationStore } from "@/src/stores/useMiniGame";
 
 type Props = Readonly<{
   children: ReactNode;
@@ -51,6 +52,7 @@ export { metadata };
 }; */
 
 const RootLayout = ({ children }: Props) => {
+  const minigameMaster = useAnimationStore.getState().masterEnabled;
   return (
     <html lang="en">
       <head>
@@ -60,21 +62,27 @@ const RootLayout = ({ children }: Props) => {
         <Providers>
           <div style={{ position: "relative" }}>
             {children}
-            <div className="glitchLayer">{children}</div>
-            <div className="rainbowContainer">
-              <div className="rainbowColor rainbowColor1"></div>
-              <div className="rainbowColor rainbowColor2"></div>
-              <div className="rainbowColor rainbowColor3"></div>
-              <div className="rainbowColor rainbowColor4"></div>
-              <div className="rainbowColor rainbowColor5"></div>
-            </div>
-            <img
-              src={dino.src}
-              alt="Derek Dino"
-              className="dino"
-              style={{ left: "30%", width: "190px", height: "170px" }}
-            />
-            <MicroChainStatusText />
+            {
+              minigameMaster && (
+                <>
+                  <div className="glitchLayer">{children}</div>
+                  <div className="rainbowContainer">
+                    <div className="rainbowColor rainbowColor1"></div>
+                    <div className="rainbowColor rainbowColor2"></div>
+                    <div className="rainbowColor rainbowColor3"></div>
+                    <div className="rainbowColor rainbowColor4"></div>
+                    <div className="rainbowColor rainbowColor5"></div>
+                  </div>
+                  <img
+                    src={dino.src}
+                    alt="Derek Dino"
+                    className="dino"
+                    style={{ left: "30%", width: "190px", height: "170px" }}
+                  />
+                  <MicroChainStatusText />
+                </>
+              )
+            }
           </div>
         </Providers>
       </body>
