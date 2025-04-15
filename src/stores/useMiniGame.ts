@@ -3,6 +3,11 @@ import {subscribeWithSelector} from "zustand/middleware";
 import {TextScramble} from "../utils/textScrambler";
 // import radioAudioSrc from "../../public/audio/radio-audio.mp3";
 
+const HINT_1 = "Rwrarrw, careful how fast you switch those assets!";
+const HINT_2 = "Slippage is so low these days, it feels great to live in 1985.";
+const HINT_3 =
+  " Easy there, Gordon Gecko. If you keep switching these prices, the market will tank.";
+
 type AnimationTrigger = () => void;
 type AnimationType =
   | "timer"
@@ -26,6 +31,11 @@ interface AnimationState {
   };
   animationCallCount: number;
 
+  hintText: string;
+  delayedTestTimeout: NodeJS.Timeout | null;
+  delayedTestStartTime: number | null;
+  delayedTestRemaining: number | null;
+
   subscribe: (callback: AnimationTrigger) => () => void;
   triggerAnimations: () => void;
   getAnimationCallCount: () => number;
@@ -41,6 +51,8 @@ interface AnimationState {
   initializeGlobalAnimation: () => () => void;
   triggerTextScrambler: () => void;
   // playRadioAudio: () => void;
+
+  initializeHintListener: (count?: number) => () => void;
 }
 
 // Local storage keys
@@ -62,7 +74,6 @@ export const useAnimationStore = create<AnimationState>()(
     lastClicks: [],
     intervalId: null,
     isGlobalActive: false,
-    // Initialize from localStorage if available
     calledAnimations:
       typeof window !== "undefined"
         ? JSON.parse(
@@ -78,6 +89,11 @@ export const useAnimationStore = create<AnimationState>()(
       typeof window !== "undefined"
         ? parseInt(localStorage.getItem(ANIMATION_COUNT_KEY) || "0")
         : 0,
+
+    hintText: "",
+    delayedTestTimeout: null,
+    delayedTestStartTime: null,
+    delayedTestRemaining: null,
 
     subscribe: (callback) => {
       set((state) => ({subscribers: [...state.subscribers, callback]}));
@@ -103,6 +119,7 @@ export const useAnimationStore = create<AnimationState>()(
         lastClicks,
         calledAnimations,
         animationCallCount,
+        initializeHintListener,
       } = get();
       if (
         !masterEnabled ||
@@ -145,6 +162,7 @@ export const useAnimationStore = create<AnimationState>()(
           localStorage.setItem(ANIMATION_COUNT_KEY, newCount.toString());
         }
 
+        initializeHintListener(newCount);
         get().subscribers.push(animationSubscriber);
         get().triggerAnimations();
       } else {
@@ -159,6 +177,7 @@ export const useAnimationStore = create<AnimationState>()(
         inputBuffer,
         calledAnimations,
         animationCallCount,
+        initializeHintListener,
       } = get();
       if (
         !masterEnabled ||
@@ -200,6 +219,7 @@ export const useAnimationStore = create<AnimationState>()(
           localStorage.setItem(ANIMATION_COUNT_KEY, newCount.toString());
         }
 
+        initializeHintListener(newCount);
         set((state) => ({
           subscribers: [...state.subscribers, magicNumberSubscriber],
         }));
@@ -214,6 +234,7 @@ export const useAnimationStore = create<AnimationState>()(
         lastClicks,
         calledAnimations,
         animationCallCount,
+        initializeHintListener,
       } = get();
       if (
         !masterEnabled ||
@@ -256,6 +277,7 @@ export const useAnimationStore = create<AnimationState>()(
           localStorage.setItem(ANIMATION_COUNT_KEY, newCount.toString());
         }
 
+        initializeHintListener(newCount);
         get().subscribers.push(animationSubscriber);
         get().triggerAnimations();
       } else {
@@ -272,6 +294,7 @@ export const useAnimationStore = create<AnimationState>()(
       set({
         calledAnimations: defaultCalled,
         animationCallCount: 0,
+        hintText: "",
       });
 
       if (typeof window !== "undefined") {
@@ -321,18 +344,18 @@ export const useAnimationStore = create<AnimationState>()(
       if (typeof window === "undefined") return () => {};
 
       const store = get();
-      store.startPeriodicGlobalAnimation();
-      document.addEventListener(
-        "visibilitychange",
-        store.handleVisibilityChange,
+      const hintListenerCleanup = store.initializeHintListener(
+        store.animationCallCount,
       );
+      store.startPeriodicGlobalAnimation();
+
+      const visibilityHandler = () => store.handleVisibilityChange();
+      document.addEventListener("visibilitychange", visibilityHandler);
 
       return () => {
+        hintListenerCleanup();
         store.stopPeriodicGlobalAnimation();
-        document.removeEventListener(
-          "visibilitychange",
-          store.handleVisibilityChange,
-        );
+        document.removeEventListener("visibilitychange", visibilityHandler);
       };
     },
 
@@ -360,25 +383,121 @@ export const useAnimationStore = create<AnimationState>()(
       });
     },
 
-    // playRadioAudio: () => {
-    //   const play = () => {
-    //     const audio = new Audio(radioAudioSrc);
-    //     audio.volume = 0.7;
-    //     audio.play().catch((e) => console.error("Audio error:", e));
+    initializeHintListener: (count?: number) => {
+      const store = get();
 
-    //     // Auto-stop after 3 seconds
-    //     setTimeout(() => {
-    //       audio.pause();
-    //       audio.currentTime = 0;
-    //     }, 3000);
-    //   };
+      set({hintText: ""});
 
-    //   return {play};
-    // },
+      if (store.delayedTestTimeout) {
+        clearTimeout(store.delayedTestTimeout);
+      }
+
+      const updateHintText = () => {
+        console.log("5 minutes have passed!");
+        if (count === 0) set({hintText: HINT_1});
+        if (count === 1) set({hintText: HINT_2});
+        if (count === 2) set({hintText: HINT_3});
+      };
+
+      const startTimer = () => {
+        const delay = 5 * 60 * 1000; // 5 minutes
+        // const delay = 5000; // 5 seconds
+        set({
+          delayedTestStartTime: Date.now(),
+          delayedTestRemaining: delay,
+        });
+
+        const timeoutId = setTimeout(() => {
+          updateHintText();
+          set({
+            delayedTestTimeout: null,
+            delayedTestStartTime: null,
+            delayedTestRemaining: null,
+          });
+        }, delay);
+
+        set({delayedTestTimeout: timeoutId});
+      };
+      const pauseTimer = () => {
+        const {delayedTestTimeout, delayedTestStartTime} = get();
+        if (delayedTestTimeout && delayedTestStartTime) {
+          clearTimeout(delayedTestTimeout);
+          const elapsed = Date.now() - delayedTestStartTime;
+          set({
+            delayedTestTimeout: null,
+            delayedTestRemaining: 5 * 60 * 1000 - elapsed,
+          });
+        }
+      };
+
+      const resumeTimer = () => {
+        const {delayedTestRemaining} = get();
+        if (delayedTestRemaining) {
+          const timeoutId = setTimeout(() => {
+            updateHintText();
+            set({
+              delayedTestTimeout: null,
+              delayedTestStartTime: null,
+              delayedTestRemaining: null,
+            });
+          }, delayedTestRemaining);
+
+          set({
+            delayedTestTimeout: timeoutId,
+            delayedTestStartTime: Date.now(),
+          });
+        }
+      };
+
+      const handleVisibilityChange = () => {
+        if (document.visibilityState === "visible") {
+          resumeTimer();
+          store.handleVisibilityChange();
+        } else {
+          pauseTimer();
+          store.handleVisibilityChange();
+        }
+      };
+
+      // Initialize
+      startTimer();
+      window.addEventListener("visibilitychange", handleVisibilityChange);
+
+      // Cleanup function
+      return () => {
+        const {delayedTestTimeout} = get();
+        if (delayedTestTimeout) {
+          clearTimeout(delayedTestTimeout);
+        }
+        window.removeEventListener("visibilitychange", handleVisibilityChange);
+        set({
+          delayedTestTimeout: null,
+          delayedTestStartTime: null,
+          delayedTestRemaining: null,
+        });
+      };
+    },
   })),
 );
 
 if (typeof window !== "undefined") {
-  const cleanup = useAnimationStore.getState().initializeGlobalAnimation();
-  window.addEventListener("beforeunload", cleanup);
+  const globalAnimationCleanup = useAnimationStore
+    .getState()
+    .initializeGlobalAnimation();
+  window.addEventListener("beforeunload", globalAnimationCleanup);
 }
+// playRadioAudio: () => {
+//   const play = () => {
+//     const audio = new Audio(radioAudioSrc);
+//     audio.volume = 0.7;
+//     audio.play().catch((e) => console.error("Audio error:", e));
+
+//     // Auto-stop after 3 seconds
+//     setTimeout(() => {
+//       audio.pause();
+//       audio.currentTime = 0;
+//     }, 3000);
+//   };
+
+//   return {play};
+// },
