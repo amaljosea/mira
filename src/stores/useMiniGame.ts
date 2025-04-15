@@ -376,10 +376,38 @@ export const useAnimationStore = create<AnimationState>()(
     },
 
     triggerTextScrambler: () => {
-      const headerElement = document.querySelectorAll("p");
-      headerElement.forEach((el) => {
-        const textScramble = new TextScramble(el);
-        textScramble.setText(el.innerText);
+      const elements = document.querySelectorAll("body *");
+
+      elements.forEach((el) => {
+        const text = el.childNodes;
+        let visibleText = "";
+
+        text.forEach((node) => {
+          if (
+            node.nodeType === Node.TEXT_NODE &&
+            node.textContent.trim().length > 0
+          ) {
+            visibleText += node.textContent.trim() + " ";
+          }
+        });
+
+        if (visibleText.trim().length > 0) {
+          const scrambleTarget = document.createElement("span");
+          scrambleTarget.textContent = visibleText.trim();
+
+          // Replace text nodes only, keep nested HTML (like <button>) intact
+          el.childNodes.forEach((node) => {
+            if (
+              node.nodeType === Node.TEXT_NODE &&
+              node.textContent.trim().length > 0
+            ) {
+              el.replaceChild(scrambleTarget, node);
+            }
+          });
+
+          const textScramble = new TextScramble(scrambleTarget);
+          textScramble.setText(scrambleTarget.innerText);
+        }
       });
     },
 
