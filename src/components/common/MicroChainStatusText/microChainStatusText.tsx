@@ -6,6 +6,8 @@ import {useAnimationStore} from "@/src/stores/useMiniGame";
 
 import radioAudioSrc from "../../../../public/audio/radio-audio.mp3";
 
+const SHOW_MENU = true;
+
 const MicroChainStatusText = () => {
   const count = useAnimationStore((state) => state.animationCallCount);
   const hintText = useAnimationStore((state) => state.hintText);
@@ -28,7 +30,15 @@ const MicroChainStatusText = () => {
 
   return (
     <>
-      <div style={{position: "absolute", top: "0", right: "0", zIndex: "1000"}}>
+      <div
+        style={{
+          position: "absolute",
+          top: "0",
+          right: "0",
+          zIndex: "1000",
+          display: SHOW_MENU ? "block" : "none",
+        }}
+      >
         {/* <button
                     onClick={() => play()}
                 >
