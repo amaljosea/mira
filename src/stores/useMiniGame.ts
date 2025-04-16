@@ -385,9 +385,9 @@ export const useAnimationStore = create<AnimationState>()(
         text.forEach((node) => {
           if (
             node.nodeType === Node.TEXT_NODE &&
-            node.textContent.trim().length > 0
+            (node.textContent?.trim().length ?? 0) > 0
           ) {
-            visibleText += node.textContent.trim() + " ";
+            visibleText += node.textContent?.trim() + " ";
           }
         });
 
@@ -399,7 +399,7 @@ export const useAnimationStore = create<AnimationState>()(
           el.childNodes.forEach((node) => {
             if (
               node.nodeType === Node.TEXT_NODE &&
-              node.textContent.trim().length > 0
+              (node.textContent?.trim().length ?? 0) > 0
             ) {
               el.replaceChild(scrambleTarget, node);
             }
