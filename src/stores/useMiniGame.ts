@@ -313,6 +313,14 @@ export const useAnimationStore = create<AnimationState>()(
       let isGlitchNext = true;
 
       const intervalId = setInterval(() => {
+        const currentCount = get().animationCallCount;
+
+        // Stop the animation after 3 total animation calls
+        if (currentCount === 3) {
+          get().stopPeriodicGlobalAnimation();
+          return;
+        }
+
         if (isGlitchNext) {
           get().triggerClassAnimation("glitchLayer", 5000);
         } else {
