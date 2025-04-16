@@ -110,7 +110,7 @@ const MicroChainStatusText = () => {
                 key={`anim-${char}-${index}`}
                 initial={{opacity: 0, y: -40, scale: 5}}
                 animate={{opacity: 1, y: 0, scale: 1}}
-                transition={{delay: 0.5, ease: [0.22, 1, 0.36, 1]}}
+                transition={{delay: 0.8, ease: [0.22, 1, 0.36, 1]}}
               >
                 {char}
               </motion.span>
@@ -121,7 +121,7 @@ const MicroChainStatusText = () => {
                 key={`anim-${char}-${index}`}
                 initial={{opacity: 0, y: -40, scale: 5}}
                 animate={{opacity: 1, y: 0, scale: 1}}
-                transition={{delay: 0.5, ease: [0.22, 1, 0.36, 1]}}
+                transition={{delay: 0.9, ease: [0.22, 1, 0.36, 1]}}
               >
                 {char}
               </motion.span>
@@ -132,7 +132,7 @@ const MicroChainStatusText = () => {
                 key={`anim-${char}-${index}`}
                 initial={{opacity: 0, y: -40, scale: 5}}
                 animate={{opacity: 1, y: 0, scale: 1}}
-                transition={{delay: 0.5, ease: [0.22, 1, 0.36, 1]}}
+                transition={{delay: 1, ease: [0.22, 1, 0.36, 1]}}
               >
                 {char}
               </motion.span>
