@@ -58,3 +58,24 @@
   opacity: 0.3;
   text-align: center;
 }
+
+@media screen and (max-width: 1320px) {
+  .hintText {
+    font-size: 14px !important;
+  }
+}
+@media screen and (max-width: 455px) {
+  .hintText {
+    display: none;
+  }
+}
+@media screen and (min-width: 455px) {
+  .hintTextSmall {
+    display: none;
+  }
+}
+@media screen and (min-width: 400px) {
+  .hintTextSmall {
+    font-size: 14px !important;
+  }
+}
