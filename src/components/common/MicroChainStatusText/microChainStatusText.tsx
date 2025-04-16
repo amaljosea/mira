@@ -4,36 +4,16 @@ import {motion} from "framer-motion";
 import styles from "./MicroChainStatusText.module.css";
 import {useAnimationStore} from "@/src/stores/useMiniGame";
 
-import radioAudioSrc from "../../../../public/audio/radio-audio.mp3";
-
 const MicroChainStatusText = () => {
   const count = useAnimationStore((state) => state.animationCallCount);
   const hintText = useAnimationStore((state) => state.hintText);
 
-  const play = () => {
-    const play = () => {
-      const audio = new Audio(radioAudioSrc);
-      audio.volume = 0.7;
-      audio.play().catch((e) => console.error("Audio error:", e));
-
-      // Auto-stop after 3 seconds
-      setTimeout(() => {
-        audio.pause();
-        audio.currentTime = 0;
-      }, 3000);
-    };
-
-    return {play};
-  };
-
   return (
     <>
       <div style={{position: "absolute", top: "0", right: "0", zIndex: "1000"}}>
-        {/* <button
-                    onClick={() => play()}
-                >
-                    audio
-                </button> */}
+        <button onClick={() => useAnimationStore.getState().playRadioAudio()}>
+          audio
+        </button>
         <button
           onClick={() => useAnimationStore.getState().triggerTextScrambler()}
         >

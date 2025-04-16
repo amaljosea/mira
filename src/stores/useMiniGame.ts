@@ -1,7 +1,7 @@
 import {create} from "zustand";
 import {subscribeWithSelector} from "zustand/middleware";
 import {TextScramble} from "../utils/textScrambler";
-// import radioAudioSrc from "../../public/audio/radio-audio.mp3";
+import {playAudioEffect} from "../utils/playAudioEffect";
 
 const HINT_1 = "Rwrarrw, careful how fast you switch those assets!";
 const HINT_2 = "Slippage is so low these days, it feels great to live in 1985.";
@@ -50,7 +50,7 @@ interface AnimationState {
   handleVisibilityChange: () => void;
   initializeGlobalAnimation: () => () => void;
   triggerTextScrambler: () => void;
-  // playRadioAudio: () => void;
+  playRadioAudio: () => void;
 
   initializeHintListener: (count?: number) => () => void;
 }
@@ -103,6 +103,13 @@ export const useAnimationStore = create<AnimationState>()(
         }));
     },
 
+    playRadioAudio: () => {
+      playAudioEffect("/audio/radio-audio.mp3", {
+        volume: 0.7,
+        duration: 2500,
+        fadeDuration: 500,
+      });
+    },
     triggerAnimations: () => {
       if (!get().masterEnabled) return;
       get().subscribers.forEach((cb) => cb());
@@ -178,6 +185,7 @@ export const useAnimationStore = create<AnimationState>()(
         calledAnimations,
         animationCallCount,
         initializeHintListener,
+        playRadioAudio,
       } = get();
       if (
         !masterEnabled ||
@@ -193,7 +201,7 @@ export const useAnimationStore = create<AnimationState>()(
       if (newBuffer === "19.85") {
         const magicNumberSubscriber = () => {
           get().triggerClassAnimation("glitchLayer", 5000);
-          // get().playRadioAudio();
+          playRadioAudio();
           set((state) => ({
             subscribers: state.subscribers.filter(
               (sub) => sub !== magicNumberSubscriber,
