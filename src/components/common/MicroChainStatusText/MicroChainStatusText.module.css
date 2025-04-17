@@ -64,18 +64,14 @@
     font-size: 14px !important;
   }
 }
-@media screen and (max-width: 455px) {
+
+@media screen and (max-width: 500px) {
   .hintText {
-    display: none;
+    position: absolute;
+    top: 40px;
   }
-}
-@media screen and (min-width: 455px) {
-  .hintTextSmall {
-    display: none;
-  }
-}
-@media screen and (min-width: 200px) {
-  .hintTextSmall {
-    font-size: 14px !important;
+  .widget {
+    bottom: 60px;
+    width: 90%;
   }
 }
