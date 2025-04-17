@@ -2,14 +2,11 @@ import Script from "next/script";
 import {ReactNode} from "react";
 import {clsx} from "clsx";
 import {Prompt, Inter} from "next/font/google";
-import localFont from "next/font/local";
 import {metadata} from "./metadata";
 
 import "@/public/css/globals.css";
 import "@/public/css/animations.css";
-import dino from "@/public/images/dino.png";
 import Providers from "@/src/core/providers/Providers";
-import MicroChainStatusText from "@/src/components/common/MicroChainStatusText/microChainStatusText";
 import {useAnimationStore} from "@/src/stores/useMiniGame";
 import GlitchEffects from "@/src/components/common/GlitchEffects/GlitchEffects";
 
@@ -64,26 +61,6 @@ const RootLayout = ({children}: Props) => {
           <div style={{position: "relative"}}>
             {children}
             {minigameMaster && <GlitchEffects overlayContent={children} />}
-
-            {/* {minigameMaster && (
-              <>
-                <div className="glitchLayer">{children}</div>
-                <div className="rainbowContainer">
-                  <div className="rainbowColor rainbowColor1"></div>
-                  <div className="rainbowColor rainbowColor2"></div>
-                  <div className="rainbowColor rainbowColor3"></div>
-                  <div className="rainbowColor rainbowColor4"></div>
-                  <div className="rainbowColor rainbowColor5"></div>
-                </div>
-                <img
-                  src={dino.src}
-                  alt="Derek Dino"
-                  className="dino"
-                  style={{left: "30%", width: "190px", height: "170px"}}
-                />
-                <MicroChainStatusText />
-              </>
-            )} */}
           </div>
         </Providers>
       </body>
