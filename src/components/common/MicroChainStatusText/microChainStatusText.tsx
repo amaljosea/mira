@@ -108,9 +108,9 @@ const MicroChainStatusText = () => {
             "MIC".split("").map((char, index) => (
               <motion.span
                 key={`anim-${char}-${index}`}
-                initial={{opacity: 0, y: -10}}
-                animate={{opacity: 1, y: 0}}
-                transition={{delay: index * 0.05}}
+                initial={{opacity: 0.9, y: -120, x: 120, scale: 3}}
+                animate={{opacity: 1, y: 0, x: 0, scale: 1}}
+                transition={{delay: 1}}
               >
                 {char}
               </motion.span>
@@ -119,9 +119,9 @@ const MicroChainStatusText = () => {
             "ROC".split("").map((char, index) => (
               <motion.span
                 key={`anim-${char}-${index}`}
-                initial={{opacity: 0, y: -10}}
-                animate={{opacity: 1, y: 0}}
-                transition={{delay: index * 0.05}}
+                initial={{opacity: 0.9, y: -120, x: 120, scale: 3}}
+                animate={{opacity: 1, y: 0, x: 0, scale: 1}}
+                transition={{delay: 1}}
               >
                 {char}
               </motion.span>
@@ -130,9 +130,9 @@ const MicroChainStatusText = () => {
             "HAIN".split("").map((char, index) => (
               <motion.span
                 key={`anim-${char}-${index}`}
-                initial={{opacity: 0, y: -10}}
-                animate={{opacity: 1, y: 0}}
-                transition={{delay: index * 0.05}}
+                initial={{opacity: 0.9, y: -120, x: 240, scale: 3}}
+                animate={{opacity: 1, y: 0, x: 0, scale: 1}}
+                transition={{delay: 1}}
               >
                 {char}
               </motion.span>
