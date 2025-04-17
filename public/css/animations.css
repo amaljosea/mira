@@ -61,17 +61,42 @@
     position: fixed;
     top: 95%;
     height: 50vh;
-
     left: 50%;
     right: 50%;
-    width: 600px;
+    width: 400px;
     transform-origin: 50% 0;
     transform: translate(-50%, -100%);
-    transform: translate(-50%, -100%) scale(1.5);
+    transform: translate(-50%, -100%) scale(0.5);
     z-index: 999;
     pointer-events: none;
     filter: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='b' x='0' y='0'%3E%3CfeFlood x='4' y='4' height='2' width='2'/%3E%3CfeComposite width='10' height='10'/%3E%3CfeTile result='a'/%3E%3CfeComposite in='SourceGraphic' in2='a' operator='in'/%3E%3CfeMorphology operator='dilate' radius='5'/%3E%3C/filter%3E%3C/svg%3E#b");
   }
+
+  @media (min-width: 500px) {
+  .rainbowContainer {
+    transform: translate(-50%, -100%) scale(0.7);
+  }
+}
+
+  @media (min-width: 640px) {
+  .rainbowContainer {
+    transform: translate(-50%, -100%) scale(0.8);
+  }
+}
+
+   @media (min-width: 860px) {
+  .rainbowContainer {
+    width: 500px;
+    transform: translate(-50%, -100%) scale(1.2);
+  }
+}
+
+  @media (min-width: 1108px) {
+  .rainbowContainer {
+    width: 600px;
+    transform: translate(-50%, -100%) scale(1.5);
+  }
+}
 
   /* Common rainbow arc style */
   .rainbowColor {
