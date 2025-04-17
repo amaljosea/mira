@@ -1,6 +1,6 @@
 "use client";
 
-import {motion} from "framer-motion";
+import {motion, AnimatePresence} from "framer-motion";
 import styles from "./MicroChainStatusText.module.css";
 import {useAnimationStore} from "@/src/stores/useMiniGame";
 
@@ -133,8 +133,33 @@ const MicroChainStatusText = () => {
             </span>
           ))}
           <span>]</span>
+          <AnimatePresence>
+            {hintText && (
+              <motion.span
+                className={styles.hintText}
+                initial={{opacity: 0}}
+                animate={{opacity: 1}}
+                exit={{opacity: 0}}
+                transition={{duration: 2}}
+              >
+                Hint: {hintText}
+              </motion.span>
+            )}
+          </AnimatePresence>
         </div>
-        <span>{hintText}</span>
+        <AnimatePresence>
+          {hintText && (
+            <motion.span
+              className={styles.hintTextSmall}
+              initial={{opacity: 0}}
+              animate={{opacity: 1}}
+              exit={{opacity: 0}}
+              transition={{duration: 2}}
+            >
+              Hint: {hintText}
+            </motion.span>
+          )}
+        </AnimatePresence>
       </div>
     </>
   );
