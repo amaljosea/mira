@@ -106,10 +106,9 @@ export const useAnimationStore = create<AnimationState>()(
     playRadioAudio: () => {
       playAudioEffect("/audio/radio-audio.mp3", {
         volume: 0.7,
-        duration: 2500,
-        fadeDuration: 500,
       });
     },
+
     triggerAnimations: () => {
       if (!get().masterEnabled) return;
       get().subscribers.forEach((cb) => cb());
@@ -522,18 +521,3 @@ if (typeof window !== "undefined") {
     .initializeGlobalAnimation();
   window.addEventListener("beforeunload", globalAnimationCleanup);
 }
-// playRadioAudio: () => {
-//   const play = () => {
-//     const audio = new Audio(radioAudioSrc);
-//     audio.volume = 0.7;
-//     audio.play().catch((e) => console.error("Audio error:", e));
-
-//     // Auto-stop after 3 seconds
-//     setTimeout(() => {
-//       audio.pause();
-//       audio.currentTime = 0;
-//     }, 3000);
-//   };
-
-//   return {play};
-// },
