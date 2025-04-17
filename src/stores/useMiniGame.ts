@@ -443,8 +443,8 @@ export const useAnimationStore = create<AnimationState>()(
       };
 
       const startTimer = () => {
-        const delay = 5 * 60 * 1000; // 5 minutes
-        // const delay = 5000; // 5 seconds
+        // const delay = 5 * 60 * 1000; // 5 minutes
+        const delay = 10 * 1000; // 10 seconds
         set({
           delayedTestStartTime: Date.now(),
           delayedTestRemaining: delay,
