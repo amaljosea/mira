@@ -4,7 +4,7 @@ import {motion} from "framer-motion";
 import styles from "./MicroChainStatusText.module.css";
 import {useAnimationStore} from "@/src/stores/useMiniGame";
 
-const SHOW_MENU = true;
+const SHOW_MENU = false;
 
 const MicroChainStatusText = () => {
   const count = useAnimationStore((state) => state.animationCallCount);
