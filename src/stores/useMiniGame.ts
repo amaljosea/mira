@@ -35,6 +35,7 @@ interface AnimationState {
   delayedTestTimeout: NodeJS.Timeout | null;
   delayedTestStartTime: number | null;
   delayedTestRemaining: number | null;
+  isRadioPlaying: boolean;
 
   subscribe: (callback: AnimationTrigger) => () => void;
   triggerAnimations: () => void;
@@ -104,15 +105,20 @@ export const useAnimationStore = create<AnimationState>()(
         }));
     },
 
+    isRadioPlaying: false,
+
     playRadioAudio: () => {
       playAudioEffect("/audio/radio-audio.mp3", {
         volume: 0.7,
-        maxDuration: 8000, // play only 8 seconds of clip
+        maxDuration: 8000,
+        onStart: () => set({isRadioPlaying: true}),
+        onEnd: () => set({isRadioPlaying: false}),
       });
     },
 
     stopRadioAudio: () => {
       stopCurrentAudio();
+      set({isRadioPlaying: false});
     },
 
     triggerAnimations: () => {
