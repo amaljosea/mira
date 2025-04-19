@@ -3,6 +3,7 @@
 import {motion, AnimatePresence} from "framer-motion";
 import styles from "./MicroChainStatusText.module.css";
 import {useAnimationStore} from "@/src/stores/useMiniGame";
+import {stopCurrentAudio} from "@/src/utils/playAudioEffect";
 
 const SHOW_MENU = false;
 
@@ -24,6 +25,7 @@ const MicroChainStatusText = () => {
         <button onClick={() => useAnimationStore.getState().playRadioAudio()}>
           audio
         </button>
+        <button onClick={stopCurrentAudio}>stop audio</button>
         <button
           onClick={() => useAnimationStore.getState().triggerTextScrambler()}
         >
