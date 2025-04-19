@@ -3,13 +3,13 @@
 import {motion, AnimatePresence} from "framer-motion";
 import styles from "./MicroChainStatusText.module.css";
 import {useAnimationStore} from "@/src/stores/useMiniGame";
-import {stopCurrentAudio} from "@/src/utils/playAudioEffect";
 
 const SHOW_MENU = false;
 
 const MicroChainStatusText = () => {
   const count = useAnimationStore((state) => state.animationCallCount);
   const hintText = useAnimationStore((state) => state.hintText);
+  const isRadioPlaying = useAnimationStore((state) => state.isRadioPlaying);
 
   return (
     <>
@@ -25,7 +25,6 @@ const MicroChainStatusText = () => {
         <button onClick={() => useAnimationStore.getState().playRadioAudio()}>
           audio
         </button>
-        <button onClick={stopCurrentAudio}>stop audio</button>
         <button
           onClick={() => useAnimationStore.getState().triggerTextScrambler()}
         >
@@ -135,6 +134,13 @@ const MicroChainStatusText = () => {
             </span>
           ))}
           <span>]</span>
+          {isRadioPlaying && (
+            <button
+              onClick={() => useAnimationStore.getState().stopRadioAudio()}
+            >
+              stop
+            </button>
+          )}
           <AnimatePresence>
             {hintText && (
               <motion.span

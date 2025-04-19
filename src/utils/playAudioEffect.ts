@@ -1,43 +1,46 @@
+// lib/audio-utils.ts
 let currentAudio: HTMLAudioElement | null = null;
 
-export const playAudioEffect = (
+export function playAudioEffect(
   src: string,
-  options?: {
+  options: {
     volume?: number;
     maxDuration?: number;
+    onStart?: () => void;
+    onEnd?: () => void;
   },
-) => {
-  const {volume = 0.7, maxDuration} = options || {};
-
-  if (typeof window === "undefined") return;
-
-  if (currentAudio) {
-    currentAudio.pause();
-    currentAudio.currentTime = 0;
-    currentAudio = null;
-  }
+) {
+  stopCurrentAudio();
 
   const audio = new Audio(src);
-  audio.volume = volume;
-  audio.play().catch((e) => console.error("Audio playback failed:", e));
-
+  audio.volume = options.volume ?? 1;
   currentAudio = audio;
 
-  if (maxDuration) {
-    setTimeout(() => {
-      if (audio === currentAudio) {
-        audio.pause();
-        audio.currentTime = 0;
-        currentAudio = null;
-      }
-    }, maxDuration);
-  }
-};
+  audio.addEventListener("play", () => {
+    options.onStart?.();
+  });
 
-export const stopCurrentAudio = () => {
+  const cleanup = () => {
+    options.onEnd?.();
+    audio.remove();
+  };
+
+  audio.addEventListener("ended", cleanup);
+  audio.addEventListener("pause", cleanup);
+
+  audio.play();
+
+  if (options.maxDuration) {
+    setTimeout(() => {
+      stopCurrentAudio();
+    }, options.maxDuration);
+  }
+}
+
+export function stopCurrentAudio() {
   if (currentAudio) {
     currentAudio.pause();
     currentAudio.currentTime = 0;
     currentAudio = null;
   }
-};
+}
