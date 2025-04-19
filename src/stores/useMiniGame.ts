@@ -1,7 +1,7 @@
 import {create} from "zustand";
 import {subscribeWithSelector} from "zustand/middleware";
 import {TextScramble} from "../utils/textScrambler";
-import {playAudioEffect} from "../utils/playAudioEffect";
+import {playAudioEffect, stopCurrentAudio} from "../utils/playAudioEffect";
 
 const HINT_1 = "Rwrarrw, careful how fast you switch those assets!";
 const HINT_2 = "Slippage is so low these days, it feels great to live in 1985.";
@@ -51,6 +51,7 @@ interface AnimationState {
   initializeGlobalAnimation: () => () => void;
   triggerTextScrambler: () => void;
   playRadioAudio: () => void;
+  stopRadioAudio: () => void;
 
   initializeHintListener: (count?: number) => () => void;
 }
@@ -106,7 +107,12 @@ export const useAnimationStore = create<AnimationState>()(
     playRadioAudio: () => {
       playAudioEffect("/audio/radio-audio.mp3", {
         volume: 0.7,
+        maxDuration: 8000, // play only 8 seconds of clip
       });
+    },
+
+    stopRadioAudio: () => {
+      stopCurrentAudio();
     },
 
     triggerAnimations: () => {
