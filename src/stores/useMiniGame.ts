@@ -155,11 +155,6 @@ export const useAnimationStore = create<AnimationState>()(
         };
         const newCount = animationCallCount + 1;
 
-        set({
-          calledAnimations: newCalledAnimations,
-          animationCallCount: newCount,
-        });
-
         if (typeof window !== "undefined") {
           localStorage.setItem(
             ANIMATION_CALLS_KEY,
@@ -168,9 +163,16 @@ export const useAnimationStore = create<AnimationState>()(
           localStorage.setItem(ANIMATION_COUNT_KEY, newCount.toString());
         }
 
-        initializeHintListener(newCount);
         get().subscribers.push(animationSubscriber);
         get().triggerAnimations();
+
+        setTimeout(() => {
+          set({
+            calledAnimations: newCalledAnimations,
+            animationCallCount: newCount,
+          });
+          initializeHintListener(newCount);
+        }, 3000);
       } else {
         set({lastClicks: [...recentClicks, now]});
       }
@@ -199,7 +201,7 @@ export const useAnimationStore = create<AnimationState>()(
 
       if (newBuffer === "19.85") {
         const magicNumberSubscriber = () => {
-          get().triggerClassAnimation("glitchLayer", 5000);
+          get().triggerClassAnimation("glitchLayer", 7000);
           playRadioAudio();
           set((state) => ({
             subscribers: state.subscribers.filter(
@@ -212,11 +214,7 @@ export const useAnimationStore = create<AnimationState>()(
         const newCalledAnimations = {...calledAnimations, magicInput: true};
         const newCount = animationCallCount + 1;
 
-        set({
-          calledAnimations: newCalledAnimations,
-          animationCallCount: newCount,
-          inputBuffer: "",
-        });
+        set({inputBuffer: ""});
 
         if (typeof window !== "undefined") {
           localStorage.setItem(
@@ -226,11 +224,19 @@ export const useAnimationStore = create<AnimationState>()(
           localStorage.setItem(ANIMATION_COUNT_KEY, newCount.toString());
         }
 
-        initializeHintListener(newCount);
         set((state) => ({
           subscribers: [...state.subscribers, magicNumberSubscriber],
         }));
+
         get().triggerAnimations();
+
+        setTimeout(() => {
+          set({
+            calledAnimations: newCalledAnimations,
+            animationCallCount: newCount,
+          });
+          initializeHintListener(newCount);
+        }, 8000);
       }
     },
 
@@ -271,11 +277,6 @@ export const useAnimationStore = create<AnimationState>()(
         };
         const newCount = animationCallCount + 1;
 
-        set({
-          calledAnimations: newCalledAnimations,
-          animationCallCount: newCount,
-        });
-
         if (typeof window !== "undefined") {
           localStorage.setItem(
             ANIMATION_CALLS_KEY,
@@ -284,9 +285,16 @@ export const useAnimationStore = create<AnimationState>()(
           localStorage.setItem(ANIMATION_COUNT_KEY, newCount.toString());
         }
 
-        initializeHintListener(newCount);
         get().subscribers.push(animationSubscriber);
         get().triggerAnimations();
+
+        setTimeout(() => {
+          set({
+            calledAnimations: newCalledAnimations,
+            animationCallCount: newCount,
+          });
+          initializeHintListener(newCount);
+        }, 8000);
       } else {
         set({lastClicks: [...recentClicks, now]});
       }

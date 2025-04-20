@@ -79,7 +79,9 @@ const MicroChainStatusText = () => {
           reset
         </button>
       </div>
-      <div className={`${styles.widget} ${count === 3 ? styles.green : ""}`}>
+      <div
+        className={`${styles.widget} ${count == 1 || count == 2 || count == 3 ? styles.backgroundHightlight : ""} ${count === 3 ? styles.green : ""}`}
+      >
         <div style={{height: "50px", display: "flex", gap: "3px"}}>
           <span>[</span>
 
@@ -90,7 +92,7 @@ const MicroChainStatusText = () => {
                 key={`anim-${char}-${index}`}
                 initial={{opacity: 0, y: -10}}
                 animate={{opacity: 1, y: 0}}
-                transition={{delay: index * 0.05}}
+                transition={{delay: index * 0.3}}
               >
                 {char}
               </motion.span>
@@ -101,7 +103,7 @@ const MicroChainStatusText = () => {
                 key={`anim-${char}-${index}`}
                 initial={{opacity: 0, y: -10}}
                 animate={{opacity: 1, y: 0}}
-                transition={{delay: index * 0.05}}
+                transition={{delay: index * 0.3}}
               >
                 {char}
               </motion.span>
@@ -112,7 +114,7 @@ const MicroChainStatusText = () => {
                 key={`anim-${char}-${index}`}
                 initial={{opacity: 0, y: -10}}
                 animate={{opacity: 1, y: 0}}
-                transition={{delay: index * 0.05}}
+                transition={{delay: index * 0.3}}
               >
                 {char}
               </motion.span>
