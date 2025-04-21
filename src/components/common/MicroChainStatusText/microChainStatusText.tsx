@@ -30,11 +30,7 @@ const MicroChainStatusText = () => {
           scramble
         </button>
         <button
-          onClick={() =>
-            useAnimationStore
-              .getState()
-              .triggerClassAnimation("glitchLayer", 5000)
-          }
+          onClick={() => useAnimationStore.getState().triggerTextGlitch()}
         >
           glitch
         </button>
