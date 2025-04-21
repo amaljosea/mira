@@ -1,4 +1,3 @@
-// lib/audio-utils.ts
 let currentAudio: HTMLAudioElement | null = null;
 
 export function playAudioEffect(
