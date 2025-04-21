@@ -115,15 +115,15 @@
 
   @keyframes spin {
     0% {
-      transform: translate(-50%, -50%) rotate(140deg);
-      opacity: 1;
+      transform: translate(-50%, -50%) rotate(175deg);
+      opacity: 0.6;
     }
 
     50% {
       transform: translate(-50%, -50%) rotate(180deg);
       opacity: 1;
     }
-    80% {
+    90% {
       transform: translate(-50%, -50%) rotate(180deg);
       opacity: 0.6;
     }
