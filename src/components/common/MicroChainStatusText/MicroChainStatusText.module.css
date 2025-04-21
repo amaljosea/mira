@@ -40,6 +40,10 @@
   animation: greenHighlight 0.5s 1s ease-in forwards;
 }
 
+.muteButton {
+  align-items: start !important;
+}
+
 @keyframes greenHighlight {
   0% {
     color: inherit;
