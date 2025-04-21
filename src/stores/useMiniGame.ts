@@ -36,6 +36,7 @@ interface AnimationState {
   delayedTestStartTime: number | null;
   delayedTestRemaining: number | null;
   isRadioPlaying: boolean;
+  pendingMagicStep: boolean;
 
   subscribe: (callback: AnimationTrigger) => () => void;
   triggerAnimations: () => void;
@@ -53,6 +54,7 @@ interface AnimationState {
   triggerTextScrambler: () => void;
   playRadioAudio: () => void;
   stopRadioAudio: () => void;
+  completeMagicInputStep: () => void;
 
   initializeHintListener: (count?: number) => () => void;
 }
@@ -112,13 +114,30 @@ export const useAnimationStore = create<AnimationState>()(
         volume: 0.7,
         maxDuration: 8000,
         onStart: () => set({isRadioPlaying: true}),
-        onEnd: () => set({isRadioPlaying: false}),
+        onEnd: () => {
+          set({isRadioPlaying: false});
+          get().completeMagicInputStep();
+        },
       });
     },
 
     stopRadioAudio: () => {
       stopCurrentAudio();
       set({isRadioPlaying: false});
+      get().completeMagicInputStep();
+    },
+
+    completeMagicInputStep: () => {
+      const {pendingMagicStep, animationCallCount} = get();
+      if (!pendingMagicStep) return;
+
+      const newCount = animationCallCount + 1;
+      set({
+        animationCallCount: newCount,
+        pendingMagicStep: false,
+      });
+
+      localStorage.setItem(ANIMATION_COUNT_KEY, newCount.toString());
     },
 
     triggerAnimations: () => {
@@ -188,6 +207,8 @@ export const useAnimationStore = create<AnimationState>()(
       }
     },
 
+    pendingMagicStep: false,
+
     handleMagicInput: (value: string) => {
       const {
         masterEnabled,
@@ -220,14 +241,13 @@ export const useAnimationStore = create<AnimationState>()(
           }));
         };
 
-        // Update call tracking
+        // set calledAnimations now, but NOT animationCallCount
         const newCalledAnimations = {...calledAnimations, magicInput: true};
-        const newCount = animationCallCount + 1;
 
         set({
           calledAnimations: newCalledAnimations,
-          animationCallCount: newCount,
           inputBuffer: "",
+          pendingMagicStep: true,
         });
 
         if (typeof window !== "undefined") {
@@ -235,10 +255,9 @@ export const useAnimationStore = create<AnimationState>()(
             ANIMATION_CALLS_KEY,
             JSON.stringify(newCalledAnimations),
           );
-          localStorage.setItem(ANIMATION_COUNT_KEY, newCount.toString());
         }
 
-        initializeHintListener(newCount);
+        initializeHintListener(animationCallCount + 1);
         set((state) => ({
           subscribers: [...state.subscribers, magicNumberSubscriber],
         }));
