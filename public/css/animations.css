@@ -132,29 +132,49 @@
     animation-delay: 0.8s;
   }
 
-  .dino {
-    display: none;
-    position: fixed;
-    width: 190px;
-    height: 170px;
-    bottom: -100px;
-    left: 70%;
-    opacity: 0;
-    pointer-events: none;
-    z-index: 999;
-    transform-origin: bottom left;
-    animation: visible 2s infinite;
-  }
+ .dino {
+  display: none;
+  position: fixed;
+  width: 190px;
+  height: 190px;
+  bottom: 150px;
+  right: 40px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 999;
+  transform-origin: bottom center;
+  animation: dinoPopUp 5s ease-in-out;
+}
 
-    @media (min-width: 500px) {
-  .dino {
-     left: 40%;
+
+
+@keyframes dinoPopUp {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+    display: block;
+  }
+  3% {
+    transform: translateY(0);
+    opacity: 1;
+     display: block;
+  }
+  97% {
+    transform: translateY(0);
+    opacity: 1;
+     display: block;
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: 1;
+     display: block;
   }
 }
 
-  @media (min-width: 860px) {
+
+@media (min-width: 860px) {
   .dino {
-     left: 30%;
+    right: 100px;
   }
 }
 
