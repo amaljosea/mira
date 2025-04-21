@@ -4,7 +4,6 @@ import {motion, AnimatePresence} from "framer-motion";
 import styles from "./MicroChainStatusText.module.css";
 import {useAnimationStore} from "@/src/stores/useMiniGame";
 import IconButton from "../IconButton/IconButton";
-import MuteIcon from "../../icons/Mute/MuteIcon";
 
 const SHOW_MENU = false;
 
@@ -137,12 +136,19 @@ const MicroChainStatusText = () => {
           ))}
           <span>]</span>
           {isRadioPlaying && (
-            <IconButton
-              onClick={() => useAnimationStore.getState().stopRadioAudio()}
-              className={styles.muteButton}
-            >
-              <MuteIcon />
-            </IconButton>
+            <div>
+              <IconButton
+                onClick={() => useAnimationStore.getState().stopRadioAudio()}
+                className={styles.muteButton}
+              >
+                <img
+                  src="/images/Sound.gif"
+                  alt="Speaker Playing"
+                  width={24}
+                  height={24}
+                />
+              </IconButton>
+            </div>
           )}
           <AnimatePresence>
             {hintText && (
