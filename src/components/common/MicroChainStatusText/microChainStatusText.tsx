@@ -135,7 +135,7 @@ const MicroChainStatusText = () => {
           <span>]</span>
           <AnimatePresence>
             {hintText && (
-              <motion.span
+              <motion.p
                 className={styles.hintText}
                 initial={{opacity: 0}}
                 animate={{opacity: 1}}
@@ -143,7 +143,7 @@ const MicroChainStatusText = () => {
                 transition={{duration: 2}}
               >
                 Hint: {hintText}
-              </motion.span>
+              </motion.p>
             )}
           </AnimatePresence>
         </div>
