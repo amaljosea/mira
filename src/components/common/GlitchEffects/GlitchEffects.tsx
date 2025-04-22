@@ -10,7 +10,7 @@ type Props = {
 
 const GlitchEffects = ({overlayContent}: Props) => (
   <>
-    <div className="glitchLayer">{overlayContent}</div>
+    {/* <div className="glitchLayer">{overlayContent}</div> */}
     <div className="rainbowContainer">
       <div className="rainbowColor rainbowColor1"></div>
       <div className="rainbowColor rainbowColor2"></div>
@@ -18,12 +18,7 @@ const GlitchEffects = ({overlayContent}: Props) => (
       <div className="rainbowColor rainbowColor4"></div>
       <div className="rainbowColor rainbowColor5"></div>
     </div>
-    <Image
-      src={dino}
-      alt="Derek Dino"
-      className="dino"
-      style={{left: "30%", width: "190px", height: "170px"}}
-    />
+    <Image src={dino} alt="Derek Dino" className="dino" />
     <MicroChainStatusText />{" "}
   </>
 );
