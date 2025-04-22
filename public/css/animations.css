@@ -194,15 +194,15 @@
  .dino {
   display: none;
   position: fixed;
-  width: 190px;
+  width: 230px;
   height: 190px;
-  bottom: 150px;
-  right: 40px;
+  bottom: 120px;
+  left: 80px;
   opacity: 0;
   pointer-events: none;
   z-index: 999;
   transform-origin: bottom center;
-  animation: dinoPopUp 5s ease-in-out;
+  animation: dinoPopUp 2s ease-in-out;
 }
 
 
