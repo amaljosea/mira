@@ -5,7 +5,7 @@ import styles from "./MicroChainStatusText.module.css";
 import {useAnimationStore} from "@/src/stores/useMiniGame";
 import IconButton from "../IconButton/IconButton";
 
-const SHOW_MENU = false;
+const SHOW_MENU = true;
 
 const MicroChainStatusText = () => {
   const count = useAnimationStore((state) => state.animationCallCount);
@@ -37,11 +37,26 @@ const MicroChainStatusText = () => {
           glitch
         </button>
         <button
-          onClick={() =>
-            useAnimationStore
-              .getState()
-              .triggerClassAnimation("rainbowColor", 7000)
-          }
+          onClick={() => {
+            const container = document.getElementById("swapContainer");
+            const currencyContainer = document.getElementById("currencyBox");
+            if (container) {
+              container.classList.add("index");
+              currencyContainer?.classList.add("bgColor");
+              const trigger =
+                useAnimationStore.getState().triggerClassAnimation;
+              trigger("rainbowMask", 8000);
+              trigger("rainbowColor", 7000);
+
+              setTimeout(() => {
+                const element = document.getElementById("swapContainer");
+                if (element) {
+                  element.classList.remove("index");
+                  currencyContainer?.classList.remove("bgColor");
+                }
+              }, 8500);
+            }
+          }}
         >
           rainbow
         </button>

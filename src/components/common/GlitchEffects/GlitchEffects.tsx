@@ -12,6 +12,7 @@ const GlitchEffects = ({overlayContent}: Props) => (
   <>
     {/* <div className="glitchLayer">{overlayContent}</div> */}
     <div className="rainbowContainer">
+      <div className="rainbowMask"></div>
       <div className="rainbowColor rainbowColor1"></div>
       <div className="rainbowColor rainbowColor2"></div>
       <div className="rainbowColor rainbowColor3"></div>

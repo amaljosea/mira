@@ -290,6 +290,24 @@ export const useAnimationStore = create<AnimationState>()(
         set({lastClicks: []});
 
         const animationSubscriber = () => {
+          const classSubscriber = () => {
+            const container = document.getElementById("swapContainer");
+            const currencyContainer = document.getElementById("currencyBox");
+            if (container) {
+              container.classList.add("index");
+              currencyContainer?.classList.add("bgColor");
+
+              setTimeout(() => {
+                const element = document.getElementById("swapContainer");
+                if (element) {
+                  element.classList.remove("index");
+                  currencyContainer?.classList.remove("bgColor");
+                }
+              }, 8500);
+            }
+          };
+          classSubscriber();
+          get().triggerClassAnimation("rainbowMask", 8000);
           get().triggerClassAnimation("rainbowColor", 7000);
           get().subscribers = get().subscribers.filter(
             (sub) => sub !== animationSubscriber,
@@ -437,11 +455,11 @@ export const useAnimationStore = create<AnimationState>()(
             50% { transform: translate(0); }
             100% { transform: translate(0); }
           }
-    
+
           .glitchy {
             animation: glitch 120ms infinite;
           }
-    
+
           img.glitchy,
           svg.glitchy,
           table.glitchy,
@@ -524,16 +542,16 @@ export const useAnimationStore = create<AnimationState>()(
               0%   { top: -100%; }
               100% { top: 100%; }
           }
-  
+
           @keyframes static-scanlines {
               0% { background-position: 0 0; }
               100% { background-position: 0 4px; }
           }
-  
+
           .scanlines {
               position: relative !important;
           }
-  
+
           .scanlines::before,
           .scanlines::after {
               content: '';
@@ -544,14 +562,14 @@ export const useAnimationStore = create<AnimationState>()(
               pointer-events: none;
               z-index: 999999;
           }
-  
+
           /* Moving scanline (sweeping) */
           .scanlines::before {
               background: linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%);
               animation: scanline-move 1s linear infinite;
               opacity: 0.4;
           }
-  
+
           /* Static scanlines */
           .scanlines::after {
               top: 0;

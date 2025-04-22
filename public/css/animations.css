@@ -52,11 +52,51 @@
     transform-origin: 50% 0;
     animation: spin 7s ease-in-out infinite forwards;
     animation-fill-mode: forwards;
+    z-index: 8;
   }
+
+.index{
+  z-index: 9999;
+}
+
+.bgColor{
+  background-color: transparent !important;
+}
+
+.rainbowMask {
+  position: fixed;
+  top: 80px;
+  left: -180px;
+  width: 150vw;
+  height: 50vh;
+  background: var(--background-primary);
+  animation: mask 7s ease-in-out infinite forwards;
+  opacity: 0;
+  z-index: 9;
+  display: none;
+
+}
+
+@keyframes mask {
+  0% {
+    opacity: 0;
+  }
+  1% {
+   opacity: 1;
+  }
+  99% {
+    opacity: 1;
+  }
+  100%{
+    opacity: 0;
+  }
+}
+
+
 
   @keyframes spin {
     0% {
-      transform: translate(-50%, -50%) rotate(140deg);
+      transform: translate(-50%, -50%) rotate(70deg);
       opacity: 1;
     }
 
@@ -132,49 +172,29 @@
     animation-delay: 0.8s;
   }
 
- .dino {
-  display: none;
-  position: fixed;
-  width: 230px;
-  height: 190px;
-  bottom: 120px;
-  left: 80px;
-  opacity: 0;
-  pointer-events: none;
-  z-index: 999;
-  transform-origin: bottom center;
-  animation: dinoPopUp 1.5s ease-in-out;
-}
-
-
-
-@keyframes dinoPopUp {
-  0% {
-    transform: translateY(100%);
-    opacity: 0;
-    display: block;
-  }
-  3% {
-    transform: translateY(0);
-    opacity: 1;
-     display: block;
-  }
-  97% {
-    transform: translateY(0);
-    opacity: 1;
-     display: block;
-  }
-  100% {
-    transform: translateY(100%);
-    opacity: 1;
-     display: block;
-  }
-}
-
-
-@media (min-width: 860px) {
   .dino {
-    right: 100px;
+    display: none;
+    position: fixed;
+    width: 190px;
+    height: 170px;
+    bottom: -100px;
+    left: 70%;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 999;
+    transform-origin: bottom left;
+    animation: visible 2s infinite;
+  }
+
+    @media (min-width: 500px) {
+  .dino {
+     left: 40%;
+  }
+}
+
+  @media (min-width: 860px) {
+  .dino {
+     left: 30%;
   }
 }
 

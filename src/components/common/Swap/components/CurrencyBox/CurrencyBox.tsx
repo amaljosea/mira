@@ -81,7 +81,7 @@ const CurrencyBox = ({
       : null;
 
   return (
-    <div className={clsx(styles.currencyBox, className)}>
+    <div id="currencyBox" className={clsx(styles.currencyBox, className)}>
       <p className={styles.title}>{mode === "buy" ? "Buy" : "Sell"}</p>
       <div className={styles.content}>
         {previewError ? (
