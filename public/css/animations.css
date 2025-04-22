@@ -202,7 +202,7 @@
   pointer-events: none;
   z-index: 999;
   transform-origin: bottom center;
-  animation: dinoPopUp 2s ease-in-out;
+  animation: dinoPopUp 1.5s ease-in-out;
 }
 
 
