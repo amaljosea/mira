@@ -60,7 +60,7 @@ const RootLayout = ({children}: Props) => {
         <Providers>
           <div style={{position: "relative"}}>
             {children}
-            {minigameMaster && <GlitchEffects overlayContent={children} />}
+            {minigameMaster && <GlitchEffects />}
           </div>
         </Providers>
       </body>
