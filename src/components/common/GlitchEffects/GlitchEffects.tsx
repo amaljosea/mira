@@ -1,16 +1,9 @@
-// src/components/common/GlitchEffects/index.tsx
-import {ReactNode} from "react";
 import Image from "next/image";
 import MicroChainStatusText from "@/src/components/common/MicroChainStatusText/microChainStatusText";
 import dino from "@/public/images/dino.png";
 
-type Props = {
-  overlayContent: ReactNode;
-};
-
-const GlitchEffects = ({overlayContent}: Props) => (
+const GlitchEffects = () => (
   <>
-    <div className="glitchLayer">{overlayContent}</div>
     <div className="rainbowContainer">
       <div className="rainbowColor rainbowColor1"></div>
       <div className="rainbowColor rainbowColor2"></div>

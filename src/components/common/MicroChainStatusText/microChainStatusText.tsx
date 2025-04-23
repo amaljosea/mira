@@ -3,12 +3,14 @@
 import {motion, AnimatePresence} from "framer-motion";
 import styles from "./MicroChainStatusText.module.css";
 import {useAnimationStore} from "@/src/stores/useMiniGame";
+import IconButton from "../IconButton/IconButton";
 
 const SHOW_MENU = false;
 
 const MicroChainStatusText = () => {
   const count = useAnimationStore((state) => state.animationCallCount);
   const hintText = useAnimationStore((state) => state.hintText);
+  const isRadioPlaying = useAnimationStore((state) => state.isRadioPlaying);
 
   return (
     <>
@@ -30,11 +32,7 @@ const MicroChainStatusText = () => {
           scramble
         </button>
         <button
-          onClick={() =>
-            useAnimationStore
-              .getState()
-              .triggerClassAnimation("glitchLayer", 5000)
-          }
+          onClick={() => useAnimationStore.getState().triggerTextGlitch()}
         >
           glitch
         </button>
@@ -133,6 +131,21 @@ const MicroChainStatusText = () => {
             </span>
           ))}
           <span>]</span>
+          {isRadioPlaying && (
+            <div>
+              <IconButton
+                onClick={() => useAnimationStore.getState().stopRadioAudio()}
+                className={styles.muteButton}
+              >
+                <img
+                  src="/images/Sound.gif"
+                  alt="Speaker Playing"
+                  width={24}
+                  height={24}
+                />
+              </IconButton>
+            </div>
+          )}
         </div>
         <AnimatePresence>
           {hintText && (
