@@ -7,8 +7,7 @@
   height: auto;
   /* Maintain aspect ratio */
   left: 50%;
-  /* top: 50%; */
-  top: max(0px, 25%);
+  top: 9%;
   transform: translate(-50%, 0);
   transform-origin: bottom;
   z-index: 999999;
