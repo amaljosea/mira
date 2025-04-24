@@ -6,7 +6,7 @@ import {playAudioEffect, stopCurrentAudio} from "../utils/playAudioEffect";
 const HINT_1 = "Rwrarrw, careful how fast you switch those assets!";
 const HINT_2 = "Slippage is so low these days, it feels great to live in 1985.";
 const HINT_3 =
-  " Easy there, Gordon Gecko. If you keep switching these prices, the market will tank.";
+  "Easy there, Gordon Gecko. If you keep switching these prices, the market will tank.";
 
 type AnimationTrigger = () => void;
 type AnimationType =

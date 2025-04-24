@@ -78,7 +78,7 @@ const MicroChainStatusText = () => {
         </button>
       </div>
       <div className={`${styles.widget} ${count === 3 ? styles.green : ""}`}>
-        <div style={{height: "50px", display: "flex", gap: "3px"}}>
+        <div style={{display: "flex", gap: "3px"}}>
           <span>[</span>
 
           {/* Animating Letters */}
@@ -146,20 +146,20 @@ const MicroChainStatusText = () => {
               </IconButton>
             </div>
           )}
-          <AnimatePresence>
-            {hintText && (
-              <motion.span
-                className={styles.hintText}
-                initial={{opacity: 0}}
-                animate={{opacity: 1}}
-                exit={{opacity: 0}}
-                transition={{duration: 2}}
-              >
-                Hint: {hintText}
-              </motion.span>
-            )}
-          </AnimatePresence>
         </div>
+        <AnimatePresence>
+          {hintText && (
+            <motion.p
+              className={styles.hintText}
+              initial={{opacity: 0}}
+              animate={{opacity: 1}}
+              exit={{opacity: 0}}
+              transition={{duration: 2}}
+            >
+              Hint: {hintText}
+            </motion.p>
+          )}
+        </AnimatePresence>
       </div>
     </>
   );
