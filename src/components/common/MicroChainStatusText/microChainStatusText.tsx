@@ -40,7 +40,7 @@ const MicroChainStatusText = () => {
           onClick={() =>
             useAnimationStore
               .getState()
-              .triggerClassAnimation("rainbowColor", 7000)
+              .triggerClassAnimation("rainbowColor", 3500)
           }
         >
           rainbow

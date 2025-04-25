@@ -290,7 +290,7 @@ export const useAnimationStore = create<AnimationState>()(
         set({lastClicks: []});
 
         const animationSubscriber = () => {
-          get().triggerClassAnimation("rainbowColor", 7000);
+          get().triggerClassAnimation("rainbowColor", 3500);
           get().subscribers = get().subscribers.filter(
             (sub) => sub !== animationSubscriber,
           );
