@@ -77,7 +77,9 @@ const MicroChainStatusText = () => {
           reset
         </button>
       </div>
-      <div className={`${styles.widget} ${count === 3 ? styles.green : ""}`}>
+      <div
+        className={`${styles.widget} ${(count == 1 || count == 2) && styles.briefGreenGlow} ${count === 3 && styles.green}`}
+      >
         <div style={{display: "flex", gap: "3px"}}>
           <span>[</span>
 
@@ -85,32 +87,49 @@ const MicroChainStatusText = () => {
           {count >= 1 &&
             "MIC".split("").map((char, index) => (
               <motion.span
-                key={`anim-${char}-${index}`}
-                initial={{opacity: 0, y: -10}}
-                animate={{opacity: 1, y: 0}}
-                transition={{delay: index * 0.05}}
+                key={`anim-MIC-${char}-${index}`}
+                initial={{opacity: 0, scale: 2.5, y: -20}}
+                animate={{opacity: 1, scale: 1, y: 0}}
+                transition={{
+                  delay: index * 0.3,
+                  duration: 1,
+                  ease: "easeOut",
+                }}
+                style={{display: "inline-block"}}
               >
                 {char}
               </motion.span>
             ))}
+
           {count >= 2 &&
             "ROC".split("").map((char, index) => (
               <motion.span
-                key={`anim-${char}-${index}`}
-                initial={{opacity: 0, y: -10}}
-                animate={{opacity: 1, y: 0}}
-                transition={{delay: index * 0.05}}
+                key={`anim-ROC-${char}-${index}`}
+                initial={{opacity: 0, scale: 2.5, y: -20}}
+                animate={{opacity: 1, scale: 1, y: 0}}
+                transition={{
+                  delay: index * 0.3, // <<< updated to 0.3
+                  duration: 1, // <<< updated to 1
+                  ease: "easeOut",
+                }}
+                style={{display: "inline-block"}}
               >
                 {char}
               </motion.span>
             ))}
+
           {count >= 3 &&
             "HAIN".split("").map((char, index) => (
               <motion.span
-                key={`anim-${char}-${index}`}
-                initial={{opacity: 0, y: -10}}
-                animate={{opacity: 1, y: 0}}
-                transition={{delay: index * 0.05}}
+                key={`anim-HAIN-${char}-${index}`}
+                initial={{opacity: 0, scale: 2.5, y: -20}}
+                animate={{opacity: 1, scale: 1, y: 0}}
+                transition={{
+                  delay: index * 0.3, // <<< updated to 0.3
+                  duration: 1, // <<< updated to 1
+                  ease: "easeOut",
+                }}
+                style={{display: "inline-block"}}
               >
                 {char}
               </motion.span>

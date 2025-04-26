@@ -16,10 +16,6 @@
     background-color 0.5s;
 }
 
-.green {
-  color: var(--content-positive);
-}
-
 .incrementButton {
   color: var(--content-primary);
   background-color: var(--background-primary);
@@ -38,9 +34,81 @@
     0 0 4px rgba(70, 204, 68, 0.2);
 }
 
-/* Final stage glow - a little more presence */
+.green {
+  color: var(--content-positive);
+}
+
 .green span {
-  animation: greenHighlight 0.5s 1s ease-in forwards;
+  animation: greenBlinkBase 3s ease-in forwards, greenStayPositiveEnd 3s ease-in forwards;
+}
+
+.briefGreenGlow {
+  color: var(--content-positive);
+  /* Start with positive color */
+}
+
+.briefGreenGlow span {
+  animation: greenBlinkBase 3s ease-in forwards, greenToPrimaryEnd 3s ease-in forwards;
+}
+
+@keyframes greenBlinkBase {
+  0% {
+    color: var(--content-positive);
+    filter: brightness(1);
+    text-shadow:
+      0 0 2px rgba(70, 204, 68, 0.6),
+      0 0 6px rgba(70, 204, 68, 0.4),
+      0 0 12px rgba(70, 204, 68, 0.3);
+  }
+
+  25% {
+    color: var(--content-positive);
+    filter: brightness(0.5);
+    text-shadow: none;
+  }
+
+  35% {
+    color: var(--content-positive);
+    filter: brightness(1.2);
+    text-shadow:
+      0 0 2px rgba(70, 204, 68, 0.6),
+      0 0 6px rgba(70, 204, 68, 0.4),
+      0 0 12px rgba(70, 204, 68, 0.3);
+  }
+
+  50% {
+    color: var(--content-positive);
+    filter: brightness(0.5);
+    text-shadow: none;
+  }
+
+  60% {
+    color: var(--content-positive);
+    filter: brightness(1.2);
+    text-shadow:
+      0 0 2px rgba(70, 204, 68, 0.6),
+      0 0 6px rgba(70, 204, 68, 0.4),
+      0 0 12px rgba(70, 204, 68, 0.3);
+  }
+}
+
+@keyframes greenToPrimaryEnd {
+  100% {
+    color: var(--content-primary);
+    filter: brightness(1);
+    text-shadow: none;
+  }
+}
+
+@keyframes greenStayPositiveEnd {
+  100% {
+    color: var(--content-positive);
+    filter: brightness(1);
+    text-shadow:
+      0 0 2px rgba(70, 204, 68, 0.6),
+      0 0 6px rgba(70, 204, 68, 0.4),
+      0 0 12px rgba(70, 204, 68, 0.3);
+  }
 }
 
 .muteButton {
@@ -83,29 +151,19 @@
     transform: scale(1);
     opacity: 0.7;
   }
+
   50% {
     transform: scale(1.2);
     opacity: 0.2;
   }
+
   100% {
     transform: scale(1.3);
     opacity: 0;
   }
 }
 
-@keyframes greenHighlight {
-  0% {
-    color: inherit;
-    text-shadow: none;
-  }
-  100% {
-    color: var(--content-positive);
-    text-shadow:
-      0 0 2px rgba(70, 204, 68, 0.4),
-      0 0 6px rgba(70, 204, 68, 0.3),
-      0 0 12px rgba(70, 204, 68, 0.2);
-  }
-}
+
 
 .emptyChar {
   opacity: 0.3;
@@ -123,6 +181,7 @@
   .hintText {
     padding-left: 0px;
   }
+
   .widget {
     bottom: 60px;
     width: 90%;
