@@ -34,21 +34,16 @@
     0 0 4px rgba(70, 204, 68, 0.2);
 }
 
-.green {
+.briefGreenGlowGreenEnd {
   color: var(--content-positive);
-}
-
-.green span {
-  animation: greenBlinkBase 3s ease-in forwards, greenStayPositiveEnd 3s ease-in forwards;
-}
-
-.briefGreenGlow {
-  color: var(--content-positive);
-  /* Start with positive color */
 }
 
 .briefGreenGlow span {
-  animation: greenBlinkBase 3s ease-in forwards, greenToPrimaryEnd 3s ease-in forwards;
+  animation: greenBlinkBase 4s ease-in forwards, greenToPrimaryEnd 4s ease-in forwards;
+}
+
+.briefGreenGlowGreenEnd span {
+  animation: greenBlinkBase 4s ease-in forwards, greenStayPositiveEnd 4s ease-in forwards;
 }
 
 @keyframes greenBlinkBase {
@@ -82,7 +77,7 @@
     text-shadow: none;
   }
 
-  60% {
+  75% {
     color: var(--content-positive);
     filter: brightness(1.2);
     text-shadow:

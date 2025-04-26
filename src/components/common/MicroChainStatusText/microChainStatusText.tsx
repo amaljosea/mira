@@ -4,6 +4,7 @@ import {motion, AnimatePresence} from "framer-motion";
 import styles from "./MicroChainStatusText.module.css";
 import {useAnimationStore} from "@/src/stores/useMiniGame";
 import IconButton from "../IconButton/IconButton";
+import {useEffect, useState} from "react";
 
 const SHOW_MENU = false;
 
@@ -11,6 +12,44 @@ const MicroChainStatusText = () => {
   const count = useAnimationStore((state) => state.animationCallCount);
   const hintText = useAnimationStore((state) => state.hintText);
   const isRadioPlaying = useAnimationStore((state) => state.isRadioPlaying);
+
+  const [shouldBlink, setShouldBlink] = useState(false);
+
+  useEffect(() => {
+    if (count > 0) {
+      const lettersCount = count === 3 ? 4 : 3;
+      const totalDelay = (lettersCount - 1) * 0.3 * 1000 + 1000; // <- Important change
+
+      const timeout = setTimeout(() => {
+        setShouldBlink(true);
+        setTimeout(() => {
+          setShouldBlink(false);
+        }, 4000);
+      }, totalDelay);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [count]);
+
+  const animateText = (text) => {
+    return text.split("").map((char, index) => (
+      <motion.span
+        key={`anim-${text}-${char}-${index}`}
+        initial={{opacity: 0, scale: 2.5, y: -20}}
+        animate={{opacity: 1, scale: 1, y: 0}}
+        transition={{
+          delay: index * 0.3,
+          duration: 1,
+          ease: "easeOut",
+        }}
+        style={{display: "inline-block"}}
+      >
+        {char}
+      </motion.span>
+    ));
+  };
+
+  const length = count === 0 ? 10 : count === 1 ? 7 : count === 2 ? 4 : 0;
 
   return (
     <>
@@ -77,74 +116,19 @@ const MicroChainStatusText = () => {
           reset
         </button>
       </div>
-      <div
-        className={`${styles.widget} ${(count == 1 || count == 2) && styles.briefGreenGlow} ${count === 3 && styles.green}`}
-      >
-        <div style={{display: "flex", gap: "3px"}}>
+      <div className={`${styles.widget}`}>
+        <div
+          style={{display: "flex", gap: "3px"}}
+          className={`${shouldBlink ? styles.briefGreenGlow : ""} ${count >= 3 ? styles.briefGreenGlowGreenEnd : ""}`}
+        >
           <span>[</span>
 
-          {/* Animating Letters */}
-          {count >= 1 &&
-            "MIC".split("").map((char, index) => (
-              <motion.span
-                key={`anim-MIC-${char}-${index}`}
-                initial={{opacity: 0, scale: 2.5, y: -20}}
-                animate={{opacity: 1, scale: 1, y: 0}}
-                transition={{
-                  delay: index * 0.3,
-                  duration: 1,
-                  ease: "easeOut",
-                }}
-                style={{display: "inline-block"}}
-              >
-                {char}
-              </motion.span>
-            ))}
-
-          {count >= 2 &&
-            "ROC".split("").map((char, index) => (
-              <motion.span
-                key={`anim-ROC-${char}-${index}`}
-                initial={{opacity: 0, scale: 2.5, y: -20}}
-                animate={{opacity: 1, scale: 1, y: 0}}
-                transition={{
-                  delay: index * 0.3, // <<< updated to 0.3
-                  duration: 1, // <<< updated to 1
-                  ease: "easeOut",
-                }}
-                style={{display: "inline-block"}}
-              >
-                {char}
-              </motion.span>
-            ))}
-
-          {count >= 3 &&
-            "HAIN".split("").map((char, index) => (
-              <motion.span
-                key={`anim-HAIN-${char}-${index}`}
-                initial={{opacity: 0, scale: 2.5, y: -20}}
-                animate={{opacity: 1, scale: 1, y: 0}}
-                transition={{
-                  delay: index * 0.3, // <<< updated to 0.3
-                  duration: 1, // <<< updated to 1
-                  ease: "easeOut",
-                }}
-                style={{display: "inline-block"}}
-              >
-                {char}
-              </motion.span>
-            ))}
+          {count >= 1 && animateText("MIC")}
+          {count >= 2 && animateText("ROC")}
+          {count >= 3 && animateText("HAIN")}
 
           {/* Remaining Underscores */}
-          {Array.from(
-            count === 0
-              ? {length: 10}
-              : count === 1
-                ? {length: 7}
-                : count === 2
-                  ? {length: 4}
-                  : {length: 0},
-          ).map((_, index) => (
+          {Array.from({length}).map((_, index) => (
             <span key={`empty-${index}`} className={styles.emptyChar}>
               _
             </span>
