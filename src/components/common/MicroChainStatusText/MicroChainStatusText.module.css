@@ -43,7 +43,9 @@
 }
 
 .briefGreenGlowGreenEnd span {
-  animation: greenBlinkBase 4s ease-in forwards, greenStayPositiveEnd 4s ease-in forwards;
+  animation:
+    greenBlinkBase 4s ease-in 1900ms forwards,
+    greenStayPositiveEnd 4s ease-in 1900ms forwards;
 }
 
 @keyframes greenBlinkBase {
