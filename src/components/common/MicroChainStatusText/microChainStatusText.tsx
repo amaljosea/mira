@@ -14,6 +14,11 @@ const MicroChainStatusText = () => {
   const isRadioPlaying = useAnimationStore((state) => state.isRadioPlaying);
 
   const [shouldBlink, setShouldBlink] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   useEffect(() => {
     if (count > 0) {
@@ -50,6 +55,23 @@ const MicroChainStatusText = () => {
   };
 
   const length = count === 0 ? 10 : count === 1 ? 7 : count === 2 ? 4 : 0;
+
+  if (!hasMounted) {
+    return (
+      <div className={styles.widget}>
+        {/* Render fallback with only underscores to match server */}
+        <div style={{display: "flex", gap: "3px"}}>
+          <span>[</span>
+          {Array.from({length: 10}).map((_, index) => (
+            <span key={`empty-${index}`} className={styles.emptyChar}>
+              _
+            </span>
+          ))}
+          <span>]</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
