@@ -168,15 +168,22 @@
 }
 
 .hintText {
-  font-family: monospace;
-  font-size: 14px;
-  padding-left: 10px;
-  color: var(--content-dimmed-light);
+  font-family: monospace !important;
+  font-size: 14px !important;
+  padding-left: 10px !important;
+  color: var(--content-dimmed-light) !important;
+}
+
+.hintText span {
+  font-family: monospace !important;
+  font-size: 14px !important;
+  text-shadow: none !important;
+  color: var(--content-dimmed-light) !important;
 }
 
 @media screen and (max-width: 500px) {
   .hintText {
-    padding-left: 0px;
+    padding-left: 0px !important;
   }
 
   .widget {

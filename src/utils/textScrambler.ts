@@ -51,8 +51,8 @@ export class TextScramble {
     for (let i = 0; i < length; i++) {
       const from = oldText[i] || "";
       const to = newText[i] || "";
-      const start = Math.floor(Math.random() * 100); // Randomize start time
-      const end = start + Math.floor(Math.random() * 100); // Randomize end time
+      const start = Math.floor(Math.random() * 120); // Randomize start time
+      const end = start + Math.floor(Math.random() * 120); // Randomize end time
       this.queue.push({from, to, start, end});
     }
 
