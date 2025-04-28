@@ -607,35 +607,32 @@ export const useAnimationStore = create<AnimationState>()(
       const elements = document.querySelectorAll("body *");
 
       elements.forEach((el) => {
-        const text = el.childNodes;
-        let visibleText = "";
-
-        text.forEach((node) => {
-          if (
+        const textNodes: ChildNode[] = Array.from(el.childNodes).filter(
+          (node) =>
             node.nodeType === Node.TEXT_NODE &&
-            (node.textContent?.trim().length ?? 0) > 0
-          ) {
-            visibleText += node.textContent?.trim() + " ";
+            (node.textContent?.length ?? 0) > 0, // no .trim()
+        );
+
+        textNodes.forEach((node) => {
+          const originalText = node.textContent ?? "";
+          if (originalText.length > 0) {
+            // Create a temporary <span> for scrambling
+          const scrambleTarget = document.createElement("span");
+            scrambleTarget.textContent = originalText;
+
+            // Replace the text node with the scramble span
+              el.replaceChild(scrambleTarget, node);
+
+            const textScrambler = new TextScramble(scrambleTarget);
+            textScrambler.setText(originalText).then(() => {
+              // SAFETY CHECK
+              if (el.contains(scrambleTarget)) {
+                const restoredTextNode = document.createTextNode(originalText);
+                el.replaceChild(restoredTextNode, scrambleTarget);
+        }
+            });
           }
         });
-
-        if (visibleText.trim().length > 0) {
-          const scrambleTarget = document.createElement("span");
-          scrambleTarget.textContent = visibleText.trim();
-
-          // Replace text nodes only, keep nested HTML (like <button>) intact
-          el.childNodes.forEach((node) => {
-            if (
-              node.nodeType === Node.TEXT_NODE &&
-              (node.textContent?.trim().length ?? 0) > 0
-            ) {
-              el.replaceChild(scrambleTarget, node);
-            }
-          });
-
-          const textScramble = new TextScramble(scrambleTarget);
-          textScramble.setText(scrambleTarget.innerText);
-        }
       });
     },
 
