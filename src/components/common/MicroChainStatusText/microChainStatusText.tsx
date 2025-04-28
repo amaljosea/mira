@@ -141,7 +141,7 @@ const MicroChainStatusText = () => {
       <div className={`${styles.widget}`}>
         <div
           style={{display: "flex", gap: "3px"}}
-          className={`${shouldBlink ? styles.briefGreenGlow : ""} ${count >= 3 ? styles.briefGreenGlowGreenEnd : ""}`}
+          className={`${shouldBlink && (count >= 3 ? styles.briefGreenGlowGreenEnd : styles.briefGreenGlow)} `}
         >
           <span>[</span>
 
