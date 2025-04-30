@@ -12,69 +12,75 @@ const MicroChainStatusText = () => {
   const count = useAnimationStore((state) => state.animationCallCount);
   const hintText = useAnimationStore((state) => state.hintText);
   const isRadioPlaying = useAnimationStore((state) => state.isRadioPlaying);
-
-  const [shouldBlink, setShouldBlink] = useState(false);
+  const isTriggeredManually = useAnimationStore(
+    (state) => state.isTriggeredManually,
+  );
   const [hasMounted, setHasMounted] = useState(false);
+  const [glowClass, setGlowClass] = useState("");
 
   useEffect(() => {
     setHasMounted(true);
   }, []);
 
   useEffect(() => {
-    // add delay before blink animation after the count changes
-    if (count > 0) {
-      const lettersCount = count === 3 ? 4 : 3;
-      const totalDelay = (lettersCount - 1) * 0.3 * 1000 + 1000;
+    // While the page reloads and count is 3 show green texts
+    if (!isTriggeredManually && count === 3) {
+      setGlowClass(styles.greenFinal);
+      return;
+    }
 
-      const timeout = setTimeout(() => {
-        setShouldBlink(true);
-        setTimeout(() => {
-          setShouldBlink(false);
-        }, 4000);
+    // Manual path with blinking
+    if ((count === 1 || count === 2 || count === 3) && isTriggeredManually) {
+      const totalDelay = count === 3 ? 2200 : 1900;
+
+      const blinkTimeout = setTimeout(() => {
+        setGlowClass(styles.briefGreenGlow);
+
+        const finalTimeout = setTimeout(() => {
+          if (count === 3) {
+            setGlowClass(styles.greenFinal);
+          } else {
+            setGlowClass("");
+          }
+        }, 3000); // Duration of briefGreenGlow
+
+        return () => clearTimeout(finalTimeout);
       }, totalDelay);
 
-      return () => clearTimeout(timeout);
+      return () => clearTimeout(blinkTimeout);
     }
-  }, [count]);
 
-  const animateText = (text) => {
-    // To animate text appearance.
-    return text.split("").map((char, index) => (
-      <motion.span
-        key={`anim-${text}-${char}-${index}`}
-        initial={{opacity: 0, scale: 2.5, y: -20}}
-        animate={{opacity: 1, scale: 1, y: 0}}
-        transition={{
-          delay: index * 0.3,
-          duration: 1,
-          ease: "easeOut",
-        }}
-        style={{display: "inline-block"}}
-      >
-        {char}
-      </motion.span>
-    ));
+    // Reset in other cases
+    setGlowClass("");
+  }, [count, isTriggeredManually]);
+
+  const animateText = (text, shouldAnimate = true) => {
+    return text.split("").map((char, index) => {
+      if (!shouldAnimate) {
+        return <span key={`plain-${text}-${char}-${index}`}>{char}</span>;
+      }
+
+      return (
+        <motion.span
+          key={`anim-${text}-${char}-${index}`}
+          initial={{opacity: 0, scale: 2.5, y: -20}}
+          animate={{opacity: 1, scale: 1, y: 0}}
+          transition={{
+            delay: index * 0.3,
+            duration: 1,
+            ease: "easeOut",
+          }}
+          style={{display: "inline-block"}}
+        >
+          {char}
+        </motion.span>
+      );
+    });
   };
 
   const length = count === 0 ? 10 : count === 1 ? 7 : count === 2 ? 4 : 0;
 
-  if (!hasMounted) {
-    // To handle SSR issue
-    return (
-      <div className={styles.widget}>
-        {/* Render fallback with only underscores to match server */}
-        <div style={{display: "flex", gap: "3px"}}>
-          <span>[</span>
-          {Array.from({length: 10}).map((_, index) => (
-            <span key={`empty-${index}`} className={styles.emptyChar}>
-              _
-            </span>
-          ))}
-          <span>]</span>
-        </div>
-      </div>
-    );
-  }
+  if (!hasMounted) return;
 
   return (
     <>
@@ -142,15 +148,13 @@ const MicroChainStatusText = () => {
         </button>
       </div>
       <div className={`${styles.widget}`}>
-        <div
-          style={{display: "flex", gap: "3px"}}
-          className={`${shouldBlink && (count >= 3 ? styles.briefGreenGlowGreenEnd : styles.briefGreenGlow)} `}
-        >
+        <div style={{display: "flex", gap: "3px"}} className={glowClass}>
           <span>[</span>
 
-          {count >= 1 && animateText("MIC")}
-          {count >= 2 && animateText("ROC")}
-          {count >= 3 && animateText("HAIN")}
+          {count >= 1 && animateText("MIC", count === 1 && isTriggeredManually)}
+          {count >= 2 && animateText("ROC", count === 2 && isTriggeredManually)}
+          {count >= 3 &&
+            animateText("HAIN", count === 3 && isTriggeredManually)}
 
           {/* Remaining Underscores */}
           {Array.from({length}).map((_, index) => (
