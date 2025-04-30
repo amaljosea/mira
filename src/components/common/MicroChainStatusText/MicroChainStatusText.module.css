@@ -34,78 +34,46 @@
     0 0 4px rgba(70, 204, 68, 0.2);
 }
 
-.briefGreenGlowGreenEnd {
-  color: var(--content-positive);
-}
-
 .briefGreenGlow span {
-  animation: greenBlinkBase 4s ease-in forwards, greenToPrimaryEnd 4s ease-in forwards;
+  animation: greenBlink 3s ease-in forwards;
 }
 
-.briefGreenGlowGreenEnd span {
-  animation:
-    greenBlinkBase 4s ease-in 1900ms forwards,
-    greenStayPositiveEnd 4s ease-in 1900ms forwards;
-}
+@keyframes greenBlink {
 
-@keyframes greenBlinkBase {
-  0% {
-    color: var(--content-positive);
-    filter: brightness(1);
-    text-shadow:
-      0 0 2px rgba(70, 204, 68, 0.6),
-      0 0 6px rgba(70, 204, 68, 0.4),
-      0 0 12px rgba(70, 204, 68, 0.3);
-  }
-
-  25% {
-    color: var(--content-positive);
-    filter: brightness(0.5);
-    text-shadow: none;
-  }
-
-  35% {
+  0%,
+  100% {
+    /* Start and end on white (or normal state) */
     color: var(--content-positive);
     filter: brightness(1.2);
     text-shadow:
       0 0 2px rgba(70, 204, 68, 0.6),
       0 0 6px rgba(70, 204, 68, 0.4),
       0 0 12px rgba(70, 204, 68, 0.3);
+  }
+
+  25%,
+  75% {
+    /* Dim phase */
+    filter: brightness(0.5);
+    text-shadow: none;
   }
 
   50% {
-    color: var(--content-positive);
-    filter: brightness(0.5);
-    text-shadow: none;
-  }
-
-  75% {
-    color: var(--content-positive);
-    filter: brightness(1.2);
+    /* Peak brightness at the midpoint */
+    filter: brightness(1.4);
     text-shadow:
-      0 0 2px rgba(70, 204, 68, 0.6),
-      0 0 6px rgba(70, 204, 68, 0.4),
-      0 0 12px rgba(70, 204, 68, 0.3);
+      0 0 3px rgba(70, 204, 68, 0.8),
+      0 0 8px rgba(70, 204, 68, 0.6),
+      0 0 16px rgba(70, 204, 68, 0.4);
   }
 }
 
-@keyframes greenToPrimaryEnd {
-  100% {
-    color: var(--content-primary);
-    filter: brightness(1);
-    text-shadow: none;
-  }
-}
-
-@keyframes greenStayPositiveEnd {
-  100% {
-    color: var(--content-positive);
-    filter: brightness(1);
-    text-shadow:
-      0 0 2px rgba(70, 204, 68, 0.6),
-      0 0 6px rgba(70, 204, 68, 0.4),
-      0 0 12px rgba(70, 204, 68, 0.3);
-  }
+.greenFinal span {
+  color: var(--content-positive);
+  text-shadow:
+    0 0 2px rgba(70, 204, 68, 0.6),
+    0 0 6px rgba(70, 204, 68, 0.4),
+    0 0 12px rgba(70, 204, 68, 0.3);
 }
 
 .muteButton {

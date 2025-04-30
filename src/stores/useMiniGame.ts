@@ -30,7 +30,7 @@ interface AnimationState {
     tripleClickCurrencySwap: boolean;
   };
   animationCallCount: number;
-
+  isTriggeredManually: boolean;
   hintText: string;
   delayedTestTimeout: NodeJS.Timeout | null;
   delayedTestStartTime: number | null;
@@ -54,7 +54,6 @@ interface AnimationState {
   triggerTextScrambler: () => void;
   playRadioAudio: () => void;
   stopRadioAudio: () => void;
-  completeMagicInputStep: () => void;
   triggerTextGlitch: () => void;
   triggerScanAndSweep: () => void;
   initializeHintListener: (count?: number) => () => void;
@@ -95,6 +94,7 @@ export const useAnimationStore = create<AnimationState>()(
         ? parseInt(localStorage.getItem(ANIMATION_COUNT_KEY) || "0")
         : 0,
 
+    isTriggeredManually: false,
     hintText: "",
     delayedTestTimeout: null,
     delayedTestStartTime: null,
@@ -117,7 +117,6 @@ export const useAnimationStore = create<AnimationState>()(
         onStart: () => set({isRadioPlaying: true}),
         onEnd: () => {
           set({isRadioPlaying: false});
-          get().completeMagicInputStep();
         },
       });
     },
@@ -125,20 +124,6 @@ export const useAnimationStore = create<AnimationState>()(
     stopRadioAudio: () => {
       stopCurrentAudio();
       set({isRadioPlaying: false});
-      get().completeMagicInputStep();
-    },
-
-    completeMagicInputStep: () => {
-      const {pendingMagicStep, animationCallCount} = get();
-      if (!pendingMagicStep) return;
-
-      const newCount = animationCallCount + 1;
-      set({
-        animationCallCount: newCount,
-        pendingMagicStep: false,
-      });
-
-      localStorage.setItem(ANIMATION_COUNT_KEY, newCount.toString());
     },
 
     triggerAnimations: () => {
@@ -187,14 +172,6 @@ export const useAnimationStore = create<AnimationState>()(
         };
         const newCount = animationCallCount + 1;
 
-        if (typeof window !== "undefined") {
-          localStorage.setItem(
-            ANIMATION_CALLS_KEY,
-            JSON.stringify(newCalledAnimations),
-          );
-          localStorage.setItem(ANIMATION_COUNT_KEY, newCount.toString());
-        }
-
         get().subscribers.push(animationSubscriber);
         get().triggerAnimations();
 
@@ -202,8 +179,17 @@ export const useAnimationStore = create<AnimationState>()(
           set({
             calledAnimations: newCalledAnimations,
             animationCallCount: newCount,
+            isTriggeredManually: true,
           });
           initializeHintListener(newCount);
+
+          if (typeof window !== "undefined") {
+            localStorage.setItem(
+              ANIMATION_CALLS_KEY,
+              JSON.stringify(newCalledAnimations),
+            );
+            localStorage.setItem(ANIMATION_COUNT_KEY, newCount.toString());
+          }
         }, 3500);
       } else {
         set({lastClicks: [...recentClicks, now]});
@@ -249,13 +235,6 @@ export const useAnimationStore = create<AnimationState>()(
 
         set({inputBuffer: ""});
 
-        if (typeof window !== "undefined") {
-          localStorage.setItem(
-            ANIMATION_CALLS_KEY,
-            JSON.stringify(newCalledAnimations),
-          );
-        }
-
         set((state) => ({
           subscribers: [...state.subscribers, magicNumberSubscriber],
         }));
@@ -274,9 +253,18 @@ export const useAnimationStore = create<AnimationState>()(
               set({
                 calledAnimations: newCalledAnimations,
                 animationCallCount: newCount,
+                isTriggeredManually: true,
               });
 
               initializeHintListener(newCount);
+
+              if (typeof window !== "undefined") {
+                localStorage.setItem(
+                  ANIMATION_CALLS_KEY,
+                  JSON.stringify(newCalledAnimations),
+                );
+                localStorage.setItem(ANIMATION_COUNT_KEY, newCount.toString());
+              }
             }
           }, checkInterval);
         };
@@ -325,14 +313,6 @@ export const useAnimationStore = create<AnimationState>()(
         };
         const newCount = animationCallCount + 1;
 
-        if (typeof window !== "undefined") {
-          localStorage.setItem(
-            ANIMATION_CALLS_KEY,
-            JSON.stringify(newCalledAnimations),
-          );
-          localStorage.setItem(ANIMATION_COUNT_KEY, newCount.toString());
-        }
-
         get().subscribers.push(animationSubscriber);
         get().triggerAnimations();
 
@@ -340,8 +320,16 @@ export const useAnimationStore = create<AnimationState>()(
           set({
             calledAnimations: newCalledAnimations,
             animationCallCount: newCount,
+            isTriggeredManually: true,
           });
           initializeHintListener(newCount);
+          if (typeof window !== "undefined") {
+            localStorage.setItem(
+              ANIMATION_CALLS_KEY,
+              JSON.stringify(newCalledAnimations),
+            );
+            localStorage.setItem(ANIMATION_COUNT_KEY, newCount.toString());
+          }
         }, 4500);
       } else {
         set({lastClicks: [...recentClicks, now]});
@@ -358,6 +346,7 @@ export const useAnimationStore = create<AnimationState>()(
         calledAnimations: defaultCalled,
         animationCallCount: 0,
         hintText: "",
+        isTriggeredManually: false,
       });
 
       if (typeof window !== "undefined") {
@@ -617,6 +606,7 @@ export const useAnimationStore = create<AnimationState>()(
         document.body.classList.remove("scanlines");
       }, 2000);
     },
+
     triggerTextScrambler: () => {
       const elements = document.querySelectorAll("body *");
 
