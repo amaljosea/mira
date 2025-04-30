@@ -21,9 +21,10 @@ const MicroChainStatusText = () => {
   }, []);
 
   useEffect(() => {
+    // add delay before blink animation after the count changes
     if (count > 0) {
       const lettersCount = count === 3 ? 4 : 3;
-      const totalDelay = (lettersCount - 1) * 0.3 * 1000 + 1000; // <- Important change
+      const totalDelay = (lettersCount - 1) * 0.3 * 1000 + 1000;
 
       const timeout = setTimeout(() => {
         setShouldBlink(true);
@@ -37,6 +38,7 @@ const MicroChainStatusText = () => {
   }, [count]);
 
   const animateText = (text) => {
+    // To animate text appearance.
     return text.split("").map((char, index) => (
       <motion.span
         key={`anim-${text}-${char}-${index}`}
@@ -57,6 +59,7 @@ const MicroChainStatusText = () => {
   const length = count === 0 ? 10 : count === 1 ? 7 : count === 2 ? 4 : 0;
 
   if (!hasMounted) {
+    // To handle SSR issue
     return (
       <div className={styles.widget}>
         {/* Render fallback with only underscores to match server */}

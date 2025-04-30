@@ -264,12 +264,26 @@ export const useAnimationStore = create<AnimationState>()(
 
         const newCount = animationCallCount + 1;
 
+        const waitForRadioToStop = () => {
+          const checkInterval = 500; // check every 500ms
+
+          const intervalId = setInterval(() => {
+            if (!get().isRadioPlaying) {
+              clearInterval(intervalId);
+
+              set({
+                calledAnimations: newCalledAnimations,
+                animationCallCount: newCount,
+              });
+
+              initializeHintListener(newCount);
+            }
+          }, checkInterval);
+        };
+
+        // start after 4.5s delay (same as before)
         setTimeout(() => {
-          set({
-            calledAnimations: newCalledAnimations,
-            animationCallCount: newCount,
-          });
-          initializeHintListener(newCount);
+          waitForRadioToStop();
         }, 4500);
       }
     },
@@ -617,11 +631,11 @@ export const useAnimationStore = create<AnimationState>()(
           const originalText = node.textContent ?? "";
           if (originalText.length > 0) {
             // Create a temporary <span> for scrambling
-          const scrambleTarget = document.createElement("span");
+            const scrambleTarget = document.createElement("span");
             scrambleTarget.textContent = originalText;
 
             // Replace the text node with the scramble span
-              el.replaceChild(scrambleTarget, node);
+            el.replaceChild(scrambleTarget, node);
 
             const textScrambler = new TextScramble(scrambleTarget);
             textScrambler.setText(originalText).then(() => {
@@ -629,7 +643,7 @@ export const useAnimationStore = create<AnimationState>()(
               if (el.contains(scrambleTarget)) {
                 const restoredTextNode = document.createTextNode(originalText);
                 el.replaceChild(restoredTextNode, scrambleTarget);
-        }
+              }
             });
           }
         });
