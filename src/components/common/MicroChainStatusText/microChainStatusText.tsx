@@ -148,7 +148,10 @@ const MicroChainStatusText = () => {
         </button>
       </div>
       <div className={`${styles.widget}`}>
-        <div style={{display: "flex", gap: "3px"}} className={glowClass}>
+        <div
+          style={{display: "flex", gap: "3px", height: "24px"}}
+          className={glowClass}
+        >
           <span>[</span>
 
           {count >= 1 && animateText("MIC", count === 1 && isTriggeredManually)}
