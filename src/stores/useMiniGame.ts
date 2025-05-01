@@ -1,6 +1,5 @@
 import {create} from "zustand";
 import {subscribeWithSelector} from "zustand/middleware";
-import {TextScramble} from "../utils/textScrambler";
 import {playAudioEffect, stopCurrentAudio} from "../utils/playAudioEffect";
 
 const HINT_1 = "Rwrarrw, careful how fast you switch those assets!";
@@ -468,35 +467,37 @@ export const useAnimationStore = create<AnimationState>()(
         document.head.appendChild(style);
       }
 
-      const elements = document.querySelectorAll("body *");
-      const glitchedElements = [];
+      const elements = Array.from(
+        document.querySelectorAll<HTMLElement>("body *"),
+      );
+      const glitchedElements: HTMLElement[] = [];
 
       elements.forEach((el) => {
         const rect = el.getBoundingClientRect();
         if (rect.width === 0 || rect.height === 0) return;
 
-        const childNodes = el.childNodes;
+        const childNodes = Array.from(el.childNodes);
         let hasVisibleText = false;
 
-        childNodes.forEach((node) => {
+        for (const node of childNodes) {
           if (
             node.nodeType === Node.TEXT_NODE &&
-            (node.textContent?.trim().length ?? 0) > 0
+            node.textContent?.trim().length
           ) {
             hasVisibleText = true;
+            break;
           }
-        });
+        }
 
-        const isImage = el.nodeName.toLowerCase() === "img";
-        const isTextSpan =
-          el.nodeName.toLowerCase() === "span" &&
-          el.textContent.trim().length > 0;
-        const isSvg = el.nodeName.toLowerCase() === "svg";
-        const isTable = el.nodeName.toLowerCase() === "table";
-        const isInput =
-          el.nodeName.toLowerCase() === "input" ||
-          el.nodeName.toLowerCase() === "textarea";
-        const isSearchBar = el.classList.value.match(/^SearchBar_searchBar__/);
+        const tagName = el.tagName.toLowerCase();
+        const className = el.className?.toString() || "";
+
+        const isImage = tagName === "img";
+        const isTextSpan = tagName === "span" && el.textContent?.trim().length;
+        const isSvg = tagName === "svg";
+        const isTable = tagName === "table";
+        const isInput = tagName === "input" || tagName === "textarea";
+        const isSearchBar = /^SearchBar_searchBar__/.test(className);
 
         if (
           hasVisibleText ||
@@ -517,7 +518,7 @@ export const useAnimationStore = create<AnimationState>()(
         get().triggerScanAndSweep();
       }, 1500);
 
-      // Auto-remove glitch after 2 seconds (also removes from search bar)
+      // Auto-remove glitch after 2 seconds
       setTimeout(() => {
         glitchedElements.forEach((el) => el.classList.remove("glitchy"));
       }, 2000);
@@ -609,22 +610,24 @@ export const useAnimationStore = create<AnimationState>()(
 
     triggerTextScrambler: () => {
       const endTime = Date.now() + 1500; // Run for 1.5 seconds
-      const originalText = new Map(); // Store original text by node reference
+      const originalText = new Map<Text, string>(); // Store original text by node reference
 
-      function scrambleNode(node) {
+      function scrambleNode(node: Node) {
         if (node.nodeType === Node.TEXT_NODE) {
-          let text = node.nodeValue;
+          const textNode = node as Text;
+          const text = textNode.nodeValue || "";
+
           if (text.trim() !== "") {
-            // Store the original text if it's not already stored
-            if (!originalText.has(node)) {
-              originalText.set(node, text);
+            if (!originalText.has(textNode)) {
+              originalText.set(textNode, text);
             }
+
             // Scramble the text
-            node.nodeValue = text
+            textNode.nodeValue = text
               .split("")
               .map((char) => {
                 return Math.random() > 0.5
-                  ? String.fromCharCode(Math.random() * 94 + 33)
+                  ? String.fromCharCode(Math.floor(Math.random() * 94 + 33))
                   : char;
               })
               .join("");
@@ -632,34 +635,35 @@ export const useAnimationStore = create<AnimationState>()(
         }
       }
 
-      function walkDOM(element) {
+      function walkDOM(element: Element | DocumentFragment) {
         element.childNodes.forEach((child) => {
           scrambleNode(child);
           if (child.nodeType === Node.ELEMENT_NODE) {
-            walkDOM(child);
+            walkDOM(child as Element);
           }
         });
       }
 
       const interval = setInterval(() => {
         walkDOM(document.body);
+
         if (Date.now() >= endTime) {
-          // Gradually restore characters back at different times
           originalText.forEach((original, node) => {
-            const chars = node.nodeValue.split("");
+            const currentText = node.nodeValue || "";
+            const chars = currentText.split("");
             const originalChars = original.split("");
 
-            chars.forEach((char, index) => {
-              // Random delay for each character
+            chars.forEach((_, index) => {
               setTimeout(() => {
                 chars[index] = originalChars[index];
                 node.nodeValue = chars.join("");
-              }, Math.random() * 1000); // Random delay between 0ms and 1000ms
+              }, Math.random() * 1000);
             });
           });
-          clearInterval(interval); // Stop scrambling
+
+          clearInterval(interval);
         }
-      }, 50); // Run every 50ms
+      }, 50);
     },
 
     initializeHintListener: (count?: number) => {
