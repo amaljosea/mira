@@ -608,36 +608,58 @@ export const useAnimationStore = create<AnimationState>()(
     },
 
     triggerTextScrambler: () => {
-      const elements = document.querySelectorAll("body *");
+      const endTime = Date.now() + 1500; // Run for 1.5 seconds
+      const originalText = new Map(); // Store original text by node reference
 
-      elements.forEach((el) => {
-        const textNodes: ChildNode[] = Array.from(el.childNodes).filter(
-          (node) =>
-            node.nodeType === Node.TEXT_NODE &&
-            (node.textContent?.length ?? 0) > 0, // no .trim()
-        );
+      function scrambleNode(node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          let text = node.nodeValue;
+          if (text.trim() !== "") {
+            // Store the original text if it's not already stored
+            if (!originalText.has(node)) {
+              originalText.set(node, text);
+            }
+            // Scramble the text
+            node.nodeValue = text
+              .split("")
+              .map((char) => {
+                return Math.random() > 0.5
+                  ? String.fromCharCode(Math.random() * 94 + 33)
+                  : char;
+              })
+              .join("");
+          }
+        }
+      }
 
-        textNodes.forEach((node) => {
-          const originalText = node.textContent ?? "";
-          if (originalText.length > 0) {
-            // Create a temporary <span> for scrambling
-            const scrambleTarget = document.createElement("span");
-            scrambleTarget.textContent = originalText;
-
-            // Replace the text node with the scramble span
-            el.replaceChild(scrambleTarget, node);
-
-            const textScrambler = new TextScramble(scrambleTarget);
-            textScrambler.setText(originalText).then(() => {
-              // SAFETY CHECK
-              if (el.contains(scrambleTarget)) {
-                const restoredTextNode = document.createTextNode(originalText);
-                el.replaceChild(restoredTextNode, scrambleTarget);
-              }
-            });
+      function walkDOM(element) {
+        element.childNodes.forEach((child) => {
+          scrambleNode(child);
+          if (child.nodeType === Node.ELEMENT_NODE) {
+            walkDOM(child);
           }
         });
-      });
+      }
+
+      const interval = setInterval(() => {
+        walkDOM(document.body);
+        if (Date.now() >= endTime) {
+          // Gradually restore characters back at different times
+          originalText.forEach((original, node) => {
+            const chars = node.nodeValue.split("");
+            const originalChars = original.split("");
+
+            chars.forEach((char, index) => {
+              // Random delay for each character
+              setTimeout(() => {
+                chars[index] = originalChars[index];
+                node.nodeValue = chars.join("");
+              }, Math.random() * 1000); // Random delay between 0ms and 1000ms
+            });
+          });
+          clearInterval(interval); // Stop scrambling
+        }
+      }, 50); // Run every 50ms
     },
 
     initializeHintListener: (count?: number) => {
