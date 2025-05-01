@@ -665,7 +665,7 @@ export const useAnimationStore = create<AnimationState>()(
               setTimeout(() => {
                 chars[index] = originalChars[index];
                 node.nodeValue = chars.join("");
-              }, Math.random() * 1000);
+              }, Math.random() * 100);
             });
           });
 
