@@ -54,7 +54,7 @@ const MicroChainStatusText = () => {
     setGlowClass("");
   }, [count, isTriggeredManually]);
 
-  const animateText = (text, shouldAnimate = true) => {
+  const animateText = (text: string, shouldAnimate = true) => {
     return text.split("").map((char, index) => {
       if (!shouldAnimate) {
         return <span key={`plain-${text}-${char}-${index}`}>{char}</span>;
