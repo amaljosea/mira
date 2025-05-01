@@ -35,7 +35,6 @@ interface AnimationState {
   delayedTestStartTime: number | null;
   delayedTestRemaining: number | null;
   isRadioPlaying: boolean;
-  pendingMagicStep: boolean;
 
   subscribe: (callback: AnimationTrigger) => () => void;
   triggerAnimations: () => void;
@@ -194,8 +193,6 @@ export const useAnimationStore = create<AnimationState>()(
         set({lastClicks: [...recentClicks, now]});
       }
     },
-
-    pendingMagicStep: false,
 
     handleMagicInput: (value: string) => {
       const {
@@ -609,8 +606,20 @@ export const useAnimationStore = create<AnimationState>()(
     },
 
     triggerTextScrambler: () => {
-      const endTime = Date.now() + 1500; // Run for 1.5 seconds
-      const originalText = new Map<Text, string>(); // Store original text by node reference
+      const endTime = Date.now() + 1500;
+      const originalText = new Map<Text, string>();
+
+      // Add overlay to block interaction
+      const blocker = document.createElement("div");
+      blocker.style.position = "fixed";
+      blocker.style.top = "0";
+      blocker.style.left = "0";
+      blocker.style.width = "100vw";
+      blocker.style.height = "100vh";
+      blocker.style.zIndex = "999999";
+      blocker.style.background = "transparent";
+      blocker.style.pointerEvents = "auto";
+      document.body.appendChild(blocker);
 
       function scrambleNode(node: Node) {
         if (node.nodeType === Node.TEXT_NODE) {
@@ -622,14 +631,13 @@ export const useAnimationStore = create<AnimationState>()(
               originalText.set(textNode, text);
             }
 
-            // Scramble the text
             textNode.nodeValue = text
               .split("")
-              .map((char) => {
-                return Math.random() > 0.5
+              .map((char) =>
+                Math.random() > 0.5
                   ? String.fromCharCode(Math.floor(Math.random() * 94 + 33))
-                  : char;
-              })
+                  : char,
+              )
               .join("");
           }
         }
@@ -662,6 +670,11 @@ export const useAnimationStore = create<AnimationState>()(
           });
 
           clearInterval(interval);
+
+          // Remove the click-blocking overlay after max delay
+          setTimeout(() => {
+            blocker.remove();
+          }, 1500); // Wait for all text to finish restoring
         }
       }, 50);
     },
@@ -680,11 +693,12 @@ export const useAnimationStore = create<AnimationState>()(
         if (count === 0) set({hintText: HINT_1});
         if (count === 1) set({hintText: HINT_2});
         if (count === 2) set({hintText: HINT_3});
+        if (count === 3) set({hintText: ""});
       };
 
       const startTimer = () => {
         // const delay = 5 * 60 * 1000; // 5 minutes
-        const delay = 10 * 1000; // 10 seconds
+        const delay = count === 0 ? 15 * 1000 : 8 * 1000; // 10 seconds
         set({
           delayedTestStartTime: Date.now(),
           delayedTestRemaining: delay,
