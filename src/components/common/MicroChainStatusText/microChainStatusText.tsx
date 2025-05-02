@@ -6,6 +6,8 @@ import {useAnimationStore} from "@/src/stores/useMiniGame";
 import IconButton from "../IconButton/IconButton";
 import {useEffect, useState} from "react";
 import ScrambleEffect from "../GlitchEffects/ScrambleEffect";
+import GlitchAndScanLines from "../GlitchEffects/GlitchAndScanLines";
+import {triggerClassAnimation} from "../GlitchEffects/ClassAnimationTrigger";
 
 const SHOW_MENU = false;
 
@@ -98,25 +100,11 @@ const MicroChainStatusText = () => {
           audio
         </button>
         <button onClick={() => ScrambleEffect()}>scramble</button>
-        <button
-          onClick={() => useAnimationStore.getState().triggerTextGlitch()}
-        >
-          glitch
-        </button>
-        <button
-          onClick={() =>
-            useAnimationStore
-              .getState()
-              .triggerClassAnimation("rainbowColor", 3500)
-          }
-        >
+        <button onClick={() => GlitchAndScanLines()}>glitch</button>
+        <button onClick={() => triggerClassAnimation("rainbowColor", 3500)}>
           rainbow
         </button>
-        <button
-          onClick={() =>
-            useAnimationStore.getState().triggerClassAnimation("dino", 2000)
-          }
-        >
+        <button onClick={() => triggerClassAnimation("dino", 2000)}>
           dino
         </button>
         <button
