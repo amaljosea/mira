@@ -5,6 +5,7 @@ import styles from "./MicroChainStatusText.module.css";
 import {useAnimationStore} from "@/src/stores/useMiniGame";
 import IconButton from "../IconButton/IconButton";
 import {useEffect, useState} from "react";
+import ScrambleEffect from "../GlitchEffects/ScrambleEffect";
 
 const SHOW_MENU = false;
 
@@ -96,11 +97,7 @@ const MicroChainStatusText = () => {
         <button onClick={() => useAnimationStore.getState().playRadioAudio()}>
           audio
         </button>
-        <button
-          onClick={() => useAnimationStore.getState().triggerTextScrambler()}
-        >
-          scramble
-        </button>
+        <button onClick={() => ScrambleEffect()}>scramble</button>
         <button
           onClick={() => useAnimationStore.getState().triggerTextGlitch()}
         >
