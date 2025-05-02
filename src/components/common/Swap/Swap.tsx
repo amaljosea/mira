@@ -44,6 +44,7 @@ import Loader from "@/src/components/common/Loader/Loader";
 import ConnectButton from "@/src/components/common/ConnectButton/ConnectButton";
 import {TradeState} from "@/src/hooks/useSwapRouter";
 import {useAnimationStore} from "@/src/stores/useMiniGame";
+import {triggerClassAnimation} from "../GlitchEffects/ClassAnimationTrigger";
 
 export type CurrencyBoxMode = "buy" | "sell";
 export type CurrencyBoxState = {
@@ -439,7 +440,7 @@ const Swap = ({isWidget}: {isWidget?: boolean}) => {
             setInputsState(initialInputsState);
             setReview(false);
             openSuccess();
-            useAnimationStore.getState().triggerClassAnimation("dino", 2000);
+            triggerClassAnimation("dino", 2000);
             await refetchBalances();
           }
         } else {
