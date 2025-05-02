@@ -606,77 +606,89 @@ export const useAnimationStore = create<AnimationState>()(
     },
 
     triggerTextScrambler: () => {
-      const endTime = Date.now() + 1500;
-      const originalText = new Map<Text, string>();
+      const DURATION = 1800; // Total duration of the effect (in milliseconds)
+      const DELAY_BW_FRAMES = 50; // Delay between each frame (in milliseconds) Decrease for faster scrambling at the cost of performance
+      const MAX_SCRAMBLE_FRAMES = DURATION / DELAY_BW_FRAMES; // Max number of times each character will scramble
+      const startTime = Date.now(); // Record the start time
 
-      // Add overlay to block interaction
       const blocker = document.createElement("div");
-      blocker.style.position = "fixed";
-      blocker.style.top = "0";
-      blocker.style.left = "0";
-      blocker.style.width = "100vw";
-      blocker.style.height = "100vh";
-      blocker.style.zIndex = "999999";
-      blocker.style.background = "transparent";
-      blocker.style.pointerEvents = "auto";
+      Object.assign(blocker.style, {
+        position: "fixed",
+        top: "0",
+        left: "0",
+        width: "100vw",
+        height: "100vh",
+        zIndex: "999999",
+        background: "transparent",
+        pointerEvents: "auto",
+      });
       document.body.appendChild(blocker);
 
-      function scrambleNode(node: Node) {
+      // Const to save all text nodes that need scrambling and their original text
+      const scrambleTargets: {
+        node: Text;
+        original: string;
+        scrambleMap: {char: string; countdown: number}[];
+      }[] = [];
+
+      // Walk through the DOM and find all text nodes that need scrambling
+      (function walk(node: Node) {
         if (node.nodeType === Node.TEXT_NODE) {
-          const textNode = node as Text;
-          const text = textNode.nodeValue || "";
-
-          if (text.trim() !== "") {
-            if (!originalText.has(textNode)) {
-              originalText.set(textNode, text);
-            }
-
-            textNode.nodeValue = text
-              .split("")
-              .map((char) =>
-                Math.random() > 0.5
-                  ? String.fromCharCode(Math.floor(Math.random() * 94 + 33))
-                  : char,
-              )
-              .join("");
-          }
-        }
-      }
-
-      function walkDOM(element: Element | DocumentFragment) {
-        element.childNodes.forEach((child) => {
-          scrambleNode(child);
-          if (child.nodeType === Node.ELEMENT_NODE) {
-            walkDOM(child as Element);
-          }
-        });
-      }
-
-      const interval = setInterval(() => {
-        walkDOM(document.body);
-
-        if (Date.now() >= endTime) {
-          originalText.forEach((original, node) => {
-            const currentText = node.nodeValue || "";
-            const chars = currentText.split("");
-            const originalChars = original.split("");
-
-            chars.forEach((_, index) => {
-              setTimeout(() => {
-                chars[index] = originalChars[index];
-                node.nodeValue = chars.join("");
-              }, Math.random() * 100);
+          const text = node.nodeValue || "";
+          if (text.trim()) {
+            const scrambleMap = Array.from(text).map((char) => ({
+              char,
+              countdown: Math.floor(Math.random() * MAX_SCRAMBLE_FRAMES),
+            }));
+            scrambleTargets.push({
+              node: node as Text,
+              original: text,
+              scrambleMap,
             });
-          });
-
-          clearInterval(interval);
-
-          // Remove the click-blocking overlay after max delay
-          setTimeout(() => {
-            blocker.remove();
-          }, 1500); // Wait for all text to finish restoring
+          }
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          node.childNodes.forEach(walk);
         }
-      }, 50);
+      })(document.body);
+
+      function scrambleFrame() {
+        const now = Date.now();
+        const elapsedTime = now - startTime;
+        let stillScrambling = false;
+
+        if (elapsedTime < DURATION) {
+          // Scramble only during the effect duration
+          for (const target of scrambleTargets) {
+            const updatedText = target.scrambleMap
+              .map(({char, countdown}, i) => {
+                if (countdown > 0) {
+                  stillScrambling = true;
+                  target.scrambleMap[i].countdown--;
+                  return String.fromCharCode(
+                    Math.floor(Math.random() * 94 + 33),
+                  );
+                }
+                return char;
+              })
+              .join("");
+
+            target.node.nodeValue = updatedText;
+          }
+
+          if (stillScrambling) {
+            setTimeout(scrambleFrame, DELAY_BW_FRAMES); // Run the next frame after a small delay
+          }
+        } else {
+          // Ensure full restore after effect ends
+          for (const target of scrambleTargets) {
+            target.node.nodeValue = target.original;
+          }
+          blocker.remove();
+        }
+      }
+
+      // Start the scrambling animation
+      scrambleFrame();
     },
 
     initializeHintListener: (count?: number) => {
