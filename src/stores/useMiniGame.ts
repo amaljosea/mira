@@ -295,7 +295,7 @@ export const useAnimationStore = create<AnimationState>()(
         set({lastClicks: []});
 
         const animationSubscriber = () => {
-          triggerClassAnimation("rainbowColor", 3500);
+          triggerClassAnimation("rainbowColor");
           get().subscribers = get().subscribers.filter(
             (sub) => sub !== animationSubscriber,
           );
@@ -371,7 +371,7 @@ export const useAnimationStore = create<AnimationState>()(
         if (isGlitchNext) {
           GlitchAndScanLines();
         } else {
-          triggerClassAnimation("dino", 2000);
+          triggerClassAnimation("dino");
         }
         isGlitchNext = !isGlitchNext;
       }, 30000); // 30 second interval

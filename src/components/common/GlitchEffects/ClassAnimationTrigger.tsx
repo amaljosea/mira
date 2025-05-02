@@ -1,9 +1,7 @@
-export function triggerClassAnimation(
-  classname: string,
-  duration: number,
-): () => void {
+export function triggerClassAnimation(classname: string): () => void {
   if (typeof window === "undefined") return () => {};
 
+  const duration: number = classname === "dino" ? 2000 : 3500;
   const glitchElements = document.querySelectorAll(`.${classname}`);
   glitchElements.forEach((el) => {
     (el as HTMLElement).style.display = "block";
